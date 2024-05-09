@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "D6957181-91D2-4DEF-80E1-7F258CDFB7D1"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "FB903C25-39E3-437A-872A-7D2D2A439F23"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/XON/XExtensions.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "254"
+            endingLineNumber = "254"
+            landmarkName = "decimalValue()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "FB903C25-39E3-437A-872A-7D2D2A439F23 - 94296c5053d8290d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "XON.XONTime.decimalValue() -&gt; __C.NSDecimal"
+                  moduleName = "XON"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/git.public/git.public/XON/Sources/XON/XExtensions.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "254"
+                  endingLineNumber = "254"
+                  offsetFromSymbolStart = "25">
+               </Location>
+               <Location
+                  uuid = "FB903C25-39E3-437A-872A-7D2D2A439F23 - 94296c5053d8290d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "XON.XONTime.decimalValue() -&gt; __C.NSDecimal"
+                  moduleName = "XON"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/git.public/git.public/XON/Sources/XON/XExtensions.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "254"
+                  endingLineNumber = "254"
+                  offsetFromSymbolStart = "91">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
