@@ -21,9 +21,7 @@ public final class XONEncoder {
 
 public final class XONDecoder {
     public func decode<T>(_ type: T.Type, from data: Data) throws -> T where T : XDecodable {
-        guard let value = try XONSerialization.decode(data) else {
-            throw XON.notEnoughError
-        }
+        let value = try XONSerialization.decode(data)
         let decoder = XDecoderImpl(userInfo: [:], value: value)
         return try T(from: decoder)
     }
@@ -64,9 +62,6 @@ public struct XMessageDecodingContainer : XCodingContainer {
         self.message = message
     }
     
-    public var type: Int64 {
-        return self.message.type
-    }
     public var count: Int {
         return self.message.count
     }
@@ -271,7 +266,7 @@ public struct XMessageEncodingContainer : XCodingContainer {
         self.parent = parent
         self.key = key
         self.userInfo = userInfo
-        self.message = Message<XONValue>(type: type)
+        self.message = Message<XONValue>()
     }
     
     public mutating func encodeElement<T>(key: UInt32, value: T) throws where T : XEncodable {

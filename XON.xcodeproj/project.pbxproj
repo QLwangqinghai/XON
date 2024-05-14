@@ -20,6 +20,7 @@
 		D6463E4B2BDE9D4F00D6AF57 /* XONCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E4A2BDE9D4F00D6AF57 /* XONCoder.swift */; };
 		D6463E4D2BE53C1F00D6AF57 /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E4C2BE53C1F00D6AF57 /* Collection.swift */; };
 		D6463E4F2BE61C2600D6AF57 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E4E2BE61C2600D6AF57 /* Message.swift */; };
+		D6546F4A2BECD7AF00E2C459 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = D6546F492BECD7AF00E2C459 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		D6463E4A2BDE9D4F00D6AF57 /* XONCoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XONCoder.swift; sourceTree = "<group>"; };
 		D6463E4C2BE53C1F00D6AF57 /* Collection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
 		D6463E4E2BE61C2600D6AF57 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		D6546F492BECD7AF00E2C459 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +73,7 @@
 		D6463E172BDE999400D6AF57 = {
 			isa = PBXGroup;
 			children = (
+				D6546F492BECD7AF00E2C459 /* README.md */,
 				D6463E232BDE999400D6AF57 /* XON */,
 				D6463E2F2BDE999400D6AF57 /* XONTests */,
 				D6463E222BDE999400D6AF57 /* Products */,
@@ -229,6 +232,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D6546F4A2BECD7AF00E2C459 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -417,7 +421,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 0.9;
+				MARKETING_VERSION = 0.9.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.angfung.XON;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -449,7 +453,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 0.9;
+				MARKETING_VERSION = 0.9.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.angfung.XON;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;

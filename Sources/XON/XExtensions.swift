@@ -245,8 +245,10 @@ extension XONTime : Codable {
         } else if self == .distantFuture {
             return CodingValue.distantFuture.rawValue
         } else {
+            let precision = Decimal.FormatStyle.Configuration.Precision.fractionLength(0 ..< 18)
+            let style = Decimal.FormatStyle().grouping(.never).precision(precision)
             let d = (Decimal(self.second) * Decimal(XONTime.attosecondPerSecond) + Decimal(self.attosecond)) / Decimal(XONTime.attosecondPerSecond)
-            return d.formatted(.number)
+            return d.formatted(style)
         }
     }
     

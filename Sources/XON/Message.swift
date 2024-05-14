@@ -8,21 +8,16 @@
 import Foundation
 
 public struct Message<Value> : Hashable where Value : Hashable {
-    public var type: Int64
     public var collection: [UInt32 : Value]
     public var count: Int {
         return self.collection.count
     }
 
-    public init(type: Int64) {
-        assert(type >= 0)
-        self.type = type
+    public init() {
         self.collection = [:]
     }
 
-    public init(type: Int64, collection: [UInt32 : Value]) {
-        assert(type >= 0)
-        self.type = type
+    public init(collection: [UInt32 : Value]) {
         self.collection = collection
     }
     
@@ -49,10 +44,9 @@ public struct Message<Value> : Hashable where Value : Hashable {
     }
     
     public static func == (lhs: Message<Value>, rhs: Message<Value>) -> Bool {
-        return lhs.type == rhs.type && lhs.collection == rhs.collection
+        return lhs.collection == rhs.collection
     }
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(self.type)
         hasher.combine(self.collection)
     }
 }

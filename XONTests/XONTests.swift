@@ -24,19 +24,19 @@ final class XONTests: XCTestCase {
         // Any test you write for XCTest can be annotated as throws and async.
         // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
         // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-        
-        
+
+            
         testNumbers()
+        try testTime()
         testStrings()
         testStringNumberArray()
         testStringNumberMap()
 
         testCollection()
         try testRandomedJson()
-        
+        try testSpeed()
     }
 
-    
     func testBool() throws {
         try! {
             let data = try XONSerialization.encode(.null)
@@ -44,12 +44,12 @@ final class XONTests: XCTestCase {
         } ()
 
         let data = try XONSerialization.encode(.bool(true))
-        let b = try XONSerialization.decode(data)!
+        let b = try XONSerialization.decode(data)
         assert(try! b.boolValue() == true)
 
         try! {
             let data = try XONSerialization.encode(.bool(false))
-            let b = try XONSerialization.decode(data)!
+            let b = try XONSerialization.decode(data)
             assert(try! b.boolValue() == false)
         } ()
     }
@@ -57,12 +57,12 @@ final class XONTests: XCTestCase {
     func testString() throws {
         try! {
             let data = try XONSerialization.encode(.string(string))
-            let b = try XONSerialization.decode(data)!
+            let b = try XONSerialization.decode(data)
             assert(try! b.stringValue() == string)
         } ()
         try! {
             let data = try XONSerialization.encode(.string(string2))
-            let b = try XONSerialization.decode(data)!
+            let b = try XONSerialization.decode(data)
             assert(try! b.stringValue() == string2)
         } ()
         
@@ -72,7 +72,7 @@ final class XONTests: XCTestCase {
                 string += string2
             }
             let data = try XONSerialization.encode(.data(string.data(using: .utf8)!))
-            let b = try XONSerialization.decode(data)!
+            let b = try XONSerialization.decode(data)
             assert(try! b.dataValue() as Data == string.data(using: .utf8)!)
         } ()
     }
@@ -85,47 +85,77 @@ final class XONTests: XCTestCase {
         try! {
             let value: XONValue = .time(XONTime.invalid)
             let data = try XONSerialization.encode(value)
-            let b = try XONSerialization.decode(data)!
+            let b = try XONSerialization.decode(data)
             assert(b == value)
         } ()
         try! {
             let value: XONValue = .time(XONTime.distantPast)
             let data = try XONSerialization.encode(value)
-            let b = try XONSerialization.decode(data)!
+            let b = try XONSerialization.decode(data)
             assert(b == value)
         } ()
         try! {
             let value: XONValue = .time(XONTime.distantFuture)
             let data = try XONSerialization.encode(value)
-            let b = try XONSerialization.decode(data)!
+            let b = try XONSerialization.decode(data)
             assert(b == value)
         } ()
         try! {
             let value: XONValue = .time(XONTime.zero)
             let data = try XONSerialization.encode(value)
-            let b = try XONSerialization.decode(data)!
+            let b = try XONSerialization.decode(data)
             assert(b == value)
         } ()
         
         try autoreleasepool {
             let value: XONValue = .time(XONTime.time(second: 2257394757394845625, attosecond: 0))
             let data = try XONSerialization.encode(value)
-            let b = try XONSerialization.decode(data)!
+            let b = try XONSerialization.decode(data)
             assert(b == value)
         }
         
         try autoreleasepool {
             let value: XONValue = .time(XONTime.time(second: 2257394757394845625, attosecond: 0))
             let data = try XONSerialization.encode(value)
-            let b = try XONSerialization.decode(data)!
+            let b = try XONSerialization.decode(data)
             assert(b == value)
         }
         
         try autoreleasepool {
-            let value: XONValue = .time(XONTime.time(second: 8432091145, attosecond: 575167568000000000))
+            let time = XONTime.time(second: 8432091145, attosecond: 575167568000000000)
+            let value: XONValue = .time(time)
+            let string = value.jsonValue()
+            print(string)
             let data = try XONSerialization.encode(value)
-            let b = try XONSerialization.decode(data)!
+            let b = try XONSerialization.decode(data)
             assert(b == value)
+            
+            let time2 = XONTime(jsonString: string as! String)
+            assert(time == time2)
+        }
+        try autoreleasepool {
+            let time = XONTime.time(second: 9223372036854775800, attosecond: 575167568000000003)
+            let value: XONValue = .time(time)
+            let string = value.jsonValue()
+            print(string)
+            let data = try XONSerialization.encode(value)
+            let b = try XONSerialization.decode(data)
+            assert(b == value)
+            
+            let time2 = XONTime(jsonString: string as! String)
+            assert(time == time2)
+        }
+        try autoreleasepool {
+            let time = XONTime.time(second: -9223372036854775800, attosecond: 575167568000000003)
+            let value: XONValue = .time(time)
+            let string = value.jsonValue()
+            print(string)
+            let data = try XONSerialization.encode(value)
+            let b = try XONSerialization.decode(data)
+            assert(b == value)
+            
+            let time2 = XONTime(jsonString: string as! String)
+            assert(time == time2)
         }
         
         let values = TestObject.timeArray.map { timeval in
@@ -138,7 +168,7 @@ final class XONTests: XCTestCase {
     func testCodeNumber(_ n: NSNumber) {
         let v: XONValue = .number(n)
         let data = try! XONSerialization.encode(v)
-        let b = try! XONSerialization.decode(data)!
+        let b = try! XONSerialization.decode(data)
         assert(v == b, "")
     }
     
@@ -263,12 +293,10 @@ final class XONTests: XCTestCase {
 
         let tag = "{string:Number}"
 
-        //let tag = "JSON.random"
-
         let values: [XCTestObject] = TestObject.stringNumberElements.map { (s, _, n) in
             var map: [UInt32 : XONValue] = [:]
             map[s] = .number(n)
-            return XCTestObject(.message(Message<XONValue>(type: Int64.random(in: 1 ..< Int64.max), collection: map)))
+            return XCTestObject(.message(Message<XONValue>(collection: map)))
         }
 
         testCoder(tag: tag, objects: values, times: 100)
@@ -283,20 +311,20 @@ final class XONTests: XCTestCase {
         }
         usleep(1000000)
 
-        testCoder(tag: tag, objects: values, times: 100)
+        testCoder(tag: tag, objects: values, times: 100, log: true)
+    }
+    public func testMessages() throws {
+        let tag = "JSON.random"
+
+        let values: [XCTestObject] = (1 ... 100).map { index in
+            let result = XONValue.randomMessage(deep: 0, jsonSupport: true)
+            return XCTestObject(.message(result))
+        }
+        usleep(1000000)
+
+        testCoder(tag: tag, objects: values, times: 100, log: true)
     }
 
-    func testMessage() throws {
-        var map: [UInt32 : XONValue] = [:]
-        let n: UInt64 = 15177217206540917685
-        map[4132148881] = .number(n as NSNumber)
-        let message = Message<XONValue>(type: 1165060215785297051, collection: map)
-        
-        let value: XONValue = .message(message)
-        let data = try! XONSerialization.encode(value)
-        let decoded = try! XONSerialization.decode(data)!
-        
-    }
     
     
     func testSpeed() throws {
@@ -304,7 +332,7 @@ final class XONTests: XCTestCase {
         testStrings()
         testStringNumberArray()
         testStringNumberMap()
-        try testRandomedJson()
+        try testMessages()
     }
     
     func testPerformanceExample() throws {
@@ -372,6 +400,9 @@ public struct TestObject {
 }
 
 public class XCTestObject {
+    public var xlength: Int = 0
+    public var jsonlength: Int = 0
+
     public let jsonObject: NSObject
     public let xobject: XONValue
 
@@ -390,9 +421,9 @@ extension XONValue {
         var strings: Set<String> = []
         var items: [(UInt32, String)] = []
         for _ in 1 ... 10000 {
-            var id = UInt32.random(in: 1 ..< UInt32.max)
+            var id = UInt32.random(in: 1 ..< 0x10000)
             while ids.contains(id) {
-                id = UInt32.random(in: 1 ..< UInt32.max)
+                id = UInt32.random(in: 1 ..< 0x100000)
             }
             var key = XONValue.randomKey()
             while strings.contains(key) {
@@ -440,11 +471,11 @@ extension XONValue {
     }
     
     public static func randomKey() -> String {
-        let len = Int.random(in: 1 ... 32)
+        let len = Int.random(in: 1 ... 18)
         let p = UnsafeMutableRawPointer.allocate(byteCount: len, alignment: 8)
         arc4random_buf(p, len)
         let data = Data(bytes: p, count: len)
-        let string = data.base64EncodedString().replacingOccurrences(of: "=", with: "")
+        let string = data.base64EncodedString().replacingOccurrences(of: "=", with: "").replacingOccurrences(of: "+-", with: "_")
         p.deallocate()
         return string
     }
@@ -480,7 +511,7 @@ extension XONValue {
         for _ in 0 ..< count {
             map[XONValue.keys[Int.random(in: 0 ..< 10000)].0] = random(deep: deep + 1, jsonSupport: jsonSupport)
         }
-        let message = Message(type: Int64.random(in: 0 ... Int64.max), collection: map)
+        let message = Message(collection: map)
         return message
     }
     public static func random(jsonSupport: Bool) -> XONValue {
@@ -563,42 +594,66 @@ extension XONValue {
     }
     
     public static func randomString(maxLength: Int) -> String {
-        var string = ""
         let len = randomLength(maxLength)
-        let p = UnsafeMutableRawPointer.allocate(byteCount: len * 2, alignment: 8)
-        arc4random_buf(p, len)
-        let uint16p = p.bindMemory(to: UInt16.self, capacity: len)
-        for i in 0 ..< len {
-            let u = uint16p.advanced(by: i).pointee
-            string += String(UTF32Char(u == 0 ? 1 : u))
+        let blen = len * 4 / 5
+        var data: Data = randomData(length: len * 3 / 5).base64EncodedData(options: [])
+        for _ in blen ..< len {
+            let i = Int.random(in: 0 ... 1000)
+            if i == 0 {
+                data.append("计算机".data(using: .utf8)!)
+            } else if i == 1 {
+                data.append("コンピュータ".data(using: .utf8)!)
+            } else if i == 2 {
+                data.append("컴퓨터".data(using: .utf8)!)
+            } else if i == 3 {
+                data.append("Компьютеры".data(using: .utf8)!)
+            } else {
+                var char = UInt8.random(in: 1 ... 0x7f)
+                while isgraph(Int32(char)) == 0 {
+                    char = UInt8.random(in: 1 ... 0x7f)
+                }
+                data.append(contentsOf: [char])
+            }
         }
-        p.deallocate()
-        return string
+        return String(data: data, encoding: .utf8) ?? ""
     }
-    
+    public static func randomData(length: Int) -> Data {
+        let p = UnsafeMutableRawPointer.allocate(byteCount: length, alignment: 8)
+        arc4random_buf(p, length)
+        let data = Data(bytes: p, count: length)
+        p.deallocate()
+        return data
+    }
+    public static func randomData(maxLength: Int) -> Data {
+        let len = randomLength(maxLength)
+        return randomData(length: len)
+    }
     public static func randomSingleValue(jsonSupport: Bool) -> XONValue {
-        let type = Int.random(in: 0 ... 49)
+        let rint = Int.random(in: 0 ... 444)
+        if rint > 400 {
+            return .data(randomData(maxLength: 1000))
+        }
+        
+        let type = rint % 10
         switch type {
         case 0:
-            return .string(self.randomString(maxLength: 7000))
+            return .null
         case 1:
-            let len = randomLength(4000000)
-            let p = UnsafeMutableRawPointer.allocate(byteCount: len, alignment: 8)
-            arc4random_buf(p, len)
-            let data = Data(bytes: p, count: len)
-            p.deallocate()
-            return .data(data)
+            return .bool(Bool.random())
+        case 2:
+            return .time(randomTime())
+        case 3:
+            fallthrough
+        case 4:
+            fallthrough
+        case 5:
+            fallthrough
+        case 6:
+            fallthrough
+        case 7:
+            return .string(self.randomString(maxLength: 1000))
         default:
-            switch (type - 2) % 6 {
-            case 0:
-                return .null
-            case 1:
-                return .bool(Bool.random())
-            case 2:
-                return .time(randomTime())
-            default:
-                return .number(randomNumber(jsonSupport: jsonSupport))
-            }
+            return .number(randomNumber(jsonSupport: jsonSupport))
         }
     }
     
@@ -609,54 +664,6 @@ let string: String = "asdfryejfkj"
 let string2: String = "()2asdfryejfkj--asdfryejfkj&*asdfryejfkj--asdfryejfkj()2asdfryejfkj--asdfryejfkj&*asdfryejfkj--asdfryejfkj()2asdfryejfkj--asdfryejfkj&*asdfryejfkj--asdfryejfkj()2asdfryejfkj--asdfryejfkj&*asdfryejfkj--asdfryejfkj()2asdfryejfkj--asdfryejfkj&*asdfryejfkj--asdfryejfkj()2asdfryejfkj--asdfryejfkj&*asdfryejfkj--asdfryejfkj()2asdfryejfkj--asdfryejfkj&*asdfryejfkj--asdfryejfkj()2asdfryejfkj--asdfryejfkj&*asdfryejfkj--asdfryejfkj()2asdfryejfkj--asdfryejfkj&*asdfryejfkj--asdfryejfkj()2asdfryejfkj--asdfryejfkj&*asdfryejfkj--asdfryejfkj"
 
 
-
-
-//try! {
-//    let data = try XONSerialization.encode(value: .data(string.data(using: .utf8)!))
-//    let b = try XONSerialization.decode(data: data)!
-//    assert(try! b.dataValue() == string.data(using: .utf8)!)
-//} ()
-//try! {
-//    let data = try XONSerialization.encode(value: .data(string2.data(using: .utf8)!))
-//    let b = try XONSerialization.decode(data: data)!
-//    assert(try! b.dataValue() == string2.data(using: .utf8)!)
-//} ()
-
-
-
-//▿ 5 : XONValue
-//  - number : -8535150335806580789
-//▿ 6 : XONValue
-//  ▿ timeval : Timeval
-//    - value : 1034584475061637028
-//▿ 7 : XONValue
-//  - number : 5280776537546213781
-//▿ 8 : XONValue
-//  - number : -6901312967598468725
-
-
-
-
-//        try! {
-//            let v: UInt64 = 1 << 51
-//            let d = Double(bitPattern: v)
-//            let d80 = Float80(d)
-//
-//
-//            let numberContent = _XCEncodeNumberFloat64(d)
-//            assert(d80.exponent == numberContent.exponent)
-//        } ()
-//
-//
-//        try! {
-//            let v: UInt64 = 1
-//            let d = Double(bitPattern: v)
-//            let d80 = Float80(d)
-//
-//            let numberContent = _XCEncodeNumberFloat64(d)
-//            assert(d80.exponent == numberContent.exponent)
-//        } ()
-
 func randomSingleValueArray(count: Int) -> [XONValue] {
     var array: [XONValue] = []
     array.reserveCapacity(count)
@@ -666,86 +673,31 @@ func randomSingleValueArray(count: Int) -> [XONValue] {
     return array
 }
 
-//func randomSingleValueMap(count: Int) -> XMap {
-//    var set: Set<XONValue> = []
-//    var array: [(XONValue, XONValue)] = []
-//    array.reserveCapacity(count)
-//    for _ in 0 ..< count {
-//        let key = XONValue.randomSingleValue(jsonSupport: false)
-//        if !set.contains(key) {
-//            set.insert(key)
-//            array.append((key, XONValue.randomSingleValue(jsonSupport: false)))
-//        }
-//    }
-//    return OrderedMap(uniqueKeysWithValues: array)
-//}
-//func randomSingleValueSet(count: Int) -> XSet {
-//    var set: Set<XONValue> = []
-//    var array: [XONValue] = []
-//    array.reserveCapacity(count)
-//    for _ in 0 ..< count {
-//        let key = XONValue.randomSingleValue(jsonSupport: false)
-//        if !set.contains(key) {
-//            set.insert(key)
-//            array.append(key)
-//        }
-//    }
-//    return OrderedSet(uniqueKeys: array)
-//}
-
 func randomSingleValueMessage(count: Int) -> Message<XONValue> {
     var map: [UInt32 : XONValue] = [:]
     for _ in 0 ..< count {
         map[UInt32.random(in: 1 ... UInt32.max)] = XONValue.randomSingleValue(jsonSupport: false)
     }
-    return Message(type: Int64.random(in: 0 ... Int64.max), collection: map)
+    return Message(collection: map)
 }
 
 func testCollection() {
-//    autoreleasepool {
-//        let value: XONValue = .array([XONValue.bool(true), XONValue.bool(false), XONValue.bool(true), XONValue.number(-4935517242844051799), XONValue.number(7254530496614344569), XONValue.time(XONTime(second: -6575567707239634815))])
-//
-//        let data = try! XONSerialization.encode(value)
-//        let b = try! XONSerialization.decode(data)!
-//
-//        assert(b == value)
-//
-//    }
     for _ in 0 ..< 10 {
         autoreleasepool {
             let count: Int = Int.random(in: 0 ... 333)
             let value: XONValue = .array(randomSingleValueArray(count: count))
             let data = try! XONSerialization.encode(value)
             
-            let b = try! XONSerialization.decode(data)!
+            let b = try! XONSerialization.decode(data)
             assert(b == value)
         }
     }
-
-//    for _ in 0 ..< 10 {
-//        autoreleasepool {
-//            let count: Int = Int.random(in: 0 ... 333)
-//            let value: XONValue = .map(randomSingleValueMap(count: count))
-//            let data = try! XONSerialization.encode(value)
-//            let b = try! XONSerialization.decode(data)!
-//            assert(b == value)
-//        }
-//    }
-//    for _ in 0 ..< 10 {
-//        autoreleasepool {
-//            let count: Int = Int.random(in: 0 ... 333)
-//            let value: XONValue = .set(randomSingleValueSet(count: count))
-//            let data = try! XONSerialization.encode(value: value)
-//            let b = try! XONSerialization.decode(data: data)!
-//            assert(b == value)
-//        }
-//    }
-    for i in 0 ..< 10 {
+    for _ in 0 ..< 10 {
         autoreleasepool {
             let count: Int = Int.random(in: 0 ... 333)
             let value: XONValue = .message(randomSingleValueMessage(count: count))
             let data = try! XONSerialization.encode(value)
-            let b = try! XONSerialization.decode(data)!
+            let b = try! XONSerialization.decode(data)
             if b != value {
                 
                 abort()
@@ -756,50 +708,6 @@ func testCollection() {
 
 
 
-
-public class XCBuffer {
-    public var count: Int = 0
-    private var capacity: Int
-    private var _bytes: UnsafeMutableRawPointer
-    
-    public var bytes: UnsafeMutablePointer<UInt8> {
-        return self._bytes.bindMemory(to: UInt8.self, capacity: self.capacity)
-    }
-    
-    public init(minimumCapacity: Int) {
-        let value = XCBuffer.capacityAlign(minimumCapacity)
-        self.capacity = value
-        self._bytes = realloc(nil, value)
-    }
-    
-    public func reserveCapacity(_ minimumCapacity: Int) {
-        guard minimumCapacity >= self.capacity else {
-            return
-        }
-        let value = XCBuffer.capacityAlign(minimumCapacity)
-        guard self.capacity != value else {
-            return
-        }
-        self._bytes = realloc(self._bytes, value)
-        self.capacity = value
-    }
-    deinit {
-        free(self._bytes)
-    }
-    
-    private static func capacityAlign(_ minimumCapacity: Int) -> Int {
-        var value = max(0x1000, minimumCapacity)
-        if value.leadingZeroBitCount + value.trailingZeroBitCount != value.bitWidth - 1 {
-            value = 1 << (value.bitWidth - value.leadingZeroBitCount)
-        }
-        if value >= 0x200000 {
-            value = (value + 0x200000 - 1) / 0x200000 * 0x200000
-        } else {
-            value = (value + 0x1000 - 1) / 0x1000 * 0x1000
-        }
-        return value
-    }
-}
 
 
 func testVarint() {
@@ -922,26 +830,27 @@ public struct Profile : CustomStringConvertible {
 }
 
 public func testCoder(tag: String, objects: [XCTestObject], times: Int) {
+    testCoder(tag: tag, objects: objects, times: times, log: false)
+}
+func testCoder(tag: String, objects: [XCTestObject], times: Int, log: Bool) {
     var time0: CFAbsoluteTime = 0
     var time0a: CFAbsoluteTime = 0
     var time0b: CFAbsoluteTime = 0
     var dataSum0: Int = 0
 
     let range = 0 ..< times
-
-    let values = objects.map { value in
-        return value.xobject
-    }
     
     range.forEach { i in
-        for value in values {
+        for object in objects {
             autoreleasepool {
+                let value = object.xobject
                 let start: CFAbsoluteTime = CFAbsoluteTimeGetCurrent()
                 let data = try! XONSerialization.encode(value)
                 let mtime: CFAbsoluteTime = CFAbsoluteTimeGetCurrent()
-                let decoded = try! XONSerialization.decode(data)!
+                let decoded = try! XONSerialization.decode(data)
                 let end: CFAbsoluteTime = CFAbsoluteTimeGetCurrent()
 
+                object.xlength = data.count
                 time0 += end - start
                 time0a += mtime - start
                 time0b += end - mtime
@@ -960,15 +869,11 @@ public func testCoder(tag: String, objects: [XCTestObject], times: Int) {
 
     var dataSum1: Int = 0
     
-    let jsons = objects.map { value in
-        return value.jsonObject
-    }
     range.forEach { i in
-        for json in jsons {
+        for obj in objects {
             autoreleasepool {
+                let json = obj.jsonObject
                 let start: CFAbsoluteTime = CFAbsoluteTimeGetCurrent()
-                
-                
                 let data = try! JSONSerialization.encode(json)
                 let mtime: CFAbsoluteTime = CFAbsoluteTimeGetCurrent()
                 let object = try! JSONSerialization.decode(data)
@@ -978,12 +883,12 @@ public func testCoder(tag: String, objects: [XCTestObject], times: Int) {
                 time1a += mtime - start
                 time1b += end - mtime
                 dataSum1 += data.count
+                obj.jsonlength = data.count
 
-                if i == 1 {
-                    //  && index == 1
-//                    if let str = String(data: data, encoding: .utf8) {
-//                        print("JSON: \(str)")
-//                    }
+                if i == 1 && log {
+                    if let str = String(data: data, encoding: .utf8) {
+                        print("\n----- xlen: \(obj.xlength) jlen: \(obj.jsonlength) delta:\(obj.jsonlength - obj.xlength) JSON: \n\(str)")
+                    }
                 }
 
                 let results = NSMutableArray()

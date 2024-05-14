@@ -2,11 +2,8 @@
 import Foundation
 
 extension JSONSerialization {
-    public static func decode(_ data: Data) throws -> NSObject? {
-        guard !data.isEmpty else {
-            return nil
-        }
-        return try JSONSerialization.jsonObject(with: data, options: [.allowFragments, .json5Allowed]) as? NSObject
+    public static func decode(_ data: Data) throws -> Any {
+        return try JSONSerialization.jsonObject(with: data, options: [.allowFragments, .json5Allowed])
     }
 
     public static func encode(_ value: Any) throws -> Data {
@@ -15,10 +12,7 @@ extension JSONSerialization {
 }
 
 public struct XONSerialization {
-    public static func decode(_ data: Data) throws -> XONValue? {
-        guard !data.isEmpty else {
-            return nil
-        }
+    public static func decode(_ data: Data) throws -> XONValue {
         let reader = XCReader(data: data as NSData)
         return try reader.readValue()
     }
@@ -154,9 +148,7 @@ public class XCReader {
             let t = try self.readTime(index: index, header: header.value.time)
             return .time(t)
         case .message:
-            let type = header.value.message.type
-            let count = header.value.message.count
-
+            let count = header.value.count
             var prev: UInt32 = 0
             var collection: [UInt32 : XONValue] = [:]
             collection.reserveCapacity(count)
@@ -173,11 +165,11 @@ public class XCReader {
             guard collection.count == count else {
                 throw XON.error(code: XONErrorMessageContent)
             }
-            return .message(Message(type: type, collection: collection))
+            return .message(Message(collection: collection))
         }
     }
     
-    public func readValue() throws -> XONValue? {
+    public func readValue() throws -> XONValue {
         var index = 0
         return try self.readValue(index: &index)
     }
@@ -346,7 +338,7 @@ public class XCWriter {
             }
             
             try self.write({
-                return XCEncodeMessageHeader(self.bytes, self.capacity, &self.count, message.collection.count, message.type)
+                return XCEncodeMessageHeader(self.bytes, self.capacity, &self.count, message.collection.count)
             })
             var elements = message.collection.map { e in
                 return e

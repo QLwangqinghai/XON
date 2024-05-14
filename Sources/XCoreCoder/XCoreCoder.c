@@ -36,7 +36,6 @@ char * _Nonnull const XONErrorDomain = "XON";
 
 #endif
 
-/// 输入一定要是sint64 类型
 static inline uint64_t XCSInt64ZigzagEncode(int64_t value) {
     uint64_t tmp = *((uint64_t *)&value);
     return (tmp << UINT64_C(1)) ^ (0 - (tmp >> UINT64_C(63)));
@@ -45,7 +44,7 @@ static inline int64_t XCSInt64ZigzagDecode(uint64_t data) {
     return (int64_t)((data >> UINT64_C(1)) ^ (0 - (data & UINT64_C(1))));
 }
 
-// length >= 0 && length <= 8
+/// require length >= 0 && length <= 8
 static inline uint64_t __XCDecodeTrimLeadingZeroByteIntFromBuffer(const uint8_t * _Nonnull buffer, ssize_t length) {
     uint64_t v = 0;
     for (ssize_t i=0; i<length; i++) {
@@ -54,7 +53,7 @@ static inline uint64_t __XCDecodeTrimLeadingZeroByteIntFromBuffer(const uint8_t 
     return v;
 }
 
-/// buffer.capacity >= 8
+/// require buffer.capacity >= 8
 static inline ssize_t __XCEncodeTrimLeadingZeroByteIntToBuffer(uint8_t * _Nonnull buffer, uint64_t value) {
     // 63-7=56
     ssize_t used = 0;
@@ -102,7 +101,6 @@ static inline ssize_t __XCEncodeTrimLeadingZeroByteIntToBuffer(uint8_t * _Nonnul
     return used;
 }
 
-// 高位前导0的个数
 static inline ssize_t XCUInt64LeadingZeroBitCount(uint64_t x) {
     if (0 == x) {
         return 64;
@@ -210,7 +208,7 @@ static inline XONError_e __XCDecodeUInt63Varint(const uint8_t * _Nonnull bytes, 
     }
 }
 
-/// buffer.capacity >= 9
+/// require buffer.capacity >= 9
 static inline ssize_t __XCEncodeUInt63VarintToBuffer(uint8_t * _Nonnull buffer, uint64_t value) {
     // 63-7=56
     ssize_t used = 0;
@@ -261,9 +259,8 @@ static inline ssize_t __XCEncodeUInt63VarintToBuffer(uint8_t * _Nonnull buffer, 
     return used;
 }
 
-/// buffer.capacity >= 5
+/// require buffer.capacity >= 5
 static inline ssize_t __XCEncodeUInt31VarintToBuffer(uint8_t * _Nonnull buffer, uint32_t value) {
-    // 63-7=56
     ssize_t used = 0;
     
     uint8_t byte = (uint8_t)((value >> 28) | 0x80);
@@ -624,7 +621,6 @@ static inline XONError_e __XCDecodeSignAndSignificand(const uint8_t * _Nonnull b
 
 static inline XCNumberNormalContent_s __XCEncodeIntNumberInternal(uint64_t sign, uint64_t v) {
     XCNumberNormalContent_s content = {};
-    // 高位->低位 前导0个数
     uint64_t leadingZeroCount = XCUInt64LeadingZeroBitCount(v);
     int64_t e = leadingZeroCount + 1;
     uint64_t m = v << e;
@@ -647,7 +643,7 @@ static inline XCNumberNormalContent_s _XCEncodeNumberFloat64(double f) {
     if (e == 1024) {// nan inf
         abort();
     } else if (e == -1023) {
-        // 非规约数
+        // subnormal numbers
         uint64_t m = (bits & UINT64_C(0xFFFFFFFFFFFFF)) << UINT64_C(12);
         XDebugAssert(0 != m, "");
         uint64_t shift = XCUInt64LeadingZeroBitCount(m) + 1;
@@ -684,7 +680,6 @@ static inline XONError_e __XCDecodeNumberValue(int64_t exponent, uint64_t signAn
     uint64_t m2 = (UINT64_C(1) << 63) | m;
     int64_t trailingZerosCount = XCUInt64TrailingZeroBitCount(m2);
     if (exponent > -1023 && exponent < 1024) {
-//        uint64_t e = exponent + 1023;
         if (trailingZerosCount >= 11) {
             uint64_t e = exponent + 1023;
             uint64_t bits = sign | (e << 52) | (m >> 11);
@@ -751,7 +746,7 @@ static inline XONError_e __XCDecodeNumberValue(int64_t exponent, uint64_t signAn
 }
 
 ssize_t XCHeaderMaxLength(void) {
-    return 16;
+    return 24;
 }
 
 XONError_e XCDecodeHeader(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, XCValueHeader_s * _Nonnull header) {
@@ -787,40 +782,9 @@ XONError_e XCDecodeHeader(const uint8_t * _Nonnull bytes, ssize_t capacity, ssiz
                 return XONErrorLayout;
             }
         }
-        case XONTypeString:
-        case XONTypeData: {
-            uint64_t count = 0;
-            result = __XCDecodeHeaderCount(bytes, capacity, location, layout, &count);
-            if (result != XONErrorNone) {
-                return result;
-            }
-            if (*location > capacity - count) {
-                return XONErrorNotEnough;
-            }
-            header->type = type;
-            header->value.count = count;
-            return XONErrorNone;
-        }
-        case XONTypeArray: {
-            uint64_t count = 0;
-            result = __XCDecodeHeaderCount(bytes, capacity, location, layout, &count);
-            if (result != XONErrorNone) {
-                return result;
-            }
-            if (*location > capacity - count) {
-                return XONErrorNotEnough;
-            }
-            header->type = type;
-            header->value.count = count;
-            return XONErrorNone;
-        }
         case XONTypeNumber: {
             header->type = type;
-            
-            if (layout < XCNumberFormatFloat) {
-                header->value.number.format = layout;
-                header->value.number.length = 0;
-            } else if (layout == XCNumberFormatFloat) {
+            if (layout == 0) {
                 header->value.number.format = XCNumberFormatFloat;
                 uint64_t count = 0;
                 result = __XCDecodeUInt63Varint(bytes, capacity, location, &count);
@@ -834,68 +798,14 @@ XONError_e XCDecodeHeader(const uint8_t * _Nonnull bytes, ssize_t capacity, ssiz
                     return XONErrorCount;
                 }
                 header->value.number.length = (ssize_t)count;
+            } else if (layout <= XCNumberFormatZero) {
+                header->value.number.format = layout;
+                header->value.number.length = 0;
             } else {
                 header->value.number.format = XCNumberFormatFloat;
-                header->value.number.length = layout - XCNumberFormatFloat;
+                header->value.number.length = layout - XCNumberFormatZero;
             }
             return XONErrorNone;
-
-            
-//            switch (layout) {
-//                case XCNumberFormatZero: {
-//                    header->value.number.type = INT64_MIN;
-//                    header->value.number.signAndSignificand = 0;
-//
-//                    header->value.number.type = XCNumberTypeFloat64;
-//                    header->value.number.value.f = __XCDoubleZero();
-//                    return XONErrorNone;
-//                }
-//                case XCNumberFormatNan: {
-//                    header->value.number.exponent = INT64_MIN;
-//                    header->value.number.signAndSignificand = 0;
-//
-//                    header->value.number.type = XCNumberTypeFloat64;
-//                    header->value.number.value.f = __XCDoubleNan();
-//                    return XONErrorNone;
-//                }
-//                case XCNumberFormatPositiveInfinity: {
-//                    header->value.number.type = XCNumberTypeFloat64;
-//                    header->value.number.value.f = __XCDoublePositiveInfinity();
-//                    return XONErrorNone;
-//                }
-//                case XCNumberFormatNegativeInfinity: {
-//                    header->value.number.type = XCNumberTypeFloat64;
-//                    header->value.number.value.f = __XCDoubleNegativeInfinity();
-//                    return XONErrorNone;
-//                }
-//                case XCNumberFormatFloat: {
-//                    // signAndSignificandCount: varint63; e: varint64
-//
-//
-//                    return XONErrorNumberOutOfBounds;
-//                }
-//                default: {
-//                    ssize_t len = layout - XCNumberFormatFloat;
-//                    ssize_t startIndex = *location;
-//                    if (*location > capacity - len) {
-//                        return XONErrorNotEnough;
-//                    }
-//                    uint64_t ev = 0;
-//                    result = __XCDecodeUInt64Varint(bytes, *location + len, location, &ev);
-//                    if (result != XONErrorNone) {
-//                        return result;
-//                    }
-//                    ssize_t usingLength = *location - startIndex;
-//                    int64_t exponent = XCSInt64ZigzagDecode(ev);
-//                    uint64_t signAndSignificand = 0;
-//                    result = __XCDecodeSignAndSignificand(bytes + *location, len - usingLength, &signAndSignificand);
-//                    if (result != XONErrorNone) {
-//                        return result;
-//                    }
-//                    *location += len - usingLength;
-//                     return __XCDecodeNumberValue(exponent, signAndSignificand, &(header->value.number));
-//                }
-//            }
         }
         case XONTypeTime: {
             header->type = type;
@@ -903,26 +813,17 @@ XONError_e XCDecodeHeader(const uint8_t * _Nonnull bytes, ssize_t capacity, ssiz
             uint8_t decimalLength = 0;
             uint8_t decimalExponent = 0;
             if (layout & 0x10) {
-                // hasDecimal
+                // Decimal time
                 length = layout & 0xf;
-                
                 if (*location >= capacity) {
                     return XONErrorNotEnough;
                 }
                 uint8_t byte = bytes[*location];
                 *location += 1;
-                decimalLength = (byte >> 4) + 1;
+                decimalLength = byte >> 4;
                 decimalExponent = byte & 0xf;
-                
-                // 0-17  megasecond
-                
-                // 18
-                // 1_000_000_000_000_000_000
-                // 250*250*250*250*250*250*250*250
-                
-                // 58_000_000
-                
             } else {
+                // Integer time
                 switch (layout) {
                     case XCTimeLayoutInvalid: {
                         header->value.time = __XCTimeInvalidDefault();
@@ -982,83 +883,22 @@ XONError_e XCDecodeHeader(const uint8_t * _Nonnull bytes, ssize_t capacity, ssiz
             header->value.time.attosecond = avalue * scale;
             *location += length + decimalLength;
             return XONErrorNone;
-
-            
-            //            if (layout < 4) {
-            //                header->value.time.format = layout;
-            //                header->value.time.length = 0;
-            //                return XONErrorNone;
-            //            } else if (layout < 7) {
-            //                if (*location >= capacity) {
-            //                    return XONErrorNotEnough;
-            //                }
-            //                uint8_t count = bytes[*location];
-            //                location += 1;
-            //                if (count > 16) {
-            //                    return XONErrorTimeContent;
-            //                }
-            //                if (*location > capacity - count) {
-            //                    return XONErrorNotEnough;
-            //                }
-            //                header->value.time.format = layout;
-            //                header->value.time.length = count;
-            //                return XONErrorNone;
-            //            } else if (layout == 7) {
-            //                if (*location >= capacity) {
-            //                    return XONErrorNotEnough;
-            //                }
-            //                uint8_t byte = bytes[*location];
-            //                location += 1;
-            //                uint8_t unit = (byte >> 5) & 0x7;
-            //                uint8_t count = (byte & 0x1f) + 1;
-            //                if (*location > capacity - count) {
-            //                    return XONErrorNotEnough;
-            //                }
-            //                header->value.time.format = XCTimeFormatNanosecond + unit;
-            //                header->value.time.length = count;
-            //                return XONErrorNone;
-            //            } else if (layout < 16) {
-            //                header->value.time.format = XCTimeFormatSecond;
-            //                header->value.time.length = layout - 7;
-            //                if (*location > capacity - header->value.time.length) {
-            //                    return XONErrorNotEnough;
-            //                }
-            //                return XONErrorNone;
-            //            } else if (layout < 24) {
-            //                header->value.time.format = XCTimeFormatMillisecond;
-            //                header->value.time.length = layout - 15;
-            //                if (*location > capacity - header->value.time.length) {
-            //                    return XONErrorNotEnough;
-            //                }
-            //                return XONErrorNone;
-            //            } else {
-            //                header->value.time.format = XCTimeFormatMicrosecond;
-            //                header->value.time.length = layout - 23;
-            //                if (*location > capacity - header->value.time.length) {
-            //                    return XONErrorNotEnough;
-            //                }
-            //                return XONErrorNone;
-            //            }
-            
         }
             break;
+        case XONTypeString:
+        case XONTypeData:
+        case XONTypeArray:
         case XONTypeMessage: {
             uint64_t count = 0;
             result = __XCDecodeHeaderCount(bytes, capacity, location, layout, &count);
             if (result != XONErrorNone) {
                 return result;
             }
-            
-            uint64_t mtype = 0;
-            result = __XCDecodeUInt63Varint(bytes, capacity, location, &mtype);
-            if (result != XONErrorNone) {
-                return result;
-            }
             if (*location > capacity - count) {
-                return XONErrorCount;
+                return XONErrorNotEnough;
             }
             header->type = type;
-            header->value.message = XCMessageHeaderMake(mtype, count);
+            header->value.count = count;
             return XONErrorNone;
         }
         default: {
@@ -1185,9 +1025,6 @@ XONError_e XCEncodeBool(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _N
     return XONErrorNone;
 }
 
-// - headerLength
-static uint8_t const __XCEncodeNumberLayoutOffset = XCNumberFormatFloat - 1;
-
 static inline XONError_e __XCEncodeNumberByte(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, XCNumberNormalContent_s value) {
     uint8_t buffer[24] = { 0 };
     ssize_t length = 1;
@@ -1197,7 +1034,7 @@ static inline XONError_e __XCEncodeNumberByte(uint8_t * _Nonnull bytes, ssize_t 
     if (*location > capacity - length) {
         return XONErrorNotEnough;
     }
-    uint8_t layout = length + __XCEncodeNumberLayoutOffset;
+    uint8_t layout = length + XCNumberFormatZero - 1;
     if (layout >= 16) {
         return XONErrorLayout;
     }
@@ -1208,29 +1045,6 @@ static inline XONError_e __XCEncodeNumberByte(uint8_t * _Nonnull bytes, ssize_t 
     memcpy(bytes + *location, buffer, length);
     *location += length;
     return XONErrorNone;
-    
-//    if (*location > capacity - length) {
-//        return XONErrorNotEnough;
-//    }
-//    ssize_t headerIndex = *location;
-//    *location += 1;
-//    XONError_e result = __XCEncodeUInt64Varint(bytes, capacity, location, XCSInt64ZigzagEncode(value.exponent));
-//    if (result != XONErrorNone) {
-//        return result;
-//    }
-//    result = XCEncodeSignAndSignificand(bytes, capacity, location, value.signAndSignificand);
-//    if (result != XONErrorNone) {
-//        return result;
-//    }
-//    ssize_t len = *location - headerIndex - 1;
-//    uint8_t layout = len + XCNumberFormatLarge;
-//    if (layout >= 16) {
-//        return XONErrorLayout;
-//    }
-//    uint8_t header = 0;
-//    XCEncodeTypeLayout(&header, XONTypeNumber, layout);
-//    bytes[headerIndex] = header;
-//    return XONErrorNone;
 }
 
 static inline XONError_e __XCEncodeNumberHeader(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, uint8_t layout) {
@@ -1352,9 +1166,6 @@ XONError_e XCEncodeTime(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _N
             XCEncodeTypeLayout(&header, XONTypeTime, 0x10 + slength);
             buffer[0] = header;
             
-            // 18  9 5 3 2 1
-            // 16  7 4 2 1
-
             uint64_t avalue = attosecond;
             uint8_t e = 0;
             if (attosecond % 1000000000000000ULL == 0) {
@@ -1385,7 +1196,7 @@ XONError_e XCEncodeTime(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _N
             if (*location > capacity - length) {
                 return XONErrorNotEnough;
             }
-            buffer[1] = ((alength - 1) << 4) | e;
+            buffer[1] = (alength << 4) | e;
             memcpy(bytes + *location, buffer, length);
             *location += length;
             return XONErrorNone;
@@ -1393,67 +1204,9 @@ XONError_e XCEncodeTime(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _N
     }
 }
 
-//XONError_e XCEncodeTimeSecond(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, int64_t value) {
-//    if (0 == value) {
-//        return __XCEncodeTimeZero(bytes, capacity, location);
-//    }
-//    uint8_t buffer[16] = { 0 };
-//    uint8_t header = 0;
-//    uint64_t encodedBytes = XCSInt64ZigzagEncode(value);
-//    ssize_t length = 1;
-//    length += __XCEncodeTrimLeadingZeroByteIntToBuffer(buffer + length, encodedBytes);
-//    if (*location > capacity - length) {
-//        return XONErrorNotEnough;
-//    }
-//    XCEncodeTypeLayout(&header, XONTypeTime, 7 + length);
-//    buffer[0] = header;
-//    memcpy(bytes + *location, buffer, length);
-//    *location += length;
-//    return XONErrorNone;
-//}
-//XONError_e XCEncodeTimeMillisecond(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, int64_t value) {
-//    if (0 == value) {
-//        return __XCEncodeTimeZero(bytes, capacity, location);
-//    }
-//    uint8_t buffer[16] = { 0 };
-//    uint8_t header = 0;
-//    uint64_t encodedBytes = XCSInt64ZigzagEncode(value);
-//    ssize_t length = 1;
-//    length += __XCEncodeTrimLeadingZeroByteIntToBuffer(buffer + length, encodedBytes);
-//    if (*location > capacity - length) {
-//        return XONErrorNotEnough;
-//    }
-//    XCEncodeTypeLayout(&header, XONTypeTime, 15 + length);
-//    buffer[0] = header;
-//    memcpy(bytes + *location, buffer, length);
-//    *location += length;
-//    return XONErrorNone;
-//}
-//XONError_e XCEncodeTimeMicrosecond(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, int64_t value) {
-//    if (0 == value) {
-//        return __XCEncodeTimeZero(bytes, capacity, location);
-//    }
-//    uint8_t buffer[16] = { 0 };
-//    uint8_t header = 0;
-//    uint64_t encodedBytes = XCSInt64ZigzagEncode(value);
-//    ssize_t length = 1;
-//    length += __XCEncodeTrimLeadingZeroByteIntToBuffer(buffer + length, encodedBytes);
-//    if (*location > capacity - length) {
-//        return XONErrorNotEnough;
-//    }
-//    XCEncodeTypeLayout(&header, XONTypeTime, 23 + length);
-//    buffer[0] = header;
-//    memcpy(bytes + *location, buffer, length);
-//    *location += length;
-//    return XONErrorNone;
-//}
-
-XONError_e XCEncodeMessageHeader(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, ssize_t count, int64_t type) {
+XONError_e XCEncodeMessageHeader(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, ssize_t count) {
     if (count < 0) {
         return XONErrorCount;
-    }
-    if (type < 0) {
-        return XONErrorMessageContent;
     }
     uint8_t buffer[24] = { 0 };
     ssize_t length = 1;
@@ -1463,13 +1216,11 @@ XONError_e XCEncodeMessageHeader(uint8_t * _Nonnull bytes, ssize_t capacity, ssi
         buffer[0] = header;
         uint64_t varint = count - 31;
         length += __XCEncodeUInt63VarintToBuffer(buffer + length, varint);
-        length += __XCEncodeUInt63VarintToBuffer(buffer + length, type);
     } else {
         uint8_t layout = (uint8_t)count;
         uint8_t header = 0;
         XCEncodeTypeLayout(&header, XONTypeMessage, layout);
         buffer[0] = header;
-        length += __XCEncodeUInt63VarintToBuffer(buffer + length, type);
     }
     
     if (*location > capacity - length) {
