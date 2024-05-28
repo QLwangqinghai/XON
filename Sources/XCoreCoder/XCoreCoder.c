@@ -5,6 +5,12 @@
 #include <strings.h>
 #include <limits.h>
 
+#ifndef MIN
+#define MIN(a, b) (((a)<(b))?(a):(b))
+#endif /* MIN */
+#ifndef MAX
+#define MAX(a, b) (((a)>(b))?(a):(b))
+#endif  /* MAX */
 
 char * _Nonnull const XONErrorDomain = "XON";
 
@@ -170,11 +176,6 @@ static inline void XCDecodeTypeLayout(uint8_t byte, uint8_t * _Nonnull type, uin
     *type = (XONType_e)(byte >> 5);
 }
 
-static inline void XCEncodeTypeLayout(uint8_t * _Nonnull byte, uint8_t type, uint8_t layout) {
-    uint8_t v = (type << 5) | (layout & 0x1f);
-    *byte = v;
-}
-
 static inline XONError_e __XCDecodeUInt63Varint(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, uint64_t * _Nonnull value) {
     ssize_t used = 0;
     uint64_t tmp = 0;
@@ -206,6 +207,44 @@ static inline XONError_e __XCDecodeUInt63Varint(const uint8_t * _Nonnull bytes, 
         *location += 1;
         return XONErrorNone;
     }
+}
+static inline ssize_t __XCEncodeUInt63VarintLength(uint64_t value) {
+    uint64_t x = (value >> 7) << 8;
+    
+    if (0 == x) {
+        return 1;
+    } else {
+        ssize_t length = 9;
+        if (0 == (x & UINT64_C(0xFFFFFFF000000000))) {
+            x <<= 28;
+            length -= 4;
+        }
+        if (0 == (x & UINT64_C(0xFFFC000000000000))) {
+            x <<= 14;
+            length -= 2;
+        }
+        if (0 == (x & UINT64_C(0xFE00000000000000))) {
+            x <<= 7;
+            length -= 1;
+        }
+        return length;
+    }
+}
+
+static inline XONError_e __XCEncodeUInt63Varint(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, uint64_t value) {
+    ssize_t length = __XCEncodeUInt63VarintLength(value);
+    if (*location + length > capacity) {
+        return XONErrorNotEnough;
+    }
+    uint8_t * buffer = bytes + *location;
+    *location += length;
+    while (length > 1) {
+        length -= 1;
+        *buffer = (uint8_t)((value >> (7 * length)) | 0x80);
+        buffer += 1;
+    }
+    *buffer = (uint8_t)(value & 0x7f);
+    return XONErrorNone;
 }
 
 /// require buffer.capacity >= 9
@@ -260,7 +299,7 @@ static inline ssize_t __XCEncodeUInt63VarintToBuffer(uint8_t * _Nonnull buffer, 
 }
 
 /// require buffer.capacity >= 5
-static inline ssize_t __XCEncodeUInt31VarintToBuffer(uint8_t * _Nonnull buffer, uint32_t value) {
+static inline ssize_t __XCEncodeUInt32VarintToBuffer(uint8_t * _Nonnull buffer, uint32_t value) {
     ssize_t used = 0;
     
     uint8_t byte = (uint8_t)((value >> 28) | 0x80);
@@ -291,61 +330,61 @@ static inline ssize_t __XCEncodeUInt31VarintToBuffer(uint8_t * _Nonnull buffer, 
 
 
 
-static inline XONError_e __XCEncodeUInt63Varint(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, uint64_t value) {
-    XDebugAssert(bytes, "");
-    
-    uint8_t buffer[8] = { 0 };
-    // 63-7=56
-    ssize_t used = 0;
-    
-    uint8_t byte = (uint8_t)((value >> 56) | 0x80);
-    if (used > 0 || 0x80 != byte) {
-        buffer[used] = byte;
-        used += 1;
-    }
-    byte = (uint8_t)((value >> 49) | 0x80);
-    if (used > 0 || 0x80 != byte) {
-        buffer[used] = byte;
-        used += 1;
-    }
-    byte = (uint8_t)((value >> 42) | 0x80);
-    if (used > 0 || 0x80 != byte) {
-        buffer[used] = byte;
-        used += 1;
-    }
-    byte = (uint8_t)((value >> 35) | 0x80);
-    if (used > 0 || 0x80 != byte) {
-        buffer[used] = byte;
-        used += 1;
-    }
-    byte = (uint8_t)((value >> 28) | 0x80);
-    if (used > 0 || 0x80 != byte) {
-        buffer[used] = byte;
-        used += 1;
-    }
-    byte = (uint8_t)((value >> 21) | 0x80);
-    if (used > 0 || 0x80 != byte) {
-        buffer[used] = byte;
-        used += 1;
-    }
-    byte = (uint8_t)((value >> 14) | 0x80);
-    if (used > 0 || 0x80 != byte) {
-        buffer[used] = byte;
-        used += 1;
-    }
-    byte = (uint8_t)((value >> 7) | 0x80);
-    if (used > 0 || 0x80 != byte) {
-        buffer[used] = byte;
-        used += 1;
-    }
-    if (*location >= capacity - used - 1) {
-        return XONErrorNotEnough;
-    }
-    memcpy(bytes + *location, buffer, used);
-    bytes[*location + used] = (uint8_t)(value & 0x7f);
-    *location += used + 1;
-    return XONErrorNone;
-}
+//static inline XONError_e __XCEncodeUInt63Varint(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, uint64_t value) {
+//    XDebugAssert(bytes, "");
+//
+//    uint8_t buffer[8] = { 0 };
+//    // 63-7=56
+//    ssize_t used = 0;
+//
+//    uint8_t byte = (uint8_t)((value >> 56) | 0x80);
+//    if (used > 0 || 0x80 != byte) {
+//        buffer[used] = byte;
+//        used += 1;
+//    }
+//    byte = (uint8_t)((value >> 49) | 0x80);
+//    if (used > 0 || 0x80 != byte) {
+//        buffer[used] = byte;
+//        used += 1;
+//    }
+//    byte = (uint8_t)((value >> 42) | 0x80);
+//    if (used > 0 || 0x80 != byte) {
+//        buffer[used] = byte;
+//        used += 1;
+//    }
+//    byte = (uint8_t)((value >> 35) | 0x80);
+//    if (used > 0 || 0x80 != byte) {
+//        buffer[used] = byte;
+//        used += 1;
+//    }
+//    byte = (uint8_t)((value >> 28) | 0x80);
+//    if (used > 0 || 0x80 != byte) {
+//        buffer[used] = byte;
+//        used += 1;
+//    }
+//    byte = (uint8_t)((value >> 21) | 0x80);
+//    if (used > 0 || 0x80 != byte) {
+//        buffer[used] = byte;
+//        used += 1;
+//    }
+//    byte = (uint8_t)((value >> 14) | 0x80);
+//    if (used > 0 || 0x80 != byte) {
+//        buffer[used] = byte;
+//        used += 1;
+//    }
+//    byte = (uint8_t)((value >> 7) | 0x80);
+//    if (used > 0 || 0x80 != byte) {
+//        buffer[used] = byte;
+//        used += 1;
+//    }
+//    if (*location >= capacity - used - 1) {
+//        return XONErrorNotEnough;
+//    }
+//    memcpy(bytes + *location, buffer, used);
+//    bytes[*location + used] = (uint8_t)(value & 0x7f);
+//    *location += used + 1;
+//    return XONErrorNone;
+//}
 
 XONError_e __XCEncodeUInt64Varint_old(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, uint64_t value) {
     XDebugAssert(bytes, "");
@@ -542,37 +581,6 @@ static inline XONError_e __XCDecodeUInt64Varint(const uint8_t * _Nonnull bytes, 
     }
 }
 
-static inline XONError_e __XCEncodeHeaderCount(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, XONType_e type, ssize_t count) {
-    if (count < 0) {
-        return XONErrorCount;
-    }
-    if (count >= 31) {
-        uint8_t header = 0;
-        XCEncodeTypeLayout(&header, type, 31);
-        
-        uint8_t buffer[16] = { 0 };
-        buffer[0] = header;
-        uint64_t varint = count - 31;
-        ssize_t length = 1 + __XCEncodeUInt63VarintToBuffer(buffer + 1, varint);
-        
-        if (*location > capacity - length) {
-            return XONErrorNotEnough;
-        }
-        memcpy(bytes + *location, buffer, length);
-        *location += length;
-        return XONErrorNone;
-    } else {
-        if (*location > capacity - 1) {
-            return XONErrorNotEnough;
-        }
-        uint8_t layout = (uint8_t)count;
-        uint8_t header = 0;
-        XCEncodeTypeLayout(&header, type, layout);
-        bytes[*location] = header;
-        *location += 1;
-        return XONErrorNone;
-    }
-}
 
 static inline XONError_e __XCDecodeHeaderCount(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, uint8_t layout, uint64_t * _Nonnull value) {
     uint64_t count = 0;
@@ -707,7 +715,7 @@ static inline XONError_e __XCDecodeNumberValue(int64_t exponent, uint64_t signAn
                     } else {
                         number->type = XCNumberTypeNone;
                         number->value.u = 0;
-                        return XONErrorNumberOutOfBounds;
+                        return XONErrorNumberOutOfRange;
                     }
                 } else {
                     if (value < sint64Min) {
@@ -723,13 +731,13 @@ static inline XONError_e __XCDecodeNumberValue(int64_t exponent, uint64_t signAn
             } else {
                 number->type = XCNumberTypeNone;
                 number->value.u = 0;
-                return XONErrorNumberOutOfBounds;
+                return XONErrorNumberOutOfRange;
             }
         }
     } else if (exponent >= 1024) {
         number->type = XCNumberTypeNone;
         number->value.u = 0;
-        return XONErrorNumberOutOfBounds;
+        return XONErrorNumberOutOfRange;
     } else { // number.e <= -1023
         int64_t shift = -1022 - exponent + 11;
         if (trailingZerosCount >= shift) {
@@ -740,7 +748,7 @@ static inline XONError_e __XCDecodeNumberValue(int64_t exponent, uint64_t signAn
         } else {
             number->type = XCNumberTypeNone;
             number->value.u = 0;
-            return XONErrorNumberOutOfBounds;
+            return XONErrorNumberOutOfRange;
         }
     }
 }
@@ -825,20 +833,20 @@ XONError_e XCDecodeHeader(const uint8_t * _Nonnull bytes, ssize_t capacity, ssiz
             } else {
                 // Integer time
                 switch (layout) {
-                    case XCTimeLayoutInvalid: {
-                        header->value.time = __XCTimeInvalidDefault();
+                    case XTimestampLayoutInvalid: {
+                        header->value.time = XTimestampInvalidDefault();
                     }
                         return XONErrorNone;
-                    case XCTimeLayoutDistantPast: {
-                        header->value.time = __XCTimeDistantPast();
+                    case XTimestampLayoutDistantPast: {
+                        header->value.time = XTimestampDistantPast();
                     }
                         return XONErrorNone;
-                    case XCTimeLayoutDistantFuture: {
-                        header->value.time = __XCTimeDistantFuture();
+                    case XTimestampLayoutDistantFuture: {
+                        header->value.time = XTimestampDistantFuture();
                     }
                         return XONErrorNone;
                     default: {
-                        length = layout - XCTimeLayoutZero;
+                        length = layout - XTimestampLayoutZero;
                     }
                         break;
                 }
@@ -876,7 +884,7 @@ XONError_e XCDecodeHeader(const uint8_t * _Nonnull bytes, ssize_t capacity, ssiz
             if (avalue != 0 && decimalExponent != 15 && (avalue % 10 == 0)) {
                 return XONErrorTimeContent;
             }
-            if (avalue >= XCAttosecondPerSecond / scale) {
+            if (avalue >= XATTOSECOND_PER_SECOND / scale) {
                 return XONErrorTimeContent;
             }
             header->value.time.second = XCSInt64ZigzagDecode(svalue);
@@ -958,19 +966,6 @@ XONError_e XCDecodeNumber64(const uint8_t * _Nonnull bytes, ssize_t capacity, ss
     }
 }
 
-XONError_e XCDecodeTime64(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, ssize_t count, int64_t * _Nonnull v) {
-    if (count <= 0 || count > 8) {
-        return XONErrorTimeContent;
-    }
-    if (*location > capacity - count) {
-        return XONErrorNotEnough;
-    }
-    
-    uint64_t encodedValue = __XCDecodeTrimLeadingZeroByteIntFromBuffer(bytes + *location, count);
-    *v = XCSInt64ZigzagDecode(encodedValue);
-    return XONErrorNone;
-}
-
 XONError_e XCDecodeFieldKeyOffset(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, uint32_t * _Nonnull offset) {
     XAssert(bytes, "");
     XAssert(location, "");
@@ -988,184 +983,176 @@ XONError_e XCDecodeFieldKeyOffset(const uint8_t * _Nonnull bytes, ssize_t capaci
     return XONErrorNone;
 }
 
-XONError_e XCEncodeFieldKeyOffset(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, uint32_t offset) {
+#pragma mark - encode
+
+
+static inline void XCEncodeTypeLayout(uint8_t * _Nonnull byte, uint8_t type, uint8_t layout) {
+    uint8_t v = (type << 5) | (layout & 0x1f);
+    *byte = v;
+}
+static inline uint8_t XCNullByte(void) {
+    uint8_t header = 0;
+    XCEncodeTypeLayout(&header, XONTypeNil, 0);
+    return header;
+}
+static inline uint8_t XCBoolByte(_Bool value) {
+    uint8_t header = 0;
+    XCEncodeTypeLayout(&header, XONTypeNil, value ? 1 : 2);
+    return header;
+}
+
+static inline void XCEncodeBufferExpandCapacity(XCEncodeBuffer_s * _Nonnull buffer, ssize_t size) {
+    if (buffer->capacity < size) {
+        XCEncodeBufferReserveCapacity(buffer, size);
+    }
+}
+
+XONError_e XCEncodeFieldKeyOffset(XCEncodeBuffer_s * _Nonnull buffer, uint32_t offset) {
     if (offset <= 0) {
         return XONErrorMessageIndexOffset;
     }
-    uint8_t buffer[24] = { 0 };
+    XCEncodeBufferExpandCapacity(buffer, buffer->location + 5);
     uint32_t value = offset - 1;
-    ssize_t length = __XCEncodeUInt31VarintToBuffer(buffer, value);
-    if (*location > capacity - length) {
-        return XONErrorNotEnough;
-    }
-    memcpy(bytes + *location, buffer, length);
-    *location += length;
+    ssize_t length = __XCEncodeUInt32VarintToBuffer(buffer->bytes + buffer->location, value);
+    buffer->location += length;
     return XONErrorNone;
 }
 
-XONError_e XCencodeNull(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location) {
-    if (*location + 1 > capacity) {
-        return XONErrorNotEnough;
-    }
-    uint8_t header = 0;
-    XCEncodeTypeLayout(&header, XONTypeNil, 0);
-    bytes[*location] = header;
-    *location += 1;
+XONError_e XCEncodeNull(XCEncodeBuffer_s * _Nonnull buffer) {
+    XCEncodeBufferExpandCapacity(buffer, buffer->location + 1);
+    buffer->bytes[buffer->location] = XCNullByte();
+    buffer->location += 1;
     return XONErrorNone;
 }
 
-XONError_e XCEncodeBool(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, _Bool value) {
-    if (*location + 1 > capacity) {
-        return XONErrorNotEnough;
-    }
-    uint8_t header = 0;
-    XCEncodeTypeLayout(&header, XONTypeNil, value ? 1 : 2);
-    bytes[*location] = header;
-    *location += 1;
+XONError_e XCEncodeBool(XCEncodeBuffer_s * _Nonnull buffer, _Bool value) {
+    XCEncodeBufferExpandCapacity(buffer, buffer->location + 1);
+    buffer->bytes[buffer->location] = XCBoolByte(value);
+    buffer->location += 1;
     return XONErrorNone;
 }
 
-static inline XONError_e __XCEncodeNumberByte(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, XCNumberNormalContent_s value) {
-    uint8_t buffer[24] = { 0 };
+static inline XONError_e __XCEncodeNumberByte(XCEncodeBuffer_s * _Nonnull buffer, XCNumberNormalContent_s value) {
+    XCEncodeBufferExpandCapacity(buffer, buffer->location + 20);
     ssize_t length = 1;
-    length += __XCEncodeUInt64VarintToBuffer(buffer + length, XCSInt64ZigzagEncode(value.exponent));
-    length += __XCEncodeSignAndSignificandToBuffer(buffer + length, value.signAndSignificand);
-    
-    if (*location > capacity - length) {
-        return XONErrorNotEnough;
-    }
+    length += __XCEncodeUInt64VarintToBuffer(buffer->bytes + buffer->location + length, XCSInt64ZigzagEncode(value.exponent));
+    length += __XCEncodeSignAndSignificandToBuffer(buffer->bytes + buffer->location + length, value.signAndSignificand);
     uint8_t layout = length + XCNumberFormatZero - 1;
     if (layout >= 16) {
         return XONErrorLayout;
     }
     uint8_t header = 0;
     XCEncodeTypeLayout(&header, XONTypeNumber, layout);
-    buffer[0] = header;
-    
-    memcpy(bytes + *location, buffer, length);
-    *location += length;
+    buffer->bytes[buffer->location] = header;
+    buffer->location += length;
     return XONErrorNone;
 }
 
-static inline XONError_e __XCEncodeNumberHeader(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, uint8_t layout) {
-    if (*location + 1 > capacity) {
-        return XONErrorNotEnough;
-    }
+static inline XONError_e __XCEncodeNumberHeader(XCEncodeBuffer_s * _Nonnull buffer, uint8_t layout) {
+    XCEncodeBufferExpandCapacity(buffer, buffer->location + 1);
     uint8_t header = 0;
     XCEncodeTypeLayout(&header, XONTypeNumber, layout);
-    bytes[*location] = header;
-    *location += 1;
+    buffer->bytes[buffer->location] = header;
+    buffer->location += 1;
     return XONErrorNone;
 }
-XONError_e XCEncodeNumberUInt64(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, uint64_t value) {
+XONError_e XCEncodeNumberUInt64(XCEncodeBuffer_s * _Nonnull buffer, uint64_t value) {
     if (0 == value) {
-        return __XCEncodeNumberHeader(bytes, capacity, location, XCNumberFormatZero);
+        return __XCEncodeNumberHeader(buffer, XCNumberFormatZero);
     } else {
         XCNumberNormalContent_s data = _XCEncodeNumberUInt64(value);
-        return __XCEncodeNumberByte(bytes, capacity, location, data);
+        return __XCEncodeNumberByte(buffer, data);
     }
 }
-XONError_e XCEncodeNumberSInt64(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, int64_t value) {
+XONError_e XCEncodeNumberSInt64(XCEncodeBuffer_s * _Nonnull buffer, int64_t value) {
     if (0 == value) {
-        return __XCEncodeNumberHeader(bytes, capacity, location, XCNumberFormatZero);
+        return __XCEncodeNumberHeader(buffer, XCNumberFormatZero);
     } else {
         XCNumberNormalContent_s data = _XCEncodeNumberSInt64(value);
-        return __XCEncodeNumberByte(bytes, capacity, location, data);
+        return __XCEncodeNumberByte(buffer, data);
     }
 }
-XONError_e XCEncodeNumberDouble(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, double value) {
+XONError_e XCEncodeNumberDouble(XCEncodeBuffer_s * _Nonnull buffer, double value) {
     if (value == __XCDoubleZero()) {
-        return __XCEncodeNumberHeader(bytes, capacity, location, XCNumberFormatZero);
+        return __XCEncodeNumberHeader(buffer, XCNumberFormatZero);
     } else if (isnan(value)) {
-        return __XCEncodeNumberHeader(bytes, capacity, location, XCNumberFormatNan);
+        return __XCEncodeNumberHeader(buffer, XCNumberFormatNan);
     } else if (isinf(value)) {
         if (value < 0) {
-            return __XCEncodeNumberHeader(bytes, capacity, location, XCNumberFormatNegativeInfinity);
+            return __XCEncodeNumberHeader(buffer, XCNumberFormatNegativeInfinity);
         } else {
-            return __XCEncodeNumberHeader(bytes, capacity, location, XCNumberFormatPositiveInfinity);
+            return __XCEncodeNumberHeader(buffer, XCNumberFormatPositiveInfinity);
         }
     } else {
         XCNumberNormalContent_s data = _XCEncodeNumberFloat64(value);
-        return __XCEncodeNumberByte(bytes, capacity, location, data);
+        return __XCEncodeNumberByte(buffer, data);
     }
 }
 
-XONError_e XCEncodeTimeInvalid(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location) {
-    if (*location + 1 > capacity) {
-        return XONErrorNotEnough;
-    }
+XONError_e XCEncodeTimeInvalid(XCEncodeBuffer_s * _Nonnull buffer) {
+    XCEncodeBufferExpandCapacity(buffer, buffer->location + 1);
     uint8_t header = 0;
-    XCEncodeTypeLayout(&header, XONTypeTime, XCTimeLayoutInvalid);
-    bytes[*location] = header;
-    *location += 1;
+    XCEncodeTypeLayout(&header, XONTypeTime, XTimestampLayoutInvalid);
+    buffer->bytes[buffer->location] = header;
+    buffer->location += 1;
     return XONErrorNone;
 }
-XONError_e XCEncodeTimeDistantPast(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location) {
-    if (*location + 1 > capacity) {
-        return XONErrorNotEnough;
-    }
+XONError_e XCEncodeTimeDistantPast(XCEncodeBuffer_s * _Nonnull buffer) {
+    XCEncodeBufferExpandCapacity(buffer, buffer->location + 1);
     uint8_t header = 0;
-    XCEncodeTypeLayout(&header, XONTypeTime, XCTimeLayoutDistantPast);
-    bytes[*location] = header;
-    *location += 1;
+    XCEncodeTypeLayout(&header, XONTypeTime, XTimestampLayoutDistantPast);
+    buffer->bytes[buffer->location] = header;
+    buffer->location += 1;
     return XONErrorNone;
 }
-XONError_e XCEncodeTimeDistantFuture(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location) {
-    if (*location + 1 > capacity) {
-        return XONErrorNotEnough;
-    }
+XONError_e XCEncodeTimeDistantFuture(XCEncodeBuffer_s * _Nonnull buffer) {
+    XCEncodeBufferExpandCapacity(buffer, buffer->location + 1);
     uint8_t header = 0;
-    XCEncodeTypeLayout(&header, XONTypeTime, XCTimeLayoutDistantFuture);
-    bytes[*location] = header;
-    *location += 1;
+    XCEncodeTypeLayout(&header, XONTypeTime, XTimestampLayoutDistantFuture);
+    buffer->bytes[buffer->location] = header;
+    buffer->location += 1;
     return XONErrorNone;
 }
-XONError_e __XCEncodeTimeZero(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location) {
-    if (*location + 1 > capacity) {
-        return XONErrorNotEnough;
-    }
+XONError_e __XCEncodeTimeZero(XCEncodeBuffer_s * _Nonnull buffer) {
+    XCEncodeBufferExpandCapacity(buffer, buffer->location + 1);
     uint8_t header = 0;
-    XCEncodeTypeLayout(&header, XONTypeTime, XCTimeLayoutZero);
-    bytes[*location] = header;
-    *location += 1;
+    XCEncodeTypeLayout(&header, XONTypeTime, XTimestampLayoutZero);
+    buffer->bytes[buffer->location] = header;
+    buffer->location += 1;
     return XONErrorNone;
 }
 
-XONError_e XCEncodeTime(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, int64_t second, uint64_t attosecond) {
-    uint8_t buffer[24] = { 0 };
-    if (attosecond >= XCAttosecondPerSecond) {
-        if (attosecond == UINT64_MAX && (second == INT64_MAX || second == INT64_MIN)) {
+XONError_e XCEncodeTime(XCEncodeBuffer_s * _Nonnull buffer, int64_t second, uint64_t attosecond) {
+    if (attosecond >= XATTOSECOND_PER_SECOND) {
+        if (attosecond == UINT64_MAX) {
             if (second == INT64_MIN) {
-                return XCEncodeTimeDistantPast(bytes, capacity, location);
+                return XCEncodeTimeDistantPast(buffer);
             } else if (second == INT64_MAX) {
-                return XCEncodeTimeDistantFuture(bytes, capacity, location);
+                return XCEncodeTimeDistantFuture(buffer);
             } else {
-                return XCEncodeTimeInvalid(bytes, capacity, location);
+                return XCEncodeTimeInvalid(buffer);
             }
         } else {
-            return XCEncodeTimeInvalid(bytes, capacity, location);
+            return XCEncodeTimeInvalid(buffer);
         }
     } else {
         if (0 == attosecond) {
+            XCEncodeBufferExpandCapacity(buffer, buffer->location + 9);
             uint8_t header = 0;
             uint64_t encodedBytes = XCSInt64ZigzagEncode(second);
-            ssize_t slength = __XCEncodeTrimLeadingZeroByteIntToBuffer(buffer + 1, encodedBytes);
-            if (*location > capacity - slength - 1) {
-                return XONErrorNotEnough;
-            }
-            XCEncodeTypeLayout(&header, XONTypeTime, XCTimeLayoutZero + slength);
-            buffer[0] = header;
-            ssize_t length = 1 + slength;
-            memcpy(bytes + *location, buffer, length);
-            *location += length;
+            ssize_t slength = __XCEncodeTrimLeadingZeroByteIntToBuffer(buffer->bytes + buffer->location + 1, encodedBytes);
+            XCEncodeTypeLayout(&header, XONTypeTime, XTimestampLayoutZero + slength);
+            buffer->bytes[buffer->location] = header;
+            buffer->location += 1 + slength;
             return XONErrorNone;
         } else {
+            XCEncodeBufferExpandCapacity(buffer, buffer->location + 20);
             uint8_t header = 0;
             uint64_t encodedBytes = XCSInt64ZigzagEncode(second);
-            ssize_t slength = __XCEncodeTrimLeadingZeroByteIntToBuffer(buffer + 2, encodedBytes);
+            ssize_t slength = __XCEncodeTrimLeadingZeroByteIntToBuffer(buffer->bytes + buffer->location + 2, encodedBytes);
             XCEncodeTypeLayout(&header, XONTypeTime, 0x10 + slength);
-            buffer[0] = header;
-            
+            buffer->bytes[buffer->location] = header;
+
             uint64_t avalue = attosecond;
             uint8_t e = 0;
             if (attosecond % 1000000000000000ULL == 0) {
@@ -1190,68 +1177,174 @@ XONError_e XCEncodeTime(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _N
                 }
             }
 
-            ssize_t alength = __XCEncodeTrimLeadingZeroByteIntToBuffer(buffer + 2 + slength, avalue);
+            ssize_t alength = __XCEncodeTrimLeadingZeroByteIntToBuffer(buffer->bytes + buffer->location + 2 + slength, avalue);
             // 4
             ssize_t length = 2 + slength + alength;
-            if (*location > capacity - length) {
-                return XONErrorNotEnough;
-            }
-            buffer[1] = (alength << 4) | e;
-            memcpy(bytes + *location, buffer, length);
-            *location += length;
+            buffer->bytes[buffer->location + 1] =(alength << 4) | e;
+            buffer->location += length;
             return XONErrorNone;
         }
     }
 }
 
-XONError_e XCEncodeMessageHeader(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, ssize_t count) {
+
+static inline XONError_e __XCEncodeHeaderCount(XCEncodeBuffer_s * _Nonnull buffer, XONType_e type, ssize_t count) {
     if (count < 0) {
         return XONErrorCount;
     }
-    uint8_t buffer[24] = { 0 };
-    ssize_t length = 1;
     if (count >= 31) {
+        XCEncodeBufferExpandCapacity(buffer, buffer->location + 10 + count);
         uint8_t header = 0;
-        XCEncodeTypeLayout(&header, XONTypeMessage, 31);
-        buffer[0] = header;
+        XCEncodeTypeLayout(&header, type, 31);
+        buffer->bytes[buffer->location] = header;
         uint64_t varint = count - 31;
-        length += __XCEncodeUInt63VarintToBuffer(buffer + length, varint);
+        ssize_t length = 1 + __XCEncodeUInt63VarintToBuffer(buffer->bytes + buffer->location + 1, varint);
+        buffer->location += length;
+        return XONErrorNone;
     } else {
+        XCEncodeBufferExpandCapacity(buffer, buffer->location + 1 + count);
         uint8_t layout = (uint8_t)count;
         uint8_t header = 0;
-        XCEncodeTypeLayout(&header, XONTypeMessage, layout);
-        buffer[0] = header;
+        XCEncodeTypeLayout(&header, type, layout);
+        buffer->bytes[buffer->location] = header;
+        buffer->location += 1;
+        return XONErrorNone;
     }
-    
-    if (*location > capacity - length) {
-        return XONErrorNotEnough;
-    }
-    memcpy(bytes + *location, buffer, length);
-    *location += length;
-    return XONErrorNone;
 }
 
-XONError_e XCEncodeArrayHeader(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, ssize_t count) {
-    return __XCEncodeHeaderCount(bytes, capacity, location, XONTypeArray, count);
+XONError_e XCEncodeMessageHeader(XCEncodeBuffer_s * _Nonnull buffer, ssize_t count) {
+    return __XCEncodeHeaderCount(buffer, XONTypeMessage, count);
 }
 
-XONError_e XCEncodeDataHeader(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, ssize_t count) {
-    return __XCEncodeHeaderCount(bytes, capacity, location, XONTypeData, count);
+XONError_e XCEncodeArrayHeader(XCEncodeBuffer_s * _Nonnull buffer, ssize_t count) {
+    return __XCEncodeHeaderCount(buffer, XONTypeArray, count);
 }
 
-XONError_e XCEncodeStringHeader(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, ssize_t count) {
-    return __XCEncodeHeaderCount(bytes, capacity, location, XONTypeString, count);
+XONError_e XCEncodeDataHeader(XCEncodeBuffer_s * _Nonnull buffer, ssize_t count) {
+    return __XCEncodeHeaderCount(buffer, XONTypeData, count);
 }
 
-XONError_e XCEncodeBody(uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, const void * _Nonnull data, ssize_t count) {
+XONError_e XCEncodeStringHeader(XCEncodeBuffer_s * _Nonnull buffer, ssize_t count) {
+    return __XCEncodeHeaderCount(buffer, XONTypeString, count);
+}
+
+XONError_e XCEncodeBody(XCEncodeBuffer_s * _Nonnull buffer, const void * _Nonnull data, ssize_t count) {
     if (count < 0) {
         return XONErrorCount;
     }
-    if (*location + count > capacity) {
-        return XONErrorNotEnough;
-    }
-    memcpy(bytes + *location, data, count);
-    *location += count;
+    XCEncodeBufferExpandCapacity(buffer, buffer->location + count);
+    memcpy(buffer->bytes + buffer->location, data, count);
+    buffer->location += count;
     return XONErrorNone;
 }
 
+#pragma mark - XCEncodeBuffer
+
+static inline uint32_t clz32(uint32_t x) {
+    if (0 == x) {
+        return 32;
+    }
+    uint32_t r = 0;
+    if (0 == (x & UINT32_C(0xFFFF0000))) {
+        x <<= 16;
+        r += 16;
+    }
+    if (0 == (x & UINT32_C(0xFF000000))) {
+        x <<= 8;
+        r += 8;
+    }
+    if (0 == (x & UINT32_C(0xF0000000))) {
+        x <<= 4;
+        r += 4;
+    }
+    if (0 == (x & UINT32_C(0xC0000000))) {
+        x <<= 2;
+        r += 2;
+    }
+    if (0 == (x & UINT32_C(0x80000000))) {
+        x <<= 1;
+        r += 1;
+    }
+    return r;
+}
+
+static inline uint64_t clz64(uint64_t x) {
+    if (0 == x) {
+        return 64;
+    }
+    uint64_t r = 0;
+    if (0 == (x & UINT64_C(0xFFFFFFFF00000000))) {
+        x <<= 32;
+        r += 32;
+    }
+    if (0 == (x & UINT64_C(0xFFFF000000000000))) {
+        x <<= 16;
+        r += 16;
+    }
+    if (0 == (x & UINT64_C(0xFF00000000000000))) {
+        x <<= 8;
+        r += 8;
+    }
+    if (0 == (x & UINT64_C(0xF000000000000000))) {
+        x <<= 4;
+        r += 4;
+    }
+    if (0 == (x & UINT64_C(0xC000000000000000))) {
+        x <<= 2;
+        r += 2;
+    }
+    if (0 == (x & UINT64_C(0x8000000000000000))) {
+        x <<= 1;
+        r += 1;
+    }
+    return r;
+}
+
+size_t clz(size_t n) {
+    if (sizeof(size_t) == 8) {
+        return clz64(n);
+    } else if (sizeof(size_t) == 4) {
+        return clz32(n);
+    } else {
+        abort();
+    }
+}
+ssize_t XCRoundUpSize(ssize_t minSize) {
+    size_t size = MAX(0x1000, minSize);
+    size_t leadingZeroBitCount = clz(size);
+    size_t one = 1;
+    if ((one << (sizeof(size_t) * 8 - 1 - leadingZeroBitCount)) != size) {
+        size = one << (sizeof(size_t) * 8 - leadingZeroBitCount);
+    }
+    XAssert(size <= SSIZE_MAX, "");
+    return size;
+}
+
+void _XCEncodeBufferDefaultRealloc(XCEncodeBuffer_s * _Nonnull buffer, ssize_t minCapacity) {
+    XAssert(minCapacity >= 0, "");
+    XAssert(buffer, "");
+    ssize_t size = XCRoundUpSize(MAX(buffer->location, minCapacity));
+    if (size != buffer->capacity) {
+        void * ptr = realloc(buffer->context, size);
+        XAssert(ptr, "");
+        buffer->context = ptr;
+        buffer->bytes = (uint8_t *)ptr;
+        buffer->capacity = size;
+    }
+}
+void _XCEncodeBufferDefaultDealloc(XCEncodeBuffer_s * _Nonnull buffer) {
+    if (buffer->context) {
+        free(buffer->context);
+    }
+    bzero(buffer, sizeof(XCEncodeBuffer_s));
+}
+void _XCEncodeBufferDefaultFitSize(XCEncodeBuffer_s * _Nonnull buffer) {
+    XAssert(buffer, "");
+    if (buffer->capacity > buffer->location) {
+        void * ptr = realloc(buffer->context, buffer->location);
+        XAssert(ptr, "");
+        buffer->context = ptr;
+        buffer->bytes = (uint8_t *)ptr;
+        buffer->capacity = buffer->location;
+    }
+}

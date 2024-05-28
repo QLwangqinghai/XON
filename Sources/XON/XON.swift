@@ -11,7 +11,7 @@ public struct XON {
     public static let typeError: NSError = error(code: XONErrorType)
     public static let notEnoughError: NSError = error(code: XONErrorNotEnough)
     public static let stringContentError: NSError = error(code: XONErrorStringContent)
-    public static let numberOutOfBoundsError: NSError = error(code: XONErrorNumberOutOfBounds)
+    public static let numberOutOfBoundsError: NSError = error(code: XONErrorNumberOutOfRange)
     
     public static let fieldNotFound: NSError = error(code: XONErrorFieldNotFound)
 

@@ -108,11 +108,11 @@ public class XCReader {
             throw XON.error(code: error)
         }
         guard let n = NSNumber.number(xvalue: value) else {
-            throw XON.error(code: XONErrorNumberOutOfBounds)
+            throw XON.error(code: XONErrorNumberOutOfRange)
         }
         return n
     }
-    private func readTime(index: UnsafeMutablePointer<Int>, header: XCTime_s) throws -> XONTime {
+    private func readTime(index: UnsafeMutablePointer<Int>, header: XTimestamp_s) throws -> XONTime {
         return XONTime.time(second: header.second, attosecond: header.attosecond)
     }
     
@@ -176,54 +176,18 @@ public class XCReader {
 }
 
 public class XCWriter {
-    public var count: Int = 0
-    private var capacity: Int
-    private var _bytes: UnsafeMutableRawPointer
-    
-    public var bytes: UnsafeMutablePointer<UInt8> {
-        return self._bytes.bindMemory(to: UInt8.self, capacity: self.capacity)
-    }
+    public var buffer: XCEncodeBuffer_s = XCEncodeBufferMakeDefault()
     
     public init(minimumCapacity: Int) {
-        let value = XCWriter.roundUpCapacity(minimumCapacity)
-        self.capacity = value
-        self._bytes = realloc(nil, value)
-    }
-    
-    public func reserveCapacity(_ minimumCapacity: Int) {
-        guard minimumCapacity >= self.capacity else {
-            return
-        }
-        let value = XCWriter.roundUpCapacity(minimumCapacity)
-        guard self.capacity != value else {
-            return
-        }
-        self._bytes = realloc(self._bytes, value)
-        self.capacity = value
+        XCEncodeBufferReserveCapacity(&buffer, minimumCapacity)
     }
     
     public func fit() {
-        if self.capacity != self.count {
-            self._bytes = realloc(self._bytes, self.count)
-            self.capacity = self.count
-        }
+        XCEncodeBufferFitSize(&buffer)
     }
     
     deinit {
-        free(self._bytes)
-    }
-    
-    private static func roundUpCapacity(_ minimumCapacity: Int) -> Int {
-        var value = max(0x1000, minimumCapacity)
-        if value.leadingZeroBitCount + value.trailingZeroBitCount != value.bitWidth - 1 {
-            value = 1 << (value.bitWidth - value.leadingZeroBitCount)
-        }
-//        if value >= 0x200000 {
-//            value = (value + 0x200000 - 1) / 0x200000 * 0x200000
-//        } else {
-//            value = (value + 0x1000 - 1) / 0x1000 * 0x1000
-//        }
-        return value
+        XCEncodeBufferDeallocate(&buffer)
     }
     
     public func write(_ closure: () -> XONError_e) throws {
@@ -236,109 +200,78 @@ public class XCWriter {
     private func _writeValue(_ value: XONValue) throws {
         switch value {
         case .null:
-            if self.count + 1 > self.capacity {
-                self.reserveCapacity(self.count + 1)
-            }
             try self.write({
-                return XCencodeNull(self.bytes, self.capacity, &self.count)
+                return XCEncodeNull(&self.buffer)
             })
         case .bool(let v):
-            if self.count + 1 > self.capacity {
-                self.reserveCapacity(self.count + 1)
-            }
             try self.write({
-                return XCEncodeBool(self.bytes, self.capacity, &self.count, v)
+                return XCEncodeBool(&self.buffer, v)
             })
         case .string(let _v):
             let v = _v as String
             guard let data = v.data(using: .utf8) else {
                 throw XON.error(code: XONErrorStringContent)
             }
-            
-            if self.count + 16 + data.count > self.capacity {
-                self.reserveCapacity(self.count + 16 + data.count)
-            }
-            
             try self.write({
-                return XCEncodeStringHeader(self.bytes, self.capacity, &self.count, data.count)
+                return XCEncodeStringHeader(&self.buffer, data.count)
             })
-            if self.count + data.count > self.capacity {
-                self.reserveCapacity(self.count + data.count)
-            }
             if !data.isEmpty {
                 try self.write({
                     return data.withUnsafeBytes { ptr in
-                        return XCEncodeBody(self.bytes, self.capacity, &self.count, ptr.baseAddress!, data.count)
+                        return XCEncodeBody(&self.buffer, ptr.baseAddress!, data.count)
                     }
                 })
             }
         case .data(let data):
-            if self.count + 16 + data.count > self.capacity {
-                self.reserveCapacity(self.count + 16 + data.count)
-            }
             try self.write({
-                return XCEncodeDataHeader(self.bytes, self.capacity, &self.count, data.count)
+                return XCEncodeDataHeader(&self.buffer, data.count)
             })
             if !data.isEmpty {
                 try data.withUnsafeBytes { ptr in
                     try self.write({
-                        return XCEncodeBody(self.bytes, self.capacity, &self.count, ptr.baseAddress!, data.count)
+                        return XCEncodeBody(&self.buffer, ptr.baseAddress!, data.count)
                     })
                 }
             }
         case .array(let array):
-            if self.count + 16 + array.count > self.capacity {
-                self.reserveCapacity(self.count + 16 + array.count)
-            }
-            
             try self.write({
-                return XCEncodeArrayHeader(self.bytes, self.capacity, &self.count, array.count)
+                return XCEncodeArrayHeader(&self.buffer, array.count)
             })
             try array.forEach { item in
                 try self._writeValue(item)
             }
         case .number(let n):
-            if self.count + 32 > self.capacity {
-                self.reserveCapacity(self.count + 32)
-            }
             let v = n
             if let value = v as? Double {
                 try self.write({
-                    return XCEncodeNumberDouble(self.bytes, self.capacity, &self.count, value)
+                    return XCEncodeNumberDouble(&self.buffer, value)
                 })
             } else if let value = v as? Int64 {
                 try self.write({
-                    return XCEncodeNumberSInt64(self.bytes, self.capacity, &self.count, value)
+                    return XCEncodeNumberSInt64(&self.buffer, value)
                 })
             } else if let value = v as? UInt64 {
                 try self.write({
-                    return XCEncodeNumberUInt64(self.bytes, self.capacity, &self.count, value)
+                    return XCEncodeNumberUInt64(&self.buffer, value)
                 })
             } else {
                 throw XON.error(code: XONErrorNumberContent)
             }
         case .time(let v):
-            if self.count + 16 > self.capacity {
-                self.reserveCapacity(self.count + 16)
-            }
             try self.write({
                 if v == XONTime.invalid {
-                    return XCEncodeTimeInvalid(self.bytes, self.capacity, &self.count)
+                    return XCEncodeTimeInvalid(&self.buffer)
                 } else if v == XONTime.distantPast {
-                    return XCEncodeTimeDistantPast(self.bytes, self.capacity, &self.count)
+                    return XCEncodeTimeDistantPast(&self.buffer)
                 } else if v == XONTime.distantFuture {
-                    return XCEncodeTimeDistantFuture(self.bytes, self.capacity, &self.count)
+                    return XCEncodeTimeDistantFuture(&self.buffer)
                 } else {
-                    return XCEncodeTime(self.bytes, self.capacity, &self.count, v.second, v.attosecond)
+                    return XCEncodeTime(&self.buffer, v.second, v.attosecond)
                 }
             })
         case .message(let message):
-            if self.count + 32 + message.count * 2 > self.capacity {
-                self.reserveCapacity(self.count + 32 + message.count * 2)
-            }
-            
             try self.write({
-                return XCEncodeMessageHeader(self.bytes, self.capacity, &self.count, message.collection.count)
+                return XCEncodeMessageHeader(&self.buffer, message.collection.count)
             })
             var elements = message.collection.map { e in
                 return e
@@ -348,11 +281,8 @@ public class XCWriter {
             }
             var prev: UInt32 = 0
             try elements.forEach { (key, value) in
-                if self.count + 10 > self.capacity {
-                    self.reserveCapacity(self.count + 10)
-                }
                 try self.write({
-                    return XCEncodeFieldKeyOffset(self.bytes, self.capacity, &self.count, key - prev)
+                    return XCEncodeFieldKeyOffset(&self.buffer, key - prev)
                 })
                 prev = key
                 try self._writeValue(value)
@@ -363,14 +293,14 @@ public class XCWriter {
     public static func writeValue(_ value: XONValue) throws -> Data {
         let writer = XCWriter(minimumCapacity: 0)
         try writer._writeValue(value)
-        if writer.count >= 0x1000 {
+        if writer.buffer.location >= 0x1000 {
             writer.fit()
             let p = Unmanaged<XCWriter>.passRetained(writer)
-            return Data(bytesNoCopy: writer._bytes, count: writer.count, deallocator: Data.Deallocator.custom({ ptr, size in
+            return Data(bytesNoCopy: writer.buffer.bytes!, count: writer.buffer.location, deallocator: Data.Deallocator.custom({ ptr, size in
                 p.release()
             }))
         } else {
-            return Data(bytes: writer._bytes, count: writer.count)
+            return Data(bytes: writer.buffer.bytes!, count: writer.buffer.location)
         }
     }
 }

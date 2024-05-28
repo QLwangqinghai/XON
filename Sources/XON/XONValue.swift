@@ -269,7 +269,7 @@ public struct XONTime : Hashable {
     }
     
     public var isInvalid: Bool {
-        return XCTimeIsInvalid(self.second, self.attosecond)
+        return XTimestampIsInvalid(XTimestamp_s(second: self.second, attosecond: self.attosecond))
     }
     
     public static let attosecondPerSecond: UInt64 = 1_000_000_000_000_000_000
@@ -279,7 +279,7 @@ public struct XONTime : Hashable {
     public static let zero = XONTime(second: 0, attosecond: 0)
     
     public static func time(second: Int64, attosecond: UInt64) -> XONTime {
-        if XCTimeIsInvalid(second, attosecond) {
+        if XTimestampIsInvalid(XTimestamp_s(second: second, attosecond: attosecond)) {
             return XONTime.invalid
         } else {
             return XONTime(second: second, attosecond: attosecond)

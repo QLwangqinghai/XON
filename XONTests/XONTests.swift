@@ -24,8 +24,7 @@ final class XONTests: XCTestCase {
         // Any test you write for XCTest can be annotated as throws and async.
         // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
         // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-
-            
+        
         testNumbers()
         try testTime()
         testStrings()
@@ -37,6 +36,10 @@ final class XONTests: XCTestCase {
         try testSpeed()
     }
 
+    func testCCSpeed() {
+
+    }
+    
     func testBool() throws {
         try! {
             let data = try XONSerialization.encode(.null)
@@ -311,7 +314,7 @@ final class XONTests: XCTestCase {
         }
         usleep(1000000)
 
-        testCoder(tag: tag, objects: values, times: 100, log: true)
+        testCoder(tag: tag, objects: values, times: 100, log: false)
     }
     public func testMessages() throws {
         let tag = "JSON.random"
@@ -322,7 +325,7 @@ final class XONTests: XCTestCase {
         }
         usleep(1000000)
 
-        testCoder(tag: tag, objects: values, times: 100, log: true)
+        testCoder(tag: tag, objects: values, times: 100, log: false)
     }
 
     
