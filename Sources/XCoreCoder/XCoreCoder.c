@@ -859,6 +859,12 @@ XONError_e XCDecodeHeader(const uint8_t * _Nonnull bytes, ssize_t capacity, ssiz
             }
             uint64_t svalue = __XCDecodeTrimLeadingZeroByteIntFromBuffer(bytes + *location, length);
             uint64_t avalue = __XCDecodeTrimLeadingZeroByteIntFromBuffer(bytes + *location + length, decimalLength);
+            if (avalue == 0) {
+                return XONErrorTimeContent;
+            }
+            if (decimalExponent != 15 && (avalue % 10 == 0)) {
+                return XONErrorTimeContent;
+            }
             
             // 18 60
             static uint64_t scales[16] = {
@@ -881,9 +887,7 @@ XONError_e XCDecodeHeader(const uint8_t * _Nonnull bytes, ssize_t capacity, ssiz
             };
             
             uint64_t scale = scales[decimalExponent];
-            if (avalue != 0 && decimalExponent != 15 && (avalue % 10 == 0)) {
-                return XONErrorTimeContent;
-            }
+
             if (avalue >= XATTOSECOND_PER_SECOND / scale) {
                 return XONErrorTimeContent;
             }
