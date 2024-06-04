@@ -817,19 +817,60 @@ XONError_e XCDecodeHeader(const uint8_t * _Nonnull bytes, ssize_t capacity, ssiz
         }
         case XONTypeTime: {
             header->type = type;
-            uint8_t length = 0;
-            uint8_t decimalLength = 0;
-            uint8_t decimalExponent = 0;
             if (layout & 0x10) {
                 // Decimal time
-                length = layout & 0xf;
+                uint8_t length = layout & 0xf;
                 if (*location >= capacity) {
                     return XONErrorNotEnough;
                 }
                 uint8_t byte = bytes[*location];
                 *location += 1;
-                decimalLength = byte >> 4;
-                decimalExponent = byte & 0xf;
+                uint8_t decimalLength = (byte >> 4) + 1;
+                uint8_t decimalExponent = byte & 0xf;
+                if (*location > capacity - length - decimalLength) {
+                    return XONErrorCount;
+                }
+                if (length > 8 || decimalLength > 8) {
+                    return XONErrorNotImplemented;
+                }
+                uint64_t svalue = __XCDecodeTrimLeadingZeroByteIntFromBuffer(bytes + *location, length);
+                uint64_t avalue = __XCDecodeTrimLeadingZeroByteIntFromBuffer(bytes + *location + length, decimalLength);
+                if (avalue == 0) {
+                    return XONErrorTimeContent;
+                }
+                if (decimalExponent != 15 && (avalue % 10 == 0)) {
+                    return XONErrorTimeContent;
+                }
+                
+                // 18 60
+                static uint64_t scales[16] = {
+                    1,
+                    10,
+                    100,
+                    1000,
+                    10000,
+                    100000,
+                    1000000,
+                    10000000,
+                    100000000,
+                    1000000000ULL,
+                    10000000000ULL,
+                    100000000000ULL,
+                    1000000000000ULL,
+                    10000000000000ULL,
+                    100000000000000ULL,
+                    1000000000000000ULL,
+                };
+                
+                uint64_t scale = scales[decimalExponent];
+
+                if (avalue >= XATTOSECOND_PER_SECOND / scale) {
+                    return XONErrorTimeContent;
+                }
+                header->value.time.second = XCSInt64ZigzagDecode(svalue);
+                header->value.time.attosecond = avalue * scale;
+                *location += length + decimalLength;
+                return XONErrorNone;
             } else {
                 // Integer time
                 switch (layout) {
@@ -846,55 +887,21 @@ XONError_e XCDecodeHeader(const uint8_t * _Nonnull bytes, ssize_t capacity, ssiz
                     }
                         return XONErrorNone;
                     default: {
-                        length = layout - XTimestampLayoutZero;
+                        uint8_t length = layout - XTimestampLayoutZero;
+                        if (*location > capacity - length) {
+                            return XONErrorCount;
+                        }
+                        if (length > 8) {
+                            return XONErrorNotImplemented;
+                        }
+                        uint64_t svalue = __XCDecodeTrimLeadingZeroByteIntFromBuffer(bytes + *location, length);
+                        *location += length;
+                        header->value.time.second = XCSInt64ZigzagDecode(svalue);
+                        header->value.time.attosecond = 0;
+                        return XONErrorNone;
                     }
-                        break;
                 }
             }
-            if (*location > capacity - length - decimalLength) {
-                return XONErrorCount;
-            }
-            if (length > 8 || decimalLength > 8) {
-                return XONErrorNotImplemented;
-            }
-            uint64_t svalue = __XCDecodeTrimLeadingZeroByteIntFromBuffer(bytes + *location, length);
-            uint64_t avalue = __XCDecodeTrimLeadingZeroByteIntFromBuffer(bytes + *location + length, decimalLength);
-            if (avalue == 0) {
-                return XONErrorTimeContent;
-            }
-            if (decimalExponent != 15 && (avalue % 10 == 0)) {
-                return XONErrorTimeContent;
-            }
-            
-            // 18 60
-            static uint64_t scales[16] = {
-                1,
-                10,
-                100,
-                1000,
-                10000,
-                100000,
-                1000000,
-                10000000,
-                100000000,
-                1000000000ULL,
-                10000000000ULL,
-                100000000000ULL,
-                1000000000000ULL,
-                10000000000000ULL,
-                100000000000000ULL,
-                1000000000000000ULL,
-            };
-            
-            uint64_t scale = scales[decimalExponent];
-
-            if (avalue >= XATTOSECOND_PER_SECOND / scale) {
-                return XONErrorTimeContent;
-            }
-            header->value.time.second = XCSInt64ZigzagDecode(svalue);
-            header->value.time.attosecond = avalue * scale;
-            *location += length + decimalLength;
-            return XONErrorNone;
         }
             break;
         case XONTypeString:
@@ -1128,6 +1135,7 @@ XONError_e __XCEncodeTimeZero(XCEncodeBuffer_s * _Nonnull buffer) {
 
 XONError_e XCEncodeTime(XCEncodeBuffer_s * _Nonnull buffer, int64_t second, uint64_t attosecond) {
     if (attosecond >= XATTOSECOND_PER_SECOND) {
+        XCEncodeBufferExpandCapacity(buffer, buffer->location + 1);
         if (attosecond == UINT64_MAX) {
             if (second == INT64_MIN) {
                 return XCEncodeTimeDistantPast(buffer);
@@ -1184,7 +1192,7 @@ XONError_e XCEncodeTime(XCEncodeBuffer_s * _Nonnull buffer, int64_t second, uint
             ssize_t alength = __XCEncodeTrimLeadingZeroByteIntToBuffer(buffer->bytes + buffer->location + 2 + slength, avalue);
             // 4
             ssize_t length = 2 + slength + alength;
-            buffer->bytes[buffer->location + 1] =(alength << 4) | e;
+            buffer->bytes[buffer->location + 1] = ((alength - 1) << 4) | e;
             buffer->location += length;
             return XONErrorNone;
         }
