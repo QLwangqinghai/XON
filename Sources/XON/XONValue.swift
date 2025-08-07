@@ -1,6 +1,14 @@
 
 import Foundation
 
+
+public enum XCType : UInt32 {
+    case simpleValue = 0
+    case string
+    case data
+    case message
+    case array
+}
 public enum XONValue : Hashable {
     case null
     case bool(Bool)

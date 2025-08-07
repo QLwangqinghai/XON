@@ -53,7 +53,23 @@ public class XCReader {
         }
         return header
     }
+    private func readTime(index: UnsafeMutablePointer<Int>, secondOnly: Bool) throws -> XONTime {
+        var value: Int64 = 0
+        let error = XCDecodeTime(self.bytes, self.endIndex, index, &value)
+        guard error == XONErrorNone else {
+            throw XON.error(code: error)
+        }
+        return XONTime(microsecond: value)
+    }
     
+    private func readCount(index: UnsafeMutablePointer<Int>, layout: UInt32) throws -> Int {
+        var value: Int = 0
+        let error = XCDecodeCount(self.bytes, self.endIndex, index, layout, &value)
+        guard error == XONErrorNone else {
+            throw XON.error(code: error)
+        }
+        return value
+    }
     private func readMessageFieldOffset(index: UnsafeMutablePointer<Int>) throws -> UInt32 {
         var offset: UInt32 = 0
         let error = XCDecodeFieldKeyOffset(self.bytes, self.endIndex, index, &offset)
@@ -63,23 +79,19 @@ public class XCReader {
         return offset
     }
     
-    public func readDataBody(index: UnsafeMutablePointer<Int>, length: Int) throws -> Data {
-        guard length >= 0 else {
-            throw XON.countError
-        }
-        guard index.pointee + length <= self.data.count else {
+    public func readData(index: UnsafeMutablePointer<Int>, layout: UInt32) throws -> Data {
+        let length: Int = try self.readCount(index: index, layout: layout)
+        guard index.pointee <= self.data.count - length else {
             throw XON.notEnoughError
         }
-        let data = Data(bytes: self.bytes.advanced(by: index.pointee), count: length)
+        let data = NSData(bytes: self.bytes.advanced(by: index.pointee), length: length)
         index.pointee += length
-        return data
+        return data as Data
     }
     
-    public func readStringBody(index: UnsafeMutablePointer<Int>, length: Int) throws -> String {
-        guard length >= 0 else {
-            throw XON.countError
-        }
-        guard index.pointee + length <= self.data.count else {
+    public func readString(index: UnsafeMutablePointer<Int>, layout: UInt32) throws -> String {
+        let length: Int = try self.readCount(index: index, layout: layout)
+        guard index.pointee <= self.data.count - length else {
             throw XON.notEnoughError
         }
         guard let string = NSString(bytes: self.bytes.advanced(by: index.pointee), length: length, encoding: String.Encoding.utf8.rawValue) else {
@@ -88,6 +100,31 @@ public class XCReader {
         index.pointee += length
         return string as String
     }
+    
+//    public func readDataBody(index: UnsafeMutablePointer<Int>, length: Int) throws -> Data {
+//        guard length >= 0 else {
+//            throw XON.countError
+//        }
+//        guard index.pointee + length <= self.data.count else {
+//            throw XON.notEnoughError
+//        }
+//        let data = Data(bytes: self.bytes.advanced(by: index.pointee), count: length)
+//        index.pointee += length
+//        return data
+//    }
+//    public func readStringBody(index: UnsafeMutablePointer<Int>, length: Int) throws -> String {
+//        guard length >= 0 else {
+//            throw XON.countError
+//        }
+//        guard index.pointee + length <= self.data.count else {
+//            throw XON.notEnoughError
+//        }
+//        guard let string = NSString(bytes: self.bytes.advanced(by: index.pointee), length: length, encoding: String.Encoding.utf8.rawValue) else {
+//            throw XON.stringContentError
+//        }
+//        index.pointee += length
+//        return string as String
+//    }
     
     public static func number(xvalue: XCNumberValue_s) -> NSNumber? {
         switch xvalue.type {
@@ -101,54 +138,63 @@ public class XCReader {
             return nil
         }
     }
-    private func readNumber(index: UnsafeMutablePointer<Int>, header: XCNumberHeader_s) throws -> NSNumber {
-        var value = XCNumberValue_s()
-        let error = XCDecodeNumber64(self.bytes, self.endIndex, index, header.format, header.length, &value)
-        guard error == XONErrorNone else {
-            throw XON.error(code: error)
-        }
-        guard let n = NSNumber.number(xvalue: value) else {
-            throw XON.error(code: XONErrorNumberOutOfRange)
-        }
-        return n
-    }
-    private func readTime(index: UnsafeMutablePointer<Int>, header: XTimestamp_s) throws -> XONTime {
-        return XONTime.time(second: header.second, attosecond: header.attosecond)
+    private func readNumber(index: UnsafeMutablePointer<Int>, contentLength: Int) throws -> NSNumber {
+//        var value = XCNumberValue_s()
+//        let error = XCDecodeNumber64(self.bytes, self.endIndex, index, header.format, header.length, &value)
+//        guard error == XONErrorNone else {
+//            throw XON.error(code: error)
+//        }
+//        guard let n = NSNumber.number(xvalue: value) else {
+//            throw XON.error(code: XONErrorNumberOutOfRange)
+//        }
+//        return n
+        throw XON.error(code: XONErrorNumberOutOfRange)
     }
     
     private func readValue(index: UnsafeMutablePointer<Int>) throws -> XONValue {
         let header = try self.readHeader(index: index)
-        guard let type = XONType(rawValue: header.type) else {
+        guard let type = XCType(rawValue: header.type.rawValue) else {
             throw XON.typeError
         }
         switch type {
-        case .null:
-            return .null
-        case .bool:
-            return .bool(header.value.boolValue)
-        case .string:
-            let length = header.value.count
-            return .string(try readStringBody(index: index, length: length))
-        case .data:
-            let length = header.value.count
-            return .data(try readDataBody(index: index, length: length))
-        case .array:
-            let count = header.value.count
-            var elements: [XONValue] = []
-            elements.reserveCapacity(count)
-            for _ in 0 ..< count {
-                let value = try self.readValue(index: index)
-                elements.append(value)
+        case .simpleValue:
+            switch header.layout {
+            case XCSimpleValueError.rawValue:
+                throw XON.typeError
+            case XCSimpleValueNil.rawValue:
+                return .null
+            case XCSimpleValueBoolFalse.rawValue:
+                return .bool(false)
+            case XCSimpleValueBoolTrue.rawValue:
+                return .bool(true)
+            case XCSimpleValueTimeDistantPast.rawValue:
+                return .time(XONTime.distantPast)
+            case XCSimpleValueTimeDistantFuture.rawValue:
+                return .time(XONTime.distantFuture)
+            case XCSimpleValueTimeZero.rawValue:
+                return .time(XONTime.zero)
+            case XCSimpleValueTimeSecond.rawValue:
+                return .time(try self.readTime(index: index, secondOnly: true))
+            case XCSimpleValueTimeScientificNotation.rawValue:
+                return .time(try self.readTime(index: index, secondOnly: false))
+            case XCSimpleValueNumberZero.rawValue:
+                return .number(NSNumber(value: Double.zero))
+            case XCSimpleValueNumberNAN.rawValue:
+                return .number(NSNumber(value: Double.nan))
+            case XCSimpleValueNumberPositiveInfinity.rawValue:
+                return .number(NSNumber(value: Double.infinity))
+            case XCSimpleValueNumberNegativeInfinity.rawValue:
+                return .number(NSNumber(value: Double.infinity * (-1.0)))
+            default:
+                let contentLength = Int(header.layout - XCSimpleValueNumberNegativeInfinity.rawValue)
+                return .number(try self.readNumber(index: index, contentLength: contentLength))
             }
-            return .array(elements)
-        case .number:
-            let n = try self.readNumber(index: index, header: header.value.number)
-            return .number(n)
-        case .time:
-            let t = try self.readTime(index: index, header: header.value.time)
-            return .time(t)
+        case .string:
+            return .string(try readString(index: index, layout: header.layout))
+        case .data:
+            return .data(try readData(index: index, layout: header.layout))
         case .message:
-            let count = header.value.count
+            let count: Int = try self.readCount(index: index, layout: header.layout)
             var prev: UInt32 = 0
             var collection: [UInt32 : XONValue] = [:]
             collection.reserveCapacity(count)
@@ -166,6 +212,15 @@ public class XCReader {
                 throw XON.error(code: XONErrorMessageContent)
             }
             return .message(Message(collection: collection))
+        case .array:
+            let count: Int = try self.readCount(index: index, layout: header.layout)
+            var elements: [XONValue] = []
+            elements.reserveCapacity(count)
+            for _ in 0 ..< count {
+                let value = try self.readValue(index: index)
+                elements.append(value)
+            }
+            return .array(elements)
         }
     }
     
