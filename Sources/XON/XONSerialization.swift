@@ -54,12 +54,12 @@ public class XCReader {
         return header
     }
     private func readTime(index: UnsafeMutablePointer<Int>, secondOnly: Bool) throws -> XONTime {
-        var value: Int64 = 0
-        let error = XCDecodeTime(self.bytes, self.endIndex, index, &value)
+        var value: XTimestamp_s = XTimestampZero()
+        let error = XCDecodeTime(self.bytes, self.endIndex, index, secondOnly, &value)
         guard error == XONErrorNone else {
             throw XON.error(code: error)
         }
-        return XONTime(microsecond: value)
+        return XONTime(second: value.second, attosecond: value.attosecond)
     }
     
     private func readCount(index: UnsafeMutablePointer<Int>, layout: UInt32) throws -> Int {

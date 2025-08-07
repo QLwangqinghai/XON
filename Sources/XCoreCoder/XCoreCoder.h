@@ -188,6 +188,14 @@ static inline XTimestamp_s XTimestampDistantFuture(void) {
     return time;
 }
 
+static inline XTimestamp_s XTimestampZero(void) {
+    XTimestamp_s time = {
+        .second = 0,
+        .attosecond = 0,
+    };
+    return time;
+}
+
 typedef struct {
     ssize_t format;
     ssize_t length;

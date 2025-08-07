@@ -212,7 +212,7 @@ public struct XONTime : Hashable {
     public let second: Int64
     public let attosecond: UInt64
     
-    private init(second: Int64, attosecond: UInt64) {
+    public init(second: Int64, attosecond: UInt64) {
         self.second = second
         self.attosecond = attosecond
     }
