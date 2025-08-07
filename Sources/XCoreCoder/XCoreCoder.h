@@ -47,11 +47,10 @@ typedef enum {
     
     // 8  / 9 / 10
     
-    XCSimpleValueNumberZero = 10,
-    XCSimpleValueNumberNAN,
+    XCSimpleValueNumberNAN = 10,
     XCSimpleValueNumberPositiveInfinity,
     XCSimpleValueNumberNegativeInfinity,
-    
+    XCSimpleValueNumberZero,
     // number 最长18字节
     // number 18个 [14, 31]
     
@@ -94,14 +93,6 @@ typedef enum {
     XCNumberTypeUInt,
     XCNumberTypeFloat64,
 } XCNumberType_e;
-
-typedef enum {
-    XCNumberFormatFloat = 0x0,
-    XCNumberFormatNan = 0x1,
-    XCNumberFormatPositiveInfinity = 0x2,
-    XCNumberFormatNegativeInfinity = 0x3,
-    XCNumberFormatZero = 0x4,
-} XCNumberFormat_e;
 
 static inline double __XCDoubleNan(void) {
     uint64_t v = ((uint64_t)0x7ff8000000000000ULL);
@@ -220,7 +211,7 @@ extern XONError_e XCDecodeTime(const uint8_t * _Nonnull bytes, ssize_t capacity,
 extern XONError_e XCDecodeCount(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, unsigned int layout, ssize_t * _Nonnull receiver);
 
 extern XONError_e XCDecodeFieldKeyOffset(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, uint32_t * _Nonnull offset);
-extern XONError_e XCDecodeNumber64(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, ssize_t format, ssize_t count, XCNumberValue_s * _Nonnull number);
+//extern XONError_e XCDecodeNumber64(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, ssize_t format, ssize_t count, XCNumberValue_s * _Nonnull number);
 
 #pragma mark - EncodeBuffer
 

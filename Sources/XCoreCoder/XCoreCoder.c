@@ -1056,55 +1056,55 @@ XONError_e XCDecodeNumber(const uint8_t * _Nonnull bytes, ssize_t capacity, ssiz
 //    return XONErrorNone;
 //}
 
-XONError_e XCDecodeNumber64(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, ssize_t format, ssize_t count, XCNumberValue_s * _Nonnull number) {
-    switch (format) {
-        case XCNumberFormatZero: {
-            number->type = XCNumberTypeFloat64;
-            number->value.f = __XCDoubleZero();
-            return XONErrorNone;
-        }
-        case XCNumberFormatNan: {
-            number->type = XCNumberTypeFloat64;
-            number->value.f = __XCDoubleNan();
-            return XONErrorNone;
-        }
-        case XCNumberFormatPositiveInfinity: {
-            number->type = XCNumberTypeFloat64;
-            number->value.f = __XCDoublePositiveInfinity();
-            return XONErrorNone;
-        }
-        case XCNumberFormatNegativeInfinity: {
-            number->type = XCNumberTypeFloat64;
-            number->value.f = __XCDoubleNegativeInfinity();
-            return XONErrorNone;
-        }
-        case XCNumberFormatFloat: {
-            // e: varint64 ; signAndSignificand
-            ssize_t len = count;
-            ssize_t startIndex = *location;
-            if (*location > capacity - len) {
-                return XONErrorNotEnough;
-            }
-            uint64_t ev = 0;
-            XONError_e result = __XCDecodeUInt64Varint(bytes, *location + len, location, &ev);
-            if (result != XONErrorNone) {
-                return result;
-            }
-            ssize_t usingLength = *location - startIndex;
-            int64_t exponent = XCSInt64ZigzagDecode(ev);
-            uint64_t signAndSignificand = 0;
-            result = __XCDecodeSignAndSignificand(bytes + *location, len - usingLength, &signAndSignificand);
-            if (result != XONErrorNone) {
-                return result;
-            }
-            *location += len - usingLength;
-            return __XCDecodeNumberValue(exponent, signAndSignificand, number);
-        }
-        default: {
-            return XONErrorNumberContent;
-        }
-    }
-}
+//XONError_e XCDecodeNumber64(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, ssize_t format, ssize_t count, XCNumberValue_s * _Nonnull number) {
+//    switch (format) {
+//        case XCNumberFormatZero: {
+//            number->type = XCNumberTypeFloat64;
+//            number->value.f = __XCDoubleZero();
+//            return XONErrorNone;
+//        }
+//        case XCNumberFormatNan: {
+//            number->type = XCNumberTypeFloat64;
+//            number->value.f = __XCDoubleNan();
+//            return XONErrorNone;
+//        }
+//        case XCNumberFormatPositiveInfinity: {
+//            number->type = XCNumberTypeFloat64;
+//            number->value.f = __XCDoublePositiveInfinity();
+//            return XONErrorNone;
+//        }
+//        case XCNumberFormatNegativeInfinity: {
+//            number->type = XCNumberTypeFloat64;
+//            number->value.f = __XCDoubleNegativeInfinity();
+//            return XONErrorNone;
+//        }
+//        case XCNumberFormatFloat: {
+//            // e: varint64 ; signAndSignificand
+//            ssize_t len = count;
+//            ssize_t startIndex = *location;
+//            if (*location > capacity - len) {
+//                return XONErrorNotEnough;
+//            }
+//            uint64_t ev = 0;
+//            XONError_e result = __XCDecodeUInt64Varint(bytes, *location + len, location, &ev);
+//            if (result != XONErrorNone) {
+//                return result;
+//            }
+//            ssize_t usingLength = *location - startIndex;
+//            int64_t exponent = XCSInt64ZigzagDecode(ev);
+//            uint64_t signAndSignificand = 0;
+//            result = __XCDecodeSignAndSignificand(bytes + *location, len - usingLength, &signAndSignificand);
+//            if (result != XONErrorNone) {
+//                return result;
+//            }
+//            *location += len - usingLength;
+//            return __XCDecodeNumberValue(exponent, signAndSignificand, number);
+//        }
+//        default: {
+//            return XONErrorNumberContent;
+//        }
+//    }
+//}
 XONError_e XCDecodeCount(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, unsigned int layout, ssize_t * _Nonnull receiver) {
     XAssert(bytes, "");
     XAssert(receiver, "");
@@ -1230,28 +1230,28 @@ static inline XONError_e __XCEncodeNumberByte(XCEncodeBuffer_s * _Nonnull buffer
     ssize_t length = 1;
     length += __XCEncodeUInt64VarintToBuffer(buffer->bytes + buffer->location + length, XCSInt64ZigzagEncode(value.exponent));
     length += __XCEncodeSignAndSignificandToBuffer(buffer->bytes + buffer->location + length, value.signAndSignificand);
-    uint8_t layout = length + XCNumberFormatZero - 1;
+    uint8_t layout = length + XCSimpleValueNumberZero;
     if (layout >= 16) {
         return XONErrorLayout;
     }
     uint8_t header = 0;
-    XCEncodeTypeLayout(&header, XONTypeNumber, layout);
+    XCEncodeTypeLayout(&header, XCTypeSimpleValue, layout);
     buffer->bytes[buffer->location] = header;
     buffer->location += length;
     return XONErrorNone;
 }
 
-static inline XONError_e __XCEncodeNumberHeader(XCEncodeBuffer_s * _Nonnull buffer, uint8_t layout) {
+static inline XONError_e __XCEncodeSimpleNumberHeader(XCEncodeBuffer_s * _Nonnull buffer, uint32_t layout) {
     XCEncodeBufferExpandCapacity(buffer, buffer->location + 1);
     uint8_t header = 0;
-    XCEncodeTypeLayout(&header, XONTypeNumber, layout);
+    XCEncodeTypeLayout(&header, XCTypeSimpleValue, layout);
     buffer->bytes[buffer->location] = header;
     buffer->location += 1;
     return XONErrorNone;
 }
 XONError_e XCEncodeNumberUInt64(XCEncodeBuffer_s * _Nonnull buffer, uint64_t value) {
     if (0 == value) {
-        return __XCEncodeNumberHeader(buffer, XCNumberFormatZero);
+        return __XCEncodeSimpleNumberHeader(buffer, XCSimpleValueNumberZero);
     } else {
         XCNumberNormalContent_s data = _XCEncodeNumberUInt64(value);
         return __XCEncodeNumberByte(buffer, data);
@@ -1259,7 +1259,7 @@ XONError_e XCEncodeNumberUInt64(XCEncodeBuffer_s * _Nonnull buffer, uint64_t val
 }
 XONError_e XCEncodeNumberSInt64(XCEncodeBuffer_s * _Nonnull buffer, int64_t value) {
     if (0 == value) {
-        return __XCEncodeNumberHeader(buffer, XCNumberFormatZero);
+        return __XCEncodeSimpleNumberHeader(buffer, XCSimpleValueNumberZero);
     } else {
         XCNumberNormalContent_s data = _XCEncodeNumberSInt64(value);
         return __XCEncodeNumberByte(buffer, data);
@@ -1267,14 +1267,14 @@ XONError_e XCEncodeNumberSInt64(XCEncodeBuffer_s * _Nonnull buffer, int64_t valu
 }
 XONError_e XCEncodeNumberDouble(XCEncodeBuffer_s * _Nonnull buffer, double value) {
     if (value == __XCDoubleZero()) {
-        return __XCEncodeNumberHeader(buffer, XCNumberFormatZero);
+        return __XCEncodeSimpleNumberHeader(buffer, XCSimpleValueNumberZero);
     } else if (isnan(value)) {
-        return __XCEncodeNumberHeader(buffer, XCNumberFormatNan);
+        return __XCEncodeSimpleNumberHeader(buffer, XCSimpleValueNumberNAN);
     } else if (isinf(value)) {
         if (value < 0) {
-            return __XCEncodeNumberHeader(buffer, XCNumberFormatNegativeInfinity);
+            return __XCEncodeSimpleNumberHeader(buffer, XCSimpleValueNumberNegativeInfinity);
         } else {
-            return __XCEncodeNumberHeader(buffer, XCNumberFormatPositiveInfinity);
+            return __XCEncodeSimpleNumberHeader(buffer, XCSimpleValueNumberPositiveInfinity);
         }
     } else {
         XCNumberNormalContent_s data = _XCEncodeNumberFloat64(value);

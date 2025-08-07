@@ -177,16 +177,16 @@ public class XCReader {
                 return .time(try self.readTime(index: index, secondOnly: true))
             case XCSimpleValueTimeScientificNotation.rawValue:
                 return .time(try self.readTime(index: index, secondOnly: false))
-            case XCSimpleValueNumberZero.rawValue:
-                return .number(NSNumber(value: Double.zero))
             case XCSimpleValueNumberNAN.rawValue:
                 return .number(NSNumber(value: Double.nan))
             case XCSimpleValueNumberPositiveInfinity.rawValue:
                 return .number(NSNumber(value: Double.infinity))
             case XCSimpleValueNumberNegativeInfinity.rawValue:
                 return .number(NSNumber(value: Double.infinity * (-1.0)))
+            case XCSimpleValueNumberZero.rawValue:
+                return .number(NSNumber(value: Double.zero))
             default:
-                let contentLength = Int(header.layout - XCSimpleValueNumberNegativeInfinity.rawValue)
+                let contentLength = Int(header.layout - XCSimpleValueNumberZero.rawValue)
                 return .number(try self.readNumber(index: index, contentLength: contentLength))
             }
         case .string:
