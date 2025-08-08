@@ -650,8 +650,8 @@ static inline XONError_e __XCDecodeSignAndSignificand(const uint8_t * _Nonnull b
 /// 返回值 [0, 16]
 static inline ssize_t __XCEncodeSignificandToBuffer(uint8_t * _Nonnull buffer, uint64_t high, uint64_t low) {
     ssize_t used = sizeof(uint64_t) * 2;
-    uint64_t h = HTONLL(high);
-    uint64_t l = HTONLL(low);
+    uint64_t h = ntohll(high);
+    uint64_t l = ntohll(low);
     memcpy(buffer, &h, sizeof(uint64_t));
     if (low == 0) {
         used -= sizeof(uint64_t);
@@ -708,13 +708,13 @@ static inline XCNumberNormalContent_s __XCEncodeIntNumberInternal(uint32_t sign,
 //    return content;
     XCNumberNormalContent_s content = {};
     // 高位->低位 前导0个数
-    uint64_t leadingZeroCount = XCUInt64LeadingZeroBitCount(v);
-    int64_t e = leadingZeroCount + 1;
-    uint64_t m = v << e;
+    ssize_t leadingZeroBitCount = XCUInt64LeadingZeroBitCount(v);
+    ssize_t exponent = 64 - leadingZeroBitCount;
+    content.exponent = (int32_t)exponent;
     content.sign = sign;
-    content.exponent = (int32_t)(64 - e);
-    content.significandHigh = m;
     content.significandLow = 0;
+    content.significandHigh = v << ((uint64_t)leadingZeroBitCount + 1);
+
     return content;
 }
 
@@ -1414,8 +1414,8 @@ static inline XONError_e __XCEncodeNumberByte(XCEncodeBuffer_s * _Nonnull buffer
     if (value.sign != 0) {
         signAndExponent += 1;
     }
-    length += __XCEncodeUInt64VarintToBuffer(buffer->bytes + length, signAndExponent);
-    length += __XCEncodeSignificandToBuffer(buffer->bytes + length, value.significandHigh, value.significandLow);
+    length += __XCEncodeUInt64VarintToBuffer(buffer->bytes + buffer->location + length, signAndExponent);
+    length += __XCEncodeSignificandToBuffer(buffer->bytes + buffer->location + length, value.significandHigh, value.significandLow);
     uint8_t layout = length - 1 + XCSimpleValueNumberZero;
     if (layout >= 32) {
         return XONErrorLayout;
@@ -1467,7 +1467,7 @@ XONError_e XCEncodeNumberDouble(XCEncodeBuffer_s * _Nonnull buffer, double value
         XCNumberNormalContent_s content = {};
         content.sign = (uint32_t)(bits >> 63);
         content.exponent = e;
-        content.significandHigh = bits << 12;
+        content.significandHigh = bits << UINT64_C(12);
         content.significandLow = 0;
         return __XCEncodeNumberByte(buffer, content);
 //        XCNumberNormalContent_s data = _XCEncodeNumberFloat64(value);
@@ -1571,7 +1571,7 @@ XONError_e XCEncodeTime(XCEncodeBuffer_s * _Nonnull buffer, int64_t second, uint
         }
     } else {
         if (0 == attosecond) {
-            if (0 == attosecond) {
+            if (0 == second) {
                 XCEncodeBufferExpandCapacity(buffer, buffer->location + 1);
                 uint8_t header = 0;
                 XCEncodeTypeLayout(&header, XCTypeSimpleValue, XCSimpleValueTimeZero);

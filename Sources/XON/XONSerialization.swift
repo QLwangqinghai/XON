@@ -128,7 +128,7 @@ public class XCReader {
         if XONErrorNone == XCNumberToSInt64(&value, &si) {
             return NSNumber(value: si)
         }
-        var ui: Int64 = 0
+        var ui: UInt64 = 0
         if XONErrorNone == XCNumberToUInt64(&value, &ui) {
             return NSNumber(value: ui)
         }
@@ -151,6 +151,8 @@ public class XCReader {
                 return .bool(false)
             case XCSimpleValueBoolTrue.rawValue:
                 return .bool(true)
+            case XCSimpleValueTimeInvalid.rawValue:
+                return .time(XONTime.invalid)
             case XCSimpleValueTimeDistantPast.rawValue:
                 return .time(XONTime.distantPast)
             case XCSimpleValueTimeDistantFuture.rawValue:
@@ -247,20 +249,34 @@ public class XCWriter {
                 return XCEncodeBool(&self.buffer, v)
             })
         case .string(let _v):
-            let v = _v as String
-            guard let data = v.data(using: .utf8) else {
-                throw XON.error(code: XONErrorStringContent)
-            }
+            var v = _v as String
+            let count = v.utf8.count
             try self.write({
-                return XCEncodeStringHeader(&self.buffer, data.count)
+                return XCEncodeStringHeader(&self.buffer, count)
             })
-            if !data.isEmpty {
-                try self.write({
-                    return data.withUnsafeBytes { ptr in
-                        return XCEncodeBody(&self.buffer, ptr.baseAddress!, data.count)
-                    }
-                })
+            if count > 0 {
+                try v.withUTF8 { ptr in
+                    try self.write({
+                        return XCEncodeBody(&self.buffer, ptr.baseAddress!, count)
+                    })
+                }
             }
+//            v.withUTF8 { bytes in
+//
+//            };
+//            guard let data = v.data(using: .utf8) else {
+//                throw XON.error(code: XONErrorStringContent)
+//            }
+//            try self.write({
+//                return XCEncodeStringHeader(&self.buffer, data.count)
+//            })
+//            if !data.isEmpty {
+//                try self.write({
+//                    return data.withUnsafeBytes { ptr in
+//                        return XCEncodeBody(&self.buffer, ptr.baseAddress!, data.count)
+//                    }
+//                })
+//            }
         case .data(let data):
             try self.write({
                 return XCEncodeDataHeader(&self.buffer, data.count)
@@ -304,6 +320,8 @@ public class XCWriter {
                     return XCEncodeTimeDistantPast(&self.buffer)
                 } else if v == XONTime.distantFuture {
                     return XCEncodeTimeDistantFuture(&self.buffer)
+                } else if v == XONTime.zero {
+                    return XCEncodeTimeZero(&self.buffer)
                 } else {
                     return XCEncodeTime(&self.buffer, v.second, v.attosecond)
                 }

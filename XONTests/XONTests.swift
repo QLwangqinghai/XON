@@ -92,9 +92,12 @@ final class XONTests: XCTestCase {
     
     func testTime() throws {
         try! {
+            print("\(#line)")
             let value: XONValue = .time(XONTime.invalid)
             let data = try XONSerialization.encode(value)
+            print("\(#line)")
             let b = try XONSerialization.decode(data)
+            print("\(#line)")
             assert(b == value)
         } ()
         try! {
