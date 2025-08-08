@@ -101,31 +101,6 @@ public class XCReader {
         return string as String
     }
     
-//    public func readDataBody(index: UnsafeMutablePointer<Int>, length: Int) throws -> Data {
-//        guard length >= 0 else {
-//            throw XON.countError
-//        }
-//        guard index.pointee + length <= self.data.count else {
-//            throw XON.notEnoughError
-//        }
-//        let data = Data(bytes: self.bytes.advanced(by: index.pointee), count: length)
-//        index.pointee += length
-//        return data
-//    }
-//    public func readStringBody(index: UnsafeMutablePointer<Int>, length: Int) throws -> String {
-//        guard length >= 0 else {
-//            throw XON.countError
-//        }
-//        guard index.pointee + length <= self.data.count else {
-//            throw XON.notEnoughError
-//        }
-//        guard let string = NSString(bytes: self.bytes.advanced(by: index.pointee), length: length, encoding: String.Encoding.utf8.rawValue) else {
-//            throw XON.stringContentError
-//        }
-//        index.pointee += length
-//        return string as String
-//    }
-    
     public static func number(xvalue: XCNumberValue_s) -> NSNumber? {
         switch xvalue.type {
         case Int(XCNumberTypeSInt.rawValue):
@@ -139,15 +114,24 @@ public class XCReader {
         }
     }
     private func readNumber(index: UnsafeMutablePointer<Int>, contentLength: Int) throws -> NSNumber {
-//        var value = XCNumberValue_s()
-//        let error = XCDecodeNumber64(self.bytes, self.endIndex, index, header.format, header.length, &value)
-//        guard error == XONErrorNone else {
-//            throw XON.error(code: error)
-//        }
-//        guard let n = NSNumber.number(xvalue: value) else {
-//            throw XON.error(code: XONErrorNumberOutOfRange)
-//        }
-//        return n
+        var value = XCNumberNormalContent_s()
+        let error = XCDecodeNormalNumber(self.bytes, self.endIndex, index, contentLength, &value)
+        guard error == XONErrorNone else {
+            throw XON.error(code: error)
+        }
+        
+        var d: Double = 0
+        if XONErrorNone == XCNumberToFloat64(&value, &d) {
+            return NSNumber(value: d)
+        }
+        var si: Int64 = 0
+        if XONErrorNone == XCNumberToSInt64(&value, &si) {
+            return NSNumber(value: si)
+        }
+        var ui: Int64 = 0
+        if XONErrorNone == XCNumberToUInt64(&value, &ui) {
+            return NSNumber(value: ui)
+        }
         throw XON.error(code: XONErrorNumberOutOfRange)
     }
     

@@ -857,7 +857,7 @@ XONError_e XCDecodeHeader(const uint8_t * _Nonnull bytes, ssize_t capacity, ssiz
     return XONErrorNone;
 }
 
-XONError_e XCDecodeNumber(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, ssize_t len, XCNumberNormalContent_s * _Nonnull content) {
+XONError_e XCDecodeNormalNumber(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, ssize_t len, XCNumberNormalContent_s * _Nonnull content) {
     XAssert(content, "");
     ssize_t startIndex = *location;
     if (*location > capacity - len) {
@@ -897,6 +897,164 @@ XONError_e XCDecodeNumber(const uint8_t * _Nonnull bytes, ssize_t capacity, ssiz
 }
 
 
+XONError_e XCNumberToFloat64(const XCNumberNormalContent_s * _Nonnull content, double * _Nonnull value) {
+    if (content->significandLow != 0) {
+        return XONErrorNumberOutOfRange;
+    }
+    if ((content->significandHigh & 0xfff) != 0) {
+        return XONErrorNumberOutOfRange;
+    }
+    uint64_t bits = 0x3FE0000000000000ULL;
+    if (content->sign != 0) {
+        bits = bits | 0x8000000000000000ULL;
+    }
+    bits = bits | (content->significandHigh >> 12);
+    double m = *(double *)&bits;
+    double result = scalbn(m, content->exponent);
+    int e2 = 0;
+    double m2 = frexp(result, &e2);
+    if (m2 != m) {
+        return XONErrorNumberOutOfRange;
+    }
+    *value = result;
+    return XONErrorNone;
+}
+
+
+XONError_e XCNumberToSInt64(const XCNumberNormalContent_s * _Nonnull content, int64_t * _Nonnull value) {
+    if (content->significandLow != 0) {
+        return XONErrorNumberOutOfRange;
+    }
+    if ((content->significandHigh & 0x1) != 0) {
+        return XONErrorNumberOutOfRange;
+    }
+    // 1 e: 1, m: 0.500000,  e: 64, m: 0.750000, mbits: 3fe8000000000000
+    // 0xC000000000000000ULL,  e: 1, m: 0.500000, mbits: 3fe0000000000000
+    
+    uint64_t bits = (UINT64_C(1) << UINT64_C(63)) | (content->significandHigh >> UINT64_C(1));
+    int64_t trailingZerosCount = XCUInt64TrailingZeroBitCount(bits);
+    
+//    //    UINT64_C(1) << 63
+    int exponent = content->exponent;
+    if (exponent >= 1 && exponent <= 64 && 64 - exponent <= trailingZerosCount) {
+        uint64_t n = bits >> ((uint64_t)(64 - exponent));
+        
+        if (content->sign != 0) {
+            // * -1
+            if (n == 0x8000000000000000ULL) {
+                *value = INT64_MIN;
+                return XONErrorNone;
+            } else if (n < 0x8000000000000000ULL) {
+                *value = (int64_t)n * (-1LL);
+                return XONErrorNone;
+            } else {
+                return XONErrorNumberOutOfRange;
+            }
+        } else {
+            if (n < 0x8000000000000000ULL) {
+                *value = (int64_t)n;
+                return XONErrorNone;
+            } else {
+                return XONErrorNumberOutOfRange;
+            }
+        }
+    } else {
+        return XONErrorNumberOutOfRange;
+    }
+//    uint64_t bits = 0x3FE0000000000000ULL;
+//    if (content->sign != 0) {
+//        bits = bits | 0x8000000000000000ULL;
+//    }
+//    bits = bits | (content->significandHigh >> 12);
+//    double m = *(double *)&bits;
+//    double result = scalbn(m, content->exponent);
+//    int e2 = 0;
+//    double m2 = frexp(result, &e2);
+//    if (m2 != m) {
+//        return XONErrorNumberOutOfRange;
+//    }
+//    *value = result;
+    
+//    uint64_t m2 = (UINT64_C(1) << 63) | m;
+//    if (exponent >= 0 && exponent <= 63 && 63 - exponent <= trailingZerosCount) {
+//        uint64_t value = m2 >> (63 - exponent);
+//        // 1 exponent=0
+//        // 2 exponent=1 1
+//        uint64_t sint64Min = UINT64_C(1) << 63;
+//        if (sign) {// 负数
+//            if (value == sint64Min) {
+//                number->type = XCNumberTypeSInt;
+//                number->value.s = INT64_MIN;
+//                return XONErrorNone;
+//            } else if (value < sint64Min) {
+//                int64_t sv = value;
+//                sv *= -1;
+//                number->type = XCNumberTypeSInt;
+//                number->value.s = sv;
+//                return XONErrorNone;
+//            } else {
+//                number->type = XCNumberTypeNone;
+//                number->value.u = 0;
+//                return XONErrorNumberOutOfRange;
+//            }
+//        } else {
+//            if (value < sint64Min) {
+//                int64_t sv = value;
+//                number->type = XCNumberTypeSInt;
+//                number->value.s = sv;
+//            } else {
+//                number->type = XCNumberTypeUInt;
+//                number->value.u = value;
+//            }
+//            return XONErrorNone;
+//        }
+//    } else {
+//        number->type = XCNumberTypeNone;
+//        number->value.u = 0;
+//        return XONErrorNumberOutOfRange;
+//    }
+    return XONErrorNone;
+}
+XONError_e XCNumberToUInt64(const XCNumberNormalContent_s * _Nonnull content, uint64_t * _Nonnull value) {
+    if (content->significandLow != 0) {
+        return XONErrorNumberOutOfRange;
+    }
+    if ((content->significandHigh & 0x1) != 0) {
+        return XONErrorNumberOutOfRange;
+    }
+    if (content->sign != 0) {
+        return XONErrorNumberOutOfRange;
+    }
+    // 1 e: 1, m: 0.500000,  e: 64, m: 0.750000, mbits: 3fe8000000000000
+    // 0xC000000000000000ULL,  e: 1, m: 0.500000, mbits: 3fe0000000000000
+    
+    uint64_t bits = (UINT64_C(1) << UINT64_C(63)) | (content->significandHigh >> UINT64_C(1));
+    int64_t trailingZerosCount = XCUInt64TrailingZeroBitCount(bits);
+    
+//    //    UINT64_C(1) << 63
+    int exponent = content->exponent;
+    if (exponent >= 1 && exponent <= 64 && 64 - exponent <= trailingZerosCount) {
+        *value = bits >> ((uint64_t)(64 - exponent));
+        return XONErrorNone;
+    } else {
+        return XONErrorNumberOutOfRange;
+    }
+//
+//    uint64_t bits = (content->significandHigh >> UINT64_C(1)) | (UINT64_C(1) << UINT64_C(63));
+//    if (content->sign != 0) {
+//        bits = bits | 0x8000000000000000ULL;
+//    }
+//    bits = bits | (content->significandHigh >> 12);
+//    double m = *(double *)&bits;
+//    double result = scalbn(m, content->exponent);
+//    int e2 = 0;
+//    double m2 = frexp(result, &e2);
+//    if (m2 != m) {
+//        return XONErrorNumberOutOfRange;
+//    }
+//    *value = result;
+    return XONErrorNone;
+}
 //XONError_e XCDecodeHeader2(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, XCValueHeader_s * _Nonnull header) {
 //    XAssert(bytes, "");
 //    XAssert(header, "");
@@ -1304,8 +1462,8 @@ XONError_e XCEncodeNumberDouble(XCEncodeBuffer_s * _Nonnull buffer, double value
         }
     } else {
         int e = 0;
-        double d = frexp(value, &e);
-        uint64_t bits = *((uint64_t *)(&d));
+        double m = frexp(value, &e);
+        uint64_t bits = *((uint64_t *)(&m));
         XCNumberNormalContent_s content = {};
         content.sign = (uint32_t)(bits >> 63);
         content.exponent = e;
@@ -1315,6 +1473,45 @@ XONError_e XCEncodeNumberDouble(XCEncodeBuffer_s * _Nonnull buffer, double value
 //        XCNumberNormalContent_s data = _XCEncodeNumberFloat64(value);
 //        return __XCEncodeNumberByte(buffer, data);
     }
+}
+
+void test2(double value) {
+    
+    int e = 0;
+    double m = frexp(value, &e);
+    double v2 = scalbn(m, e);
+    XAssert(v2 == value, "");
+    uint64_t bits = *((uint64_t *)(&m));
+    XCNumberNormalContent_s content = {};
+    content.sign = (uint32_t)(bits >> 63);
+    content.exponent = e;
+    content.significandHigh = bits << 12;
+    content.significandLow = 0;
+
+    uint64_t vbits = *((uint64_t *)(&value));
+
+    printf("v: %llx\n", vbits);
+    printf("m: %llx\n", bits);
+
+}
+void test() {
+    // 1 e: 1, m: 0.500000,  e: 64, m: 0.750000, mbits: 3fe8000000000000
+    // 0xC000000000000000ULL,  e: 1, m: 0.500000, mbits: 3fe0000000000000
+
+//    double value = (double)(0xC000000000000000ULL);
+    double value = (double)(1);
+    int e = 0;
+    double m = frexp(value, &e);
+    uint64_t b = *(uint64_t *)&m;
+    printf("e: %d, m: %lf, mbits: %llx \n", e, m, b);
+    
+    
+    test2(0.1);
+    test2(12314124131);
+    test2(1423534);
+    test2(-0.1);
+    test2(-12314124131);
+    test2(-1423534);
 }
 
 XONError_e XCEncodeTimeInvalid(XCEncodeBuffer_s * _Nonnull buffer) {
@@ -1374,14 +1571,23 @@ XONError_e XCEncodeTime(XCEncodeBuffer_s * _Nonnull buffer, int64_t second, uint
         }
     } else {
         if (0 == attosecond) {
-            XCEncodeBufferExpandCapacity(buffer, buffer->location + 11);
-            uint8_t header = 0;
-            uint64_t encodedBytes = XCSInt64ZigzagEncode(second);
-            ssize_t slength = __XCEncodeUInt64VarintToBuffer(buffer->bytes + buffer->location + 1, encodedBytes);
-            XCEncodeTypeLayout(&header, XCTypeSimpleValue, XCSimpleValueTimeSecond);
-            buffer->bytes[buffer->location] = header;
-            buffer->location += 1 + slength;
-            return XONErrorNone;
+            if (0 == attosecond) {
+                XCEncodeBufferExpandCapacity(buffer, buffer->location + 1);
+                uint8_t header = 0;
+                XCEncodeTypeLayout(&header, XCTypeSimpleValue, XCSimpleValueTimeZero);
+                buffer->bytes[buffer->location] = header;
+                buffer->location += 1;
+                return XONErrorNone;
+            } else {
+                XCEncodeBufferExpandCapacity(buffer, buffer->location + 11);
+                uint8_t header = 0;
+                uint64_t encodedBytes = XCSInt64ZigzagEncode(second);
+                ssize_t slength = __XCEncodeUInt64VarintToBuffer(buffer->bytes + buffer->location + 1, encodedBytes);
+                XCEncodeTypeLayout(&header, XCTypeSimpleValue, XCSimpleValueTimeSecond);
+                buffer->bytes[buffer->location] = header;
+                buffer->location += 1 + slength;
+                return XONErrorNone;
+            }
         } else {
             XCEncodeBufferExpandCapacity(buffer, buffer->location + 21);
             uint8_t header = 0;
