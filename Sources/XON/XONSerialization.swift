@@ -261,22 +261,6 @@ public class XCWriter {
                     })
                 }
             }
-//            v.withUTF8 { bytes in
-//
-//            };
-//            guard let data = v.data(using: .utf8) else {
-//                throw XON.error(code: XONErrorStringContent)
-//            }
-//            try self.write({
-//                return XCEncodeStringHeader(&self.buffer, data.count)
-//            })
-//            if !data.isEmpty {
-//                try self.write({
-//                    return data.withUnsafeBytes { ptr in
-//                        return XCEncodeBody(&self.buffer, ptr.baseAddress!, data.count)
-//                    }
-//                })
-//            }
         case .data(let data):
             try self.write({
                 return XCEncodeDataHeader(&self.buffer, data.count)

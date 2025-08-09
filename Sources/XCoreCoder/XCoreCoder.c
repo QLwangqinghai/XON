@@ -1494,7 +1494,7 @@ void test2(double value) {
     printf("m: %llx\n", bits);
 
 }
-void test() {
+void test(void) {
     // 1 e: 1, m: 0.500000,  e: 64, m: 0.750000, mbits: 3fe8000000000000
     // 0xC000000000000000ULL,  e: 1, m: 0.500000, mbits: 3fe0000000000000
 

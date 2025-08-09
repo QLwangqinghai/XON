@@ -1,9 +1,3 @@
-//
-//  Message.swift
-//  XON
-//
-//  Created by vector on 2024/5/4.
-//
 
 import Foundation
 

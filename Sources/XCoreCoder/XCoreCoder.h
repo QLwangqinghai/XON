@@ -11,9 +11,6 @@
 
 extern char * _Nonnull const XONErrorDomain;
 
-
-#define XONTypeConstant 0
-
 typedef enum {
     XCTypeSimpleValue = 0,
     
@@ -224,7 +221,7 @@ extern XONError_e XCNumberToFloat64(const XCNumberNormalContent_s * _Nonnull con
 extern XONError_e XCNumberToSInt64(const XCNumberNormalContent_s * _Nonnull content, int64_t * _Nonnull value);
 extern XONError_e XCNumberToUInt64(const XCNumberNormalContent_s * _Nonnull content, uint64_t * _Nonnull value);
 
-extern void test();
+extern void test(void);
 //extern XONError_e XCDecodeNumber64(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, ssize_t format, ssize_t count, XCNumberValue_s * _Nonnull number);
 
 #pragma mark - EncodeBuffer
