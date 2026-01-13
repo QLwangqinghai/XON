@@ -21,7 +21,7 @@ let n = Int64.max as NSNumber
 
 //try! tester.testString()
 
-try! tester.testStringNumberArray()
+try! tester.testSpeed()
 
 final class XONTests : NSObject {
 

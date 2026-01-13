@@ -1,6 +1,12 @@
 # XON
 Simple data interchange format
 
+## XON 数据布局
+
+### TC
+
+
+
 ## Types
 
 Type(3Bit)  | Layout(5Bit) | Sublayout | Meaning | Used For | Note

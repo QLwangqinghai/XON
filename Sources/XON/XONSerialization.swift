@@ -113,6 +113,7 @@ public class XCReader {
             return nil
         }
     }
+    
     private func readNumber(index: UnsafeMutablePointer<Int>, contentLength: Int) throws -> NSNumber {
         var value = XCNumberNormalContent_s()
         let error = XCDecodeNormalNumber(self.bytes, self.endIndex, index, contentLength, &value)

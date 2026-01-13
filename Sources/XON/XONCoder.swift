@@ -145,7 +145,6 @@ public class XDecoderImpl : XDecoder {
 
     public let value: XONValue
     public let parent: XCodingContainer?
-    
     public let key: XCodingKey
     
     public let userInfo: [AnyHashable : Any]
@@ -245,7 +244,7 @@ public protocol XEncoder : XCodingContainer {
     mutating func encodeData(_ value: Data) throws
     mutating func encodeMessage(_ message: Message<XONValue>) throws
     mutating func encodeArray(_ array: [XONValue]) throws
-    mutating func encodeMessage(type: Int64, container: (inout XMessageEncodingContainer) throws -> Void) throws
+    mutating func encodeMessage(_ container: (inout XMessageEncodingContainer) throws -> Void) throws
     mutating func encodeArray(_ container: (inout XArrayEncodingContainer) throws -> Void) throws
     mutating func encode<T>(_ value: T) throws -> Data where T : XEncodable
 }
@@ -256,7 +255,7 @@ public struct XMessageEncodingContainer : XCodingContainer {
     public let userInfo: [AnyHashable : Any]
     var message: Message<XONValue>
     
-    init(parent: XCodingContainer?, key: XCodingKey, userInfo: [AnyHashable : Any], type: Int64) {
+    init(parent: XCodingContainer?, key: XCodingKey, userInfo: [AnyHashable : Any]) {
         self.parent = parent
         self.key = key
         self.userInfo = userInfo
@@ -358,8 +357,8 @@ public struct XEncoderImpl: XEncoder {
         self.value = .array(array)
     }
     
-    public mutating func encodeMessage(type: Int64, container: (inout XMessageEncodingContainer) throws -> Void) throws {
-        var encoder = XMessageEncodingContainer(parent: self.parent, key: self.key, userInfo: self.userInfo, type: type)
+    public mutating func encodeMessage(_ container: (inout XMessageEncodingContainer) throws -> Void) throws {
+        var encoder = XMessageEncodingContainer(parent: self.parent, key: self.key, userInfo: self.userInfo)
         do {
             try container(&encoder)
         } catch let error {
