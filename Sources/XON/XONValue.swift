@@ -209,88 +209,29 @@ public enum XONType : Int {
 }
 
 public struct XONTime : Hashable {
-    public let second: Int64
-    public let attosecond: UInt64
-    
-    public init(second: Int64, attosecond: UInt64) {
-        self.second = second
-        self.attosecond = attosecond
-    }
-    
-    public init(second: Int64) {
-        self.second = second
-        self.attosecond = 0
-    }
-
-    public init(millisecond: Int64) {
-        var second = millisecond / 1000
-        var tmp = millisecond % 1000
-        if tmp < 0 {
-            tmp += 1000
-            second -= 1
-        }
-        self.second = second
-        self.attosecond = UInt64(tmp) * (XONTime.attosecondPerSecond / 1000)
-    }
+    public let microsecond: Int64
     
     public init(microsecond: Int64) {
-        var second = microsecond / 1000_000
-        var tmp = microsecond % 1000_000
-        if tmp < 0 {
-            tmp += 1000_000
-            second -= 1
-        }
-        self.second = second
-        self.attosecond = UInt64(tmp) * (XONTime.attosecondPerSecond / 1000_000)
+        self.microsecond = microsecond
     }
-    
-    public init(nanosecond: Int64) {
-        var second = nanosecond / 1000_000_000
-        var tmp = nanosecond % 1000_000_000
-        if tmp < 0 {
-            tmp += 1000_000_000
-            second -= 1
-        }
-        self.second = second
-        self.attosecond = UInt64(tmp) * (XONTime.attosecondPerSecond / 1000_000_000)
-    }
-    
+
     public func hash(into hasher: inout Hasher) {
-        if self.isInvalid {
-            hasher.combine(Int64.max)
-        } else {
-            hasher.combine(self.second)
-            hasher.combine(self.attosecond)
-        }
+        hasher.combine(self.microsecond)
     }
     
     public static func == (lhs: XONTime, rhs: XONTime) -> Bool {
-        if lhs.isInvalid {
-            if rhs.isInvalid {
-                return true
-            } else {
-                return false;
-            }
-        } else {
-            return lhs.second == rhs.second && lhs.attosecond == rhs.attosecond
-        }
+        return lhs.microsecond == rhs.microsecond
     }
     
     public var isInvalid: Bool {
-        return XTimestampIsInvalid(XTimestamp_s(second: self.second, attosecond: self.attosecond))
+        return XTimestampIsInvalid(self.microsecond)
     }
     
     public static let attosecondPerSecond: UInt64 = 1_000_000_000_000_000_000
-    public static let invalid = XONTime(second: Int64.min, attosecond: UInt64.max - 1)
-    public static let distantPast = XONTime(second: Int64.min, attosecond: UInt64.max)
-    public static let distantFuture = XONTime(second: Int64.max, attosecond: UInt64.max)
-    public static let zero = XONTime(second: 0, attosecond: 0)
+    public static let invalid = XONTime(microsecond: XTimestampInvalidDefault())
+    public static let zero = XONTime(microsecond: 0)
     
-    public static func time(second: Int64, attosecond: UInt64) -> XONTime {
-        if XTimestampIsInvalid(XTimestamp_s(second: second, attosecond: attosecond)) {
-            return XONTime.invalid
-        } else {
-            return XONTime(second: second, attosecond: attosecond)
-        }
+    public static func time(microsecond: Int64) -> XONTime {
+        return XONTime(microsecond: microsecond)
     }
 }

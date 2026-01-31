@@ -4,7 +4,8 @@ import Foundation
 public struct XON {
     public static let domain = String(cString: XONErrorDomain)
     public static let countMax: UInt64 = UInt64.max >> 8
-    
+    public static let notSupport: NSError = error(code: XONErrorNotSupport)
+
     public static let objectError: NSError = error(code: XONErrorContent)
     public static let countError: NSError = error(code: XONErrorCount)
     public static let contentError: NSError = error(code: XONErrorContent)

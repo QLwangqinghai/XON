@@ -739,7 +739,7 @@ func testVarint() {
 //
 //    }
 //
-//    let int64time = testVarint(buffer: buffer, encode: __XCEncodeUInt64Varint, decode: __XCDecodeUInt64Varint)
+//    let int64time = testVarint(buffer: buffer, encode: __XONEncodeUInt64Varint, decode: __XCDecodeUInt64Varint)
 //
 //    usleep(1000000)
 //
@@ -747,9 +747,9 @@ func testVarint() {
 //    TestObject.uint63Array.forEach { _ in
 //
 //    }
-//    let int63time = testVarint(buffer: buffer, encode: __XCEncodeUInt63Varint, decode: __XCDecodeUInt63Varint)
+//    let int63time = testVarint(buffer: buffer, encode: __XONEncodeUInt63Varint, decode: __XCDecodeUInt63Varint)
 //
-////    let int63time = testVarint(buffer: buffer, encode: __XCEncodeUInt64Varint2, decode: __XCDecodeUInt64Varint)
+////    let int63time = testVarint(buffer: buffer, encode: __XONEncodeUInt64Varint2, decode: __XCDecodeUInt64Varint)
 //
 //    print("testVarint: int64time:\(int64time) int63time:\(int63time) fast:\(int64time - int63time)")
     

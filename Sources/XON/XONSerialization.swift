@@ -53,13 +53,13 @@ public class XCReader {
         }
         return header
     }
-    private func readTime(index: UnsafeMutablePointer<Int>, secondOnly: Bool) throws -> XONTime {
-        var value: XTimestamp_s = XTimestampZero()
-        let error = XCDecodeTime(self.bytes, self.endIndex, index, secondOnly, &value)
+    private func readTime(index: UnsafeMutablePointer<Int>, count: Int) throws -> XONTime {
+        var value: XTimestamp = XTimestampZero()
+        let error = XCDecodeTime(self.bytes, self.endIndex, index, count, &value)
         guard error == XONErrorNone else {
             throw XON.error(code: error)
         }
-        return XONTime(second: value.second, attosecond: value.attosecond)
+        return XONTime(microsecond: value)
     }
     
     private func readCount(index: UnsafeMutablePointer<Int>, layout: UInt32) throws -> Int {
@@ -154,16 +154,28 @@ public class XCReader {
                 return .bool(true)
             case XCSimpleValueTimeInvalid.rawValue:
                 return .time(XONTime.invalid)
-            case XCSimpleValueTimeDistantPast.rawValue:
-                return .time(XONTime.distantPast)
-            case XCSimpleValueTimeDistantFuture.rawValue:
-                return .time(XONTime.distantFuture)
-            case XCSimpleValueTimeZero.rawValue:
+            case XCSimpleValueTime0.rawValue:
                 return .time(XONTime.zero)
-            case XCSimpleValueTimeSecond.rawValue:
-                return .time(try self.readTime(index: index, secondOnly: true))
-            case XCSimpleValueTimeScientificNotation.rawValue:
-                return .time(try self.readTime(index: index, secondOnly: false))
+            case XCSimpleValueTime1.rawValue:
+                return .time(try self.readTime(index: index, count: 1))
+            case XCSimpleValueTime2.rawValue:
+                return .time(try self.readTime(index: index, count: 2))
+            case XCSimpleValueTime3.rawValue:
+                return .time(try self.readTime(index: index, count: 3))
+            case XCSimpleValueTime4.rawValue:
+                return .time(try self.readTime(index: index, count: 4))
+            case XCSimpleValueTime5.rawValue:
+                return .time(try self.readTime(index: index, count: 5))
+            case XCSimpleValueTime6.rawValue:
+                return .time(try self.readTime(index: index, count: 6))
+            case XCSimpleValueTime7.rawValue:
+                return .time(try self.readTime(index: index, count: 7))
+            case XCSimpleValueTime8.rawValue:
+                return .time(try self.readTime(index: index, count: 8))
+            case XCSimpleValueUndefine14.rawValue:
+                throw XON.notSupport
+            case XCSimpleValueNumberLarge.rawValue:
+                throw XON.notSupport
             case XCSimpleValueNumberNAN.rawValue:
                 return .number(NSNumber(value: Double.nan))
             case XCSimpleValueNumberPositiveInfinity.rawValue:
@@ -218,18 +230,18 @@ public class XCReader {
 }
 
 public class XCWriter {
-    public var buffer: XCEncodeBuffer_s = XCEncodeBufferMakeDefault()
+    public var buffer: XONEncodeBuffer_s = XONEncodeBufferMakeDefault()
     
     public init(minimumCapacity: Int) {
-        XCEncodeBufferReserveCapacity(&buffer, minimumCapacity)
+        XONEncodeBufferReserveCapacity(&buffer, minimumCapacity)
     }
     
     public func fit() {
-        XCEncodeBufferFitSize(&buffer)
+        XONEncodeBufferFitSize(&buffer)
     }
     
     deinit {
-        XCEncodeBufferDeallocate(&buffer)
+        XONEncodeBufferDeallocate(&buffer)
     }
     
     public func write(_ closure: () -> XONError_e) throws {
@@ -243,39 +255,39 @@ public class XCWriter {
         switch value {
         case .null:
             try self.write({
-                return XCEncodeNull(&self.buffer)
+                return XONEncodeNull(&self.buffer)
             })
         case .bool(let v):
             try self.write({
-                return XCEncodeBool(&self.buffer, v)
+                return XONEncodeBool(&self.buffer, v)
             })
         case .string(let _v):
             var v = _v as String
             let count = v.utf8.count
             try self.write({
-                return XCEncodeStringHeader(&self.buffer, count)
+                return XONEncodeStringHeader(&self.buffer, count)
             })
             if count > 0 {
                 try v.withUTF8 { ptr in
                     try self.write({
-                        return XCEncodeBody(&self.buffer, ptr.baseAddress!, count)
+                        return XONEncodeBody(&self.buffer, ptr.baseAddress!, count)
                     })
                 }
             }
         case .data(let data):
             try self.write({
-                return XCEncodeDataHeader(&self.buffer, data.count)
+                return XONEncodeDataHeader(&self.buffer, data.count)
             })
             if !data.isEmpty {
                 try data.withUnsafeBytes { ptr in
                     try self.write({
-                        return XCEncodeBody(&self.buffer, ptr.baseAddress!, data.count)
+                        return XONEncodeBody(&self.buffer, ptr.baseAddress!, data.count)
                     })
                 }
             }
         case .array(let array):
             try self.write({
-                return XCEncodeArrayHeader(&self.buffer, array.count)
+                return XONEncodeArrayHeader(&self.buffer, array.count)
             })
             try array.forEach { item in
                 try self._writeValue(item)
@@ -284,36 +296,26 @@ public class XCWriter {
             let v = n
             if let value = v as? Double {
                 try self.write({
-                    return XCEncodeNumberDouble(&self.buffer, value)
+                    return XONEncodeNumberDouble(&self.buffer, value)
                 })
             } else if let value = v as? Int64 {
                 try self.write({
-                    return XCEncodeNumberSInt64(&self.buffer, value)
+                    return XONEncodeNumberSInt64(&self.buffer, value)
                 })
             } else if let value = v as? UInt64 {
                 try self.write({
-                    return XCEncodeNumberUInt64(&self.buffer, value)
+                    return XONEncodeNumberUInt64(&self.buffer, value)
                 })
             } else {
                 throw XON.error(code: XONErrorNumberContent)
             }
         case .time(let v):
             try self.write({
-                if v == XONTime.invalid {
-                    return XCEncodeTimeInvalid(&self.buffer)
-                } else if v == XONTime.distantPast {
-                    return XCEncodeTimeDistantPast(&self.buffer)
-                } else if v == XONTime.distantFuture {
-                    return XCEncodeTimeDistantFuture(&self.buffer)
-                } else if v == XONTime.zero {
-                    return XCEncodeTimeZero(&self.buffer)
-                } else {
-                    return XCEncodeTime(&self.buffer, v.second, v.attosecond)
-                }
+                return XONEncodeTime(&self.buffer, v.microsecond)
             })
         case .message(let message):
             try self.write({
-                return XCEncodeMessageHeader(&self.buffer, message.collection.count)
+                return XONEncodeMessageHeader(&self.buffer, message.collection.count)
             })
             var elements = message.collection.map { e in
                 return e
@@ -324,7 +326,7 @@ public class XCWriter {
             var prev: UInt32 = 0
             try elements.forEach { (key, value) in
                 try self.write({
-                    return XCEncodeFieldKeyOffset(&self.buffer, key - prev)
+                    return XONEncodeFieldKeyOffset(&self.buffer, key - prev)
                 })
                 prev = key
                 try self._writeValue(value)
