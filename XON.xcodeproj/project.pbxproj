@@ -22,7 +22,6 @@
 		D6463E492BDE99CB00D6AF57 /* XCoreCoder.c in Sources */ = {isa = PBXBuildFile; fileRef = D6463E432BDE99CB00D6AF57 /* XCoreCoder.c */; };
 		D6463E4B2BDE9D4F00D6AF57 /* XONCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E4A2BDE9D4F00D6AF57 /* XONCoder.swift */; };
 		D6463E4D2BE53C1F00D6AF57 /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E4C2BE53C1F00D6AF57 /* Collection.swift */; };
-		D6463E4F2BE61C2600D6AF57 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E4E2BE61C2600D6AF57 /* Message.swift */; };
 		D6546F4A2BECD7AF00E2C459 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = D6546F492BECD7AF00E2C459 /* README.md */; };
 /* End PBXBuildFile section */
 
@@ -82,7 +81,6 @@
 		D6463E432BDE99CB00D6AF57 /* XCoreCoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = XCoreCoder.c; sourceTree = "<group>"; };
 		D6463E4A2BDE9D4F00D6AF57 /* XONCoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XONCoder.swift; sourceTree = "<group>"; };
 		D6463E4C2BE53C1F00D6AF57 /* Collection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
-		D6463E4E2BE61C2600D6AF57 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		D6546F492BECD7AF00E2C459 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -186,7 +184,6 @@
 				D6463E402BDE99CB00D6AF57 /* XExtensions.swift */,
 				D6463E4A2BDE9D4F00D6AF57 /* XONCoder.swift */,
 				D6463E4C2BE53C1F00D6AF57 /* Collection.swift */,
-				D6463E4E2BE61C2600D6AF57 /* Message.swift */,
 			);
 			path = XON;
 			sourceTree = "<group>";
@@ -345,7 +342,6 @@
 				D6463E472BDE99CB00D6AF57 /* XExtensions.swift in Sources */,
 				D6463E442BDE99CB00D6AF57 /* XONSerialization.swift in Sources */,
 				D6463E452BDE99CB00D6AF57 /* XON.swift in Sources */,
-				D6463E4F2BE61C2600D6AF57 /* Message.swift in Sources */,
 				D6463E262BDE999400D6AF57 /* XON.docc in Sources */,
 				D6463E462BDE99CB00D6AF57 /* XONValue.swift in Sources */,
 				D6463E4B2BDE9D4F00D6AF57 /* XONCoder.swift in Sources */,

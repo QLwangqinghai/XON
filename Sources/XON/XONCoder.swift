@@ -47,9 +47,9 @@ public struct XMessageDecodingContainer : XCodingContainer {
     public let parent: XCodingContainer?
     public let key: XCodingKey
     public let userInfo: [AnyHashable : Any]
-    public let message: Message<XONValue>
+    public let message: [UInt32 : XONValue]
     
-    public init(parent: XCodingContainer?, key: XCodingKey, userInfo: [AnyHashable : Any], message: Message<XONValue>) {
+    public init(parent: XCodingContainer?, key: XCodingKey, userInfo: [AnyHashable : Any], message: [UInt32 : XONValue]) {
         self.parent = parent
         self.key = key
         self.userInfo = userInfo
@@ -60,12 +60,12 @@ public struct XMessageDecodingContainer : XCodingContainer {
         return self.message.count
     }
     
-    public func collection() throws -> Message<XONValue> {
+    public func collection() throws -> [UInt32 : XONValue] {
         return self.message
     }
     
     public func elements() throws -> [(UInt32, XDecoder)] {
-        return self.message.collection.map { (key, value) in
+        return self.message.map { (key, value) in
             return (key, value)
         }.sorted { lhs, rhs in
             return lhs.0 < rhs.0
@@ -75,15 +75,15 @@ public struct XMessageDecodingContainer : XCodingContainer {
     }
 
     public var allKeys: [UInt32] {
-        return self.message.collection.keys.sorted()
+        return self.message.keys.sorted()
     }
 
     public func contains(_ key: UInt32) -> Bool {
-        return nil != self.message.collection[key]
+        return nil != self.message[key]
     }
 
     public func decoder(forKey key: UInt32) throws -> XDecoder {
-        guard let value = self.message.collection[key] else {
+        guard let value = self.message[key] else {
             throw XON.fieldNotFound
         }
         return XDecoderImpl(parent: self, key: .messageField(key), userInfo: self.userInfo, value: value)
@@ -206,7 +206,7 @@ public class XDecoderImpl : XDecoder {
         return try T(from: self)
     }
     
-    public func messageValue() throws -> Message<XONValue> {
+    public func messageValue() throws -> [UInt32 : XONValue] {
         guard case .message(let value) = self.value else {
             throw XON.typeError
         }
@@ -242,7 +242,7 @@ public protocol XEncoder : XCodingContainer {
     mutating func encodeTime(_ value: XONTime) throws
     mutating func encodeString(_ value: String) throws
     mutating func encodeData(_ value: Data) throws
-    mutating func encodeMessage(_ message: Message<XONValue>) throws
+    mutating func encodeMessage(_ message: [UInt32 : XONValue]) throws
     mutating func encodeArray(_ array: [XONValue]) throws
     mutating func encodeMessage(_ container: (inout XMessageEncodingContainer) throws -> Void) throws
     mutating func encodeArray(_ container: (inout XArrayEncodingContainer) throws -> Void) throws
@@ -253,13 +253,13 @@ public struct XMessageEncodingContainer : XCodingContainer {
     public let parent: XCodingContainer?
     public let key: XCodingKey
     public let userInfo: [AnyHashable : Any]
-    var message: Message<XONValue>
+    var message: [UInt32 : XONValue]
     
     init(parent: XCodingContainer?, key: XCodingKey, userInfo: [AnyHashable : Any]) {
         self.parent = parent
         self.key = key
         self.userInfo = userInfo
-        self.message = Message<XONValue>()
+        self.message = [UInt32 : XONValue]()
     }
     
     public mutating func encodeElement<T>(key: UInt32, value: T) throws where T : XEncodable {
@@ -350,7 +350,7 @@ public struct XEncoderImpl: XEncoder {
     public mutating func encodeData(_ value: Data) throws {
         self.value = .data(value)
     }
-    public mutating func encodeMessage(_ message: Message<XONValue>) throws {
+    public mutating func encodeMessage(_ message: [UInt32 : XONValue]) throws {
         self.value = .message(message)
     }
     public mutating func encodeArray(_ array: [XONValue]) throws {

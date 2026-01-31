@@ -210,7 +210,7 @@ extension XONTime : Codable {
     }
     
     public init?(jsonString string: String) {
-        guard string.count > 0, var value = Int64(string) else {
+        guard string.count > 0, let value = Int64(string) else {
             return nil
         }
         self = XONTime.time(microsecond: value)

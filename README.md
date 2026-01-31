@@ -18,7 +18,7 @@ Type(3Bit)  | Layout(5Bit) | Sublayout | Meaning | Used For | Note
 2      | (layout & 0x10) == 0x10, LengthOfTime(in seconds)=>[0x10, 0x1f]  | 8Bit Fractional Part Info |  Time | Decimal time in seconds
 3      | count[0, 30] => [0, 30], if (count>=31) layout=31  | layout==31, count = Varint63Decoding \+ 31 |  String | String(Utf8Encoding) | 0 <= count <= INT64\_MAX
 4      | count[0, 30] => [0, 30], if (count>=31) layout=31  | layout==31, count = Varint63Decoding + 31 |  Bytes | | 0 <= count <= INT64\_MAX
-5      | count[0, 30] => [0, 30], if (count>=31) layout=31  | layout==31, count = Varint63Decoding + 31 |  Message | Map\<UInt32, Value\>  | 0 <= count <= UINT32\_MAX - 1, Map traversal order is based on key from small to large
+5      | count[0, 30] => [0, 30], if (count>=31) layout=31  | layout==31, count = Varint63Decoding + 31 |  XONMessage | Map\<UInt32, Value\>  | 0 <= count <= UINT32\_MAX - 1, Map traversal order is based on key from small to large
 6      | count[0, 30] => [0, 30], if (count>=31) layout=31  | layout==31, count = Varint63Decoding + 31 |  Array | Array\<Value\> | 0 <= count <= INT64\_MAX
 
 ### null

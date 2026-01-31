@@ -210,7 +210,7 @@ public class XCReader {
             guard collection.count == count else {
                 throw XON.error(code: XONErrorMessageContent)
             }
-            return .message(Message(collection: collection))
+            return .message(collection)
         case .array:
             let count: Int = try self.readCount(index: index, layout: header.layout)
             var elements: [XONValue] = []
@@ -315,9 +315,9 @@ public class XCWriter {
             })
         case .message(let message):
             try self.write({
-                return XONEncodeMessageHeader(&self.buffer, message.collection.count)
+                return XONEncodeMessageHeader(&self.buffer, message.count)
             })
-            var elements = message.collection.map { e in
+            var elements = message.map { e in
                 return e
             }
             elements.sort { lhs, rhs in

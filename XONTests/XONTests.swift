@@ -308,7 +308,7 @@ final class XONTests: XCTestCase {
         let values: [XCTestObject] = TestObject.stringNumberElements.map { (s, _, n) in
             var map: [UInt32 : XONValue] = [:]
             map[s] = .number(n)
-            return XCTestObject(.message(Message<XONValue>(collection: map)))
+            return XCTestObject(.message([UInt32 : XONValue](collection: map)))
         }
 
         testCoder(tag: tag, objects: values, times: 100)
@@ -517,13 +517,13 @@ extension XONValue {
     public static func randomMessageKey() -> UInt32 {
         return XONValue.keys[Int.random(in: 0 ..< 10000)].0
     }
-    public static func randomMessage(deep: Int, jsonSupport: Bool) -> Message<XONValue> {
+    public static func randomMessage(deep: Int, jsonSupport: Bool) -> [UInt32 : XONValue] {
         let count = randomLength(50)
         var map: [UInt32 : XONValue] = [:]
         for _ in 0 ..< count {
             map[XONValue.keys[Int.random(in: 0 ..< 10000)].0] = random(deep: deep + 1, jsonSupport: jsonSupport)
         }
-        let message = Message(collection: map)
+        let message = XONMessage(collection: map)
         return message
     }
     public static func random(jsonSupport: Bool) -> XONValue {
@@ -685,12 +685,12 @@ func randomSingleValueArray(count: Int) -> [XONValue] {
     return array
 }
 
-func randomSingleValueMessage(count: Int) -> Message<XONValue> {
+func randomSingleValueMessage(count: Int) -> [UInt32 : XONValue] {
     var map: [UInt32 : XONValue] = [:]
     for _ in 0 ..< count {
         map[UInt32.random(in: 1 ... UInt32.max)] = XONValue.randomSingleValue(jsonSupport: false)
     }
-    return Message(collection: map)
+    return XONMessage(collection: map)
 }
 
 func testCollection() {

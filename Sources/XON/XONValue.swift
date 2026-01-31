@@ -16,7 +16,7 @@ public enum XONValue : Hashable {
     case data(Data)
     case number(NSNumber)
     case time(XONTime)
-    case message(Message<XONValue>)
+    case message([UInt32 : XONValue])
     case array([XONValue])
     
     public func isNull() -> Bool {
@@ -62,7 +62,7 @@ public enum XONValue : Hashable {
         return value
     }
     
-    public func messageValue() throws -> Message<XONValue> {
+    public func messageValue() throws -> [UInt32 : XONValue] {
         guard case .message(let value) = self else {
             throw XON.typeError
         }
@@ -192,7 +192,7 @@ public enum XONValue : Hashable {
         return try self.dataValue()
     }
     
-    public func value(_ type: Message<XONValue>.Type) throws -> Message<XONValue> {
+    public func value(_ type: [UInt32 : XONValue].Type) throws -> [UInt32 : XONValue] {
         return try self.messageValue()
     }
 }
