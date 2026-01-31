@@ -7,54 +7,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "FB903C25-39E3-437A-872A-7D2D2A439F23"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Sources/XON/XExtensions.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "256"
-            endingLineNumber = "256"
-            landmarkName = "decimalValue()"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "FB903C25-39E3-437A-872A-7D2D2A439F23 - 94296c5053d828cb"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "XON.XONTime.decimalValue() -&gt; __C.NSDecimal"
-                  moduleName = "XON"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/vector/git.public/git.public/XON/Sources/XON/XExtensions.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "256"
-                  endingLineNumber = "256"
-                  offsetFromSymbolStart = "91">
-               </Location>
-               <Location
-                  uuid = "FB903C25-39E3-437A-872A-7D2D2A439F23 - 94296c5053d828cb"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "XON.XONTime.decimalValue() -&gt; __C.NSDecimal"
-                  moduleName = "XON"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/vector/git.public/git.public/XON/Sources/XON/XExtensions.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "256"
-                  endingLineNumber = "256"
-                  offsetFromSymbolStart = "25">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "2F6B1666-9877-425B-B788-26A8E1E54163"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"

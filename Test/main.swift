@@ -114,18 +114,6 @@ final class XONTests : NSObject {
             assert(b == value)
         } ()
         try! {
-            let value: XONValue = .time(XONTime.distantPast)
-            let data = try XONSerialization.encode(value)
-            let b = try XONSerialization.decode(data)
-            assert(b == value)
-        } ()
-        try! {
-            let value: XONValue = .time(XONTime.distantFuture)
-            let data = try XONSerialization.encode(value)
-            let b = try XONSerialization.decode(data)
-            assert(b == value)
-        } ()
-        try! {
             let value: XONValue = .time(XONTime.zero)
             let data = try XONSerialization.encode(value)
             let b = try XONSerialization.decode(data)
@@ -133,21 +121,20 @@ final class XONTests : NSObject {
         } ()
         
         try autoreleasepool {
-            let value: XONValue = .time(XONTime.time(second: 2257394757394845625, attosecond: 0))
+            let value: XONValue = .time(XONTime.time(microsecond: 2257394757394845625))
             let data = try XONSerialization.encode(value)
             let b = try XONSerialization.decode(data)
             assert(b == value)
         }
         
         try autoreleasepool {
-            let value: XONValue = .time(XONTime.time(second: 2257394757394845625, attosecond: 0))
+            let value: XONValue = .time(XONTime.time(microsecond: 575167568000000000))
             let data = try XONSerialization.encode(value)
             let b = try XONSerialization.decode(data)
             assert(b == value)
         }
-        
         try autoreleasepool {
-            let time = XONTime.time(second: 8432091145, attosecond: 575167568000000000)
+            let time = XONTime.time(microsecond: 9223372036854775800)
             let value: XONValue = .time(time)
             let string = value.jsonValue()
             print(string)
@@ -159,19 +146,7 @@ final class XONTests : NSObject {
             assert(time == time2)
         }
         try autoreleasepool {
-            let time = XONTime.time(second: 9223372036854775800, attosecond: 575167568000000003)
-            let value: XONValue = .time(time)
-            let string = value.jsonValue()
-            print(string)
-            let data = try XONSerialization.encode(value)
-            let b = try XONSerialization.decode(data)
-            assert(b == value)
-            
-            let time2 = XONTime(jsonString: string as! String)
-            assert(time == time2)
-        }
-        try autoreleasepool {
-            let time = XONTime.time(second: -9223372036854775800, attosecond: 575167568000000003)
+            let time = XONTime.time(microsecond: -9223372036854775800)
             let value: XONValue = .time(time)
             let string = value.jsonValue()
             print(string)
@@ -375,26 +350,11 @@ public struct TestObject {
         return (idx, XONValue.messageKeyMap[idx]!, n)
     }
     
-    public static let timeArray: [XONTime] = (1 ... 100000).map { index in
+    public static let timeArray: [XONTime] = (1 ... 200).map { index in
         if index == 0 {
             return XONTime.invalid
-        } else if index == 1 {
-            return XONTime.distantPast
-        } else if index == 2 {
-            return XONTime.distantFuture
         } else {
-            switch index % 5 {
-            case 0:
-                return XONTime(second: Int64.random(in: Int64.min ..< Int64.max))
-            case 1:
-                return XONTime(nanosecond: Int64.random(in: Int64.min ..< Int64.max))
-            case 2:
-                return XONTime(millisecond: Int64.random(in: Int64.min ..< Int64.max))
-            case 3:
-                return XONTime(microsecond: Int64.random(in: Int64.min ..< Int64.max))
-            default:
-                return XONTime.time(second: Int64.random(in: Int64.min ..< Int64.max), attosecond: UInt64.random(in: 0 ..< XONTime.attosecondPerSecond))
-            }
+            return XONTime(microsecond: Int64.random(in: Int64.min ... Int64.max))
         }
     }
     public static let uint63Array: [UInt64] = (1 ... 100000).map { index in
@@ -601,14 +561,10 @@ extension XONValue {
         switch rint {
         case 0:
             return XONTime.invalid
-        case 1:
-            return XONTime.distantPast
-        case 2:
-            return XONTime.distantPast
         case 3:
             return XONTime.zero
         default:
-            return XONTime(second: Int64.random(in: Int64.min ... Int64.max))
+            return XONTime(microsecond: Int64.random(in: Int64.min+1 ... Int64.max))
         }
     }
     

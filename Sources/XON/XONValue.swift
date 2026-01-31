@@ -227,7 +227,7 @@ public struct XONTime : Hashable {
         return XTimestampIsInvalid(self.microsecond)
     }
     
-    public static let attosecondPerSecond: UInt64 = 1_000_000_000_000_000_000
+    public static let microsecondPerSecond: UInt64 = 1_000_000
     public static let invalid = XONTime(microsecond: XTimestampInvalidDefault())
     public static let zero = XONTime(microsecond: 0)
     
