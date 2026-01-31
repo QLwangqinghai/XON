@@ -196,12 +196,6 @@ extension XONTime : XCodable {
     }
 }
 extension XONTime : Codable {
-    public enum CodingValue : String {
-        case invalid = "NaN"
-        case distantPast = "-Infinity"
-        case distantFuture = "Infinity"
-    }
-    
     public init(from decoder: Decoder) throws {
         let string = try decoder.singleValueContainer().decode(String.self)
         guard let v = XONTime(jsonString: string) else {
@@ -216,102 +210,32 @@ extension XONTime : Codable {
     }
     
     public init?(jsonString string: String) {
-        switch string {
-        case CodingValue.invalid.rawValue:
-            self = .invalid
-        case CodingValue.distantPast.rawValue:
-            self = .distantPast
-        case CodingValue.distantFuture.rawValue:
-            self = .distantFuture
-        default:
-            guard string.count > 0, var decimal = Decimal(string: string) else {
-                return nil
-            }
-            var secondDecimal = Decimal()
-            NSDecimalRound(&secondDecimal, &decimal, 0, NSDecimalNumber.RoundingMode.down)
-            let asecondDecimal = (decimal - secondDecimal) * Decimal(XONTime.attosecondPerSecond)
-            guard let second = NSDecimalNumber(decimal: secondDecimal) as? Int64, let asecond = NSDecimalNumber(decimal: asecondDecimal) as? UInt64 else {
-                return nil
-            }
-            self = XONTime.time(second: second, attosecond: asecond)
+        guard string.count > 0, var value = Int64(string) else {
+            return nil
         }
+        self = XONTime.time(microsecond: value)
     }
     
     public func encodeToJsonString() -> String {
-        if self.isInvalid {
-            return CodingValue.invalid.rawValue
-        } else if self == .distantPast {
-            return CodingValue.distantPast.rawValue
-        } else if self == .distantFuture {
-            return CodingValue.distantFuture.rawValue
-        } else {
-            let precision = Decimal.FormatStyle.Configuration.Precision.fractionLength(0 ..< 18)
-            let style = Decimal.FormatStyle().grouping(.never).precision(precision)
-            let d = (Decimal(self.second) * Decimal(XONTime.attosecondPerSecond) + Decimal(self.attosecond)) / Decimal(XONTime.attosecondPerSecond)
-            return d.formatted(style)
-        }
-    }
-    
-    public func decimalValue() -> Decimal {
-        if self.isInvalid {
-            return Decimal.nan
-        } else if self == .distantPast {
-            return Decimal(-Double.infinity)
-        } else if self == .distantFuture {
-            return Decimal(Double.infinity)
-        } else {
-            let d = (Decimal(self.second) * Decimal(XONTime.attosecondPerSecond) + Decimal(self.attosecond)) / Decimal(XONTime.attosecondPerSecond)
-            return d
-        }
-    }
-    
-    public init?(decimal: Decimal) {
-        if decimal.isNaN {
-            self = .invalid
-        } else if decimal.isInfinite {
-            if decimal.isSignMinus {
-                self = .distantPast
-            } else {
-                self = .distantFuture
-            }
-        } else {
-            var d = decimal
-            var secondDecimal = Decimal()
-            NSDecimalRound(&secondDecimal, &d, 0, NSDecimalNumber.RoundingMode.down)
-            let asecondDecimal = (decimal - secondDecimal) * Decimal(XONTime.attosecondPerSecond)
-            guard let second = NSDecimalNumber(decimal: secondDecimal) as? Int64, let asecond = NSDecimalNumber(decimal: asecondDecimal) as? UInt64 else {
-                return nil
-            }
-            self = XONTime.time(second: second, attosecond: asecond)
-        }
+        return self.microsecond.description
     }
     
     public func numberValue() -> NSNumber {
         if self.isInvalid {
             return Double.nan as NSNumber
-        } else if self == .distantPast {
-            return (-Double.infinity) as NSNumber
-        } else if self == .distantFuture {
-            return Double.infinity as NSNumber
         } else {
-            let d = (Decimal(self.second) * Decimal(XONTime.attosecondPerSecond) + Decimal(self.attosecond)) / Decimal(XONTime.attosecondPerSecond)
-            return NSDecimalNumber(decimal: d)
+            return self.microsecond as NSNumber
         }
     }
     
     public init?(number: NSNumber) {
-        if let second = number as? Int64 {
-            self = XONTime(second: second)
-        } else if var decimal = number as? Decimal {
-            var secondDecimal = Decimal()
-            NSDecimalRound(&secondDecimal, &decimal, 0, NSDecimalNumber.RoundingMode.down)
-            let asecondDecimal = (decimal - secondDecimal) * Decimal(XONTime.attosecondPerSecond)
-            guard let second = NSDecimalNumber(decimal: secondDecimal) as? Int64, let asecond = NSDecimalNumber(decimal: asecondDecimal) as? UInt64 else {
+        if let n = number as? Double, n.isNaN {
+            self = XONTime.invalid
+        } else {
+            guard let n = number as? Int64 else {
                 return nil
             }
-            self = XONTime.time(second: second, attosecond: asecond)
-        } else {
-            return nil
+            self = XONTime(microsecond: n)
         }
     }
 
