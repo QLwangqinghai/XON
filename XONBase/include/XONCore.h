@@ -1,6 +1,6 @@
 
-#ifndef XCoreCoder_h
-#define XCoreCoder_h
+#ifndef XONCore_h
+#define XONCore_h
 
 #include <stdlib.h>
 #include <stdbool.h>
@@ -10,53 +10,53 @@
 extern char * _Nonnull const XONErrorDomain;
 
 typedef enum {
-    XCTypeSimpleValue = 0,
+    XONWireTypeSimpleValue = 0,
     
     /// Type - Count - Value 9
-    XCTypeString = 1,
+    XONWireTypeString = 1,
 
     /// Type - Count - Value 9
-    XCTypeData,
+    XONWireTypeData,
 
     /// Type - Count - Value[(offst, Item)] 9
-    XCTypeMessage,
+    XONWireTypeMessage,
 
     /// Type - Count - Value[Item] 9
-    XCTypeArray,
-} XCType_e;
+    XONWireTypeArray,
+} XONWireType_e;
 
 typedef enum {
-    XCSimpleValueError = 0,
-    XCSimpleValueNil = 1,
+    XONSimpleValueError = 0,
+    XONSimpleValueNil = 1,
     
-    XCSimpleValueBoolFalse = 2,
+    XONSimpleValueBoolFalse = 2,
     /// Type - Value 2
-    XCSimpleValueBoolTrue = 3,
+    XONSimpleValueBoolTrue = 3,
     
     // Microsecond
-    XCSimpleValueTimeInvalid = 4,
-    XCSimpleValueTime0 = 5,
-    XCSimpleValueTime1,
-    XCSimpleValueTime2,
-    XCSimpleValueTime3,
-    XCSimpleValueTime4,
-    XCSimpleValueTime5,
-    XCSimpleValueTime6,
-    XCSimpleValueTime7,
-    XCSimpleValueTime8 = 13,
+    XONSimpleValueTimeInvalid = 4,
+    XONSimpleValueTime0 = 5,
+    XONSimpleValueTime1,
+    XONSimpleValueTime2,
+    XONSimpleValueTime3,
+    XONSimpleValueTime4,
+    XONSimpleValueTime5,
+    XONSimpleValueTime6,
+    XONSimpleValueTime7,
+    XONSimpleValueTime8 = 13,
     
-    XCSimpleValueUndefine14,
+    XONSimpleValueUndefine14,
 
-    XCSimpleValueNumberLarge = 15,
-    XCSimpleValueNumberNAN = 16,
-    XCSimpleValueNumberPositiveInfinity = 17,
-    XCSimpleValueNumberNegativeInfinity = 18,
-    XCSimpleValueNumberZero = 19,
+    XONSimpleValueNumberLarge = 15,
+    XONSimpleValueNumberNAN = 16,
+    XONSimpleValueNumberPositiveInfinity = 17,
+    XONSimpleValueNumberNegativeInfinity = 18,
+    XONSimpleValueNumberZero = 19,
     // number 12个 [20, 31]
     
     // number（sint128, uint128, float128） 最长只需要18字节
     // number 18个 [14, 31]
-} XCSimpleValue_e;
+} XONSimpleValue_e;
 
 
 typedef enum {
@@ -89,25 +89,25 @@ typedef enum {
 } XONError_e;
 
 typedef enum {
-    XCNumberTypeNone = 0x0,
-    XCNumberTypeSInt,
-    XCNumberTypeUInt,
-    XCNumberTypeFloat64,
-} XCNumberType_e;
+    XONNumberTypeNone = 0x0,
+    XONNumberTypeSInt,
+    XONNumberTypeUInt,
+    XONNumberTypeFloat64,
+} XONNumberType_e;
 
-static inline double __XCDoubleNan(void) {
+static inline double __XONDoubleNan(void) {
     uint64_t v = ((uint64_t)0x7ff8000000000000ULL);
     return *(double *)(&v);
 }
-static inline double __XCDoublePositiveInfinity(void) {
+static inline double __XONDoublePositiveInfinity(void) {
     uint64_t v = ((uint64_t)0x7ff0000000000000ULL);
     return *(double *)(&v);
 }
-static inline double __XCDoubleNegativeInfinity(void) {
+static inline double __XONDoubleNegativeInfinity(void) {
     uint64_t v = ((uint64_t)0xfff0000000000000ULL);
     return *(double *)(&v);
 }
-static inline double __XCDoubleZero(void) {
+static inline double __XONDoubleZero(void) {
     double v = 0.0;
     return v;
 }
@@ -119,19 +119,19 @@ typedef struct {
         uint64_t u;
         double f;
     } value;
-} XCNumberValue_s;
+} XONNumberValue_s;
 
 typedef struct {
     ssize_t format;
     ssize_t length;
-} XCNumberHeader_s;
+} XONNumberHeader_s;
 
 typedef struct {
     int32_t exponent;
     uint32_t sign;
     uint64_t significandHigh;
     uint64_t significandLow;
-} XCNumberNormalContent_s;
+} XONNumberNormalContent_s;
 
 
 // microsecond
@@ -143,6 +143,14 @@ static inline bool XTimestampIsInvalid(XTimestamp timestamp) {
 
 static inline XTimestamp XTimestampInvalidDefault(void) {
     return INT64_MIN;
+}
+
+static inline XTimestamp XTimestampMin(void) {
+    return INT64_MIN + 1;
+}
+
+static inline XTimestamp XTimestampMax(void) {
+    return INT64_MAX;
 }
 
 static inline XTimestamp XTimestampDistantPast(void) {
@@ -163,30 +171,30 @@ typedef struct {
 } XTimestampHeader_s;
 
 typedef struct {
-    XCType_e type;
+    XONWireType_e type;
     unsigned int layout;
-} XCValueHeader_s;
+} XONValueHeader_s;
 
-static inline XCValueHeader_s XCValueHeaderMake(void) {
-    XCValueHeader_s h = { 0 };
+static inline XONValueHeader_s XONValueHeaderMake(void) {
+    XONValueHeader_s h = { 0 };
     return h;
 }
 
-extern ssize_t XCHeaderMaxLength(void);
+extern ssize_t XONHeaderMaxLength(void);
 
-extern XONError_e XCDecodeHeader(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, XCValueHeader_s * _Nonnull header);
-extern XONError_e XCDecodeNormalNumber(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, ssize_t len, XCNumberNormalContent_s * _Nonnull content);
-extern XONError_e XCDecodeTime(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, ssize_t count, XTimestamp * _Nonnull time);
-extern XONError_e XCDecodeCount(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, unsigned int layout, ssize_t * _Nonnull receiver);
+extern XONError_e XONDecodeHeader(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, XONValueHeader_s * _Nonnull header);
+extern XONError_e XONDecodeNormalNumber(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, ssize_t len, XONNumberNormalContent_s * _Nonnull content);
+extern XONError_e XONDecodeTime(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, ssize_t count, XTimestamp * _Nonnull time);
+extern XONError_e XONDecodeCount(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, unsigned int layout, ssize_t * _Nonnull receiver);
 
-extern XONError_e XCDecodeFieldKeyOffset(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, uint32_t * _Nonnull offset);
+extern XONError_e XONDecodeFieldKeyOffset(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, uint32_t * _Nonnull offset);
 
-extern XONError_e XCNumberToFloat64(const XCNumberNormalContent_s * _Nonnull content, double * _Nonnull value);
-extern XONError_e XCNumberToSInt64(const XCNumberNormalContent_s * _Nonnull content, int64_t * _Nonnull value);
-extern XONError_e XCNumberToUInt64(const XCNumberNormalContent_s * _Nonnull content, uint64_t * _Nonnull value);
+extern XONError_e XONNumberToFloat64(const XONNumberNormalContent_s * _Nonnull content, double * _Nonnull value);
+extern XONError_e XONNumberToSInt64(const XONNumberNormalContent_s * _Nonnull content, int64_t * _Nonnull value);
+extern XONError_e XONNumberToUInt64(const XONNumberNormalContent_s * _Nonnull content, uint64_t * _Nonnull value);
 
 extern void test(void);
-//extern XONError_e XCDecodeNumber64(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, ssize_t format, ssize_t count, XCNumberValue_s * _Nonnull number);
+//extern XONError_e XONDecodeNumber64(const uint8_t * _Nonnull bytes, ssize_t capacity, ssize_t * _Nonnull location, ssize_t format, ssize_t count, XONNumberValue_s * _Nonnull number);
 
 #pragma mark - EncodeBuffer
 
@@ -248,4 +256,4 @@ extern XONError_e XONEncodeDataHeader(XONEncodeBuffer_s * _Nonnull buffer, ssize
 extern XONError_e XONEncodeStringHeader(XONEncodeBuffer_s * _Nonnull buffer, ssize_t count);
 extern XONError_e XONEncodeBody(XONEncodeBuffer_s * _Nonnull buffer, const void * _Nonnull data, ssize_t count);
 
-#endif /* XCoreCoder_h */
+#endif /* XONCore_h */

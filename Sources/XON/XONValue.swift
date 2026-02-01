@@ -1,8 +1,9 @@
 
 import Foundation
+import XONBase
 
 
-public enum XCType : UInt32 {
+public enum XONWireType : UInt32 {
     case simpleValue = 0
     case string
     case data
@@ -230,6 +231,8 @@ public struct XONTime : Hashable {
     public static let microsecondPerSecond: UInt64 = 1_000_000
     public static let invalid = XONTime(microsecond: XTimestampInvalidDefault())
     public static let zero = XONTime(microsecond: 0)
+    public static let min = XONTime(microsecond: XTimestampMin())
+    public static let max = XONTime(microsecond: XTimestampMax())
     
     public static func time(microsecond: Int64) -> XONTime {
         return XONTime(microsecond: microsecond)

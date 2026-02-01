@@ -1,5 +1,6 @@
 
 import Foundation
+import XONBase
 
 public struct OrderedMap<Key, Value> where Key : Hashable {
     public class Element<Key, Value> {
@@ -87,7 +88,7 @@ public struct OrderedMap<Key, Value> where Key : Hashable {
     }
 }
 
-extension OrderedMap : XCodable where Key : XCodable, Value : XCodable {
+extension OrderedMap : XONCodable where Key : XONCodable, Value : XONCodable {
     public init(from decoder: XDecoder) throws {
         self.init()
         let elements = try decoder.arrayContainer().elements()
@@ -209,7 +210,7 @@ public struct OrderedSet<Key> : Hashable where Key : Hashable {
     }
 }
 
-extension OrderedSet : XCodable where Key : XCodable {
+extension OrderedSet : XONCodable where Key : XONCodable {
     public init(from decoder: XDecoder) throws {
         self.init()
         let elements = try decoder.arrayContainer().elements()
@@ -230,7 +231,7 @@ extension OrderedSet : XCodable where Key : XCodable {
     }
 }
 
-extension Array : XCodable where Array.Element : XCodable {
+extension Array : XONCodable where Array.Element : XONCodable {
     public init(from decoder: XDecoder) throws {
         let elements = try decoder.arrayContainer().elements()
         self = try elements.map({ (index, coder) in

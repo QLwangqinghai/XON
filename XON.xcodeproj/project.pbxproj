@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D60309A32F2F2B87005BF9EA /* XONBase.docc in Sources */ = {isa = PBXBuildFile; fileRef = D60309A22F2F2B87005BF9EA /* XONBase.docc */; };
+		D60309A42F2F2B87005BF9EA /* XONBase.h in Headers */ = {isa = PBXBuildFile; fileRef = D60309A12F2F2B87005BF9EA /* XONBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D60309AB2F2F2BE4005BF9EA /* XONCore.h in Headers */ = {isa = PBXBuildFile; fileRef = D60309AA2F2F2BE4005BF9EA /* XONCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D60309AD2F2F2BED005BF9EA /* XONCore.c in Sources */ = {isa = PBXBuildFile; fileRef = D60309AC2F2F2BED005BF9EA /* XONCore.c */; };
+		D60309AE2F2F2C51005BF9EA /* XONBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D603099F2F2F2B87005BF9EA /* XONBase.framework */; };
+		D60309AF2F2F94CA005BF9EA /* XONBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D603099F2F2F2B87005BF9EA /* XONBase.framework */; };
+		D60309B02F2F94CA005BF9EA /* XONBase.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D603099F2F2F2B87005BF9EA /* XONBase.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		D60309B52F2F9898005BF9EA /* XONBase.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = D603099F2F2F2B87005BF9EA /* XONBase.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		D60309B62F2F989D005BF9EA /* XON.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = D6463E212BDE999400D6AF57 /* XON.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D61D66612E462EF700D97593 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61D66602E462EF700D97593 /* main.swift */; };
 		D61D66662E462F4900D97593 /* XON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6463E212BDE999400D6AF57 /* XON.framework */; };
 		D61D66672E462F4900D97593 /* XON.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D6463E212BDE999400D6AF57 /* XON.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -17,15 +26,27 @@
 		D6463E442BDE99CB00D6AF57 /* XONSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E3D2BDE99CB00D6AF57 /* XONSerialization.swift */; };
 		D6463E452BDE99CB00D6AF57 /* XON.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E3E2BDE99CB00D6AF57 /* XON.swift */; };
 		D6463E462BDE99CB00D6AF57 /* XONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E3F2BDE99CB00D6AF57 /* XONValue.swift */; };
-		D6463E472BDE99CB00D6AF57 /* XExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E402BDE99CB00D6AF57 /* XExtensions.swift */; };
-		D6463E482BDE99CB00D6AF57 /* XCoreCoder.h in Headers */ = {isa = PBXBuildFile; fileRef = D6463E422BDE99CB00D6AF57 /* XCoreCoder.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D6463E492BDE99CB00D6AF57 /* XCoreCoder.c in Sources */ = {isa = PBXBuildFile; fileRef = D6463E432BDE99CB00D6AF57 /* XCoreCoder.c */; };
+		D6463E472BDE99CB00D6AF57 /* XONExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E402BDE99CB00D6AF57 /* XONExtensions.swift */; };
 		D6463E4B2BDE9D4F00D6AF57 /* XONCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E4A2BDE9D4F00D6AF57 /* XONCoder.swift */; };
 		D6463E4D2BE53C1F00D6AF57 /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E4C2BE53C1F00D6AF57 /* Collection.swift */; };
 		D6546F4A2BECD7AF00E2C459 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = D6546F492BECD7AF00E2C459 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		D60309B12F2F94CA005BF9EA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D6463E182BDE999400D6AF57 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D603099E2F2F2B87005BF9EA;
+			remoteInfo = XONBase;
+		};
+		D60309B32F2F96E2005BF9EA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D6463E182BDE999400D6AF57 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D603099E2F2F2B87005BF9EA;
+			remoteInfo = XONBase;
+		};
 		D61D66682E462F4900D97593 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D6463E182BDE999400D6AF57 /* Project object */;
@@ -46,26 +67,34 @@
 		D61D665C2E462EF700D97593 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
+			dstPath = usr/share/man/man1;
+			dstSubfolderSpec = 16;
 			files = (
+				D60309B62F2F989D005BF9EA /* XON.framework in CopyFiles */,
+				D60309B52F2F9898005BF9EA /* XONBase.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
 		D61D666A2E462F4900D97593 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
 				D61D66672E462F4900D97593 /* XON.framework in Embed Frameworks */,
+				D60309B02F2F94CA005BF9EA /* XONBase.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D603099F2F2F2B87005BF9EA /* XONBase.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = XONBase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D60309A12F2F2B87005BF9EA /* XONBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XONBase.h; sourceTree = "<group>"; };
+		D60309A22F2F2B87005BF9EA /* XONBase.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = XONBase.docc; sourceTree = "<group>"; };
+		D60309AA2F2F2BE4005BF9EA /* XONCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XONCore.h; sourceTree = "<group>"; };
+		D60309AC2F2F2BED005BF9EA /* XONCore.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = XONCore.c; sourceTree = "<group>"; };
 		D61D665E2E462EF700D97593 /* Test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Test; sourceTree = BUILT_PRODUCTS_DIR; };
 		D61D66602E462EF700D97593 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		D6463E212BDE999400D6AF57 /* XON.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = XON.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -76,20 +105,26 @@
 		D6463E3D2BDE99CB00D6AF57 /* XONSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XONSerialization.swift; sourceTree = "<group>"; };
 		D6463E3E2BDE99CB00D6AF57 /* XON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XON.swift; sourceTree = "<group>"; };
 		D6463E3F2BDE99CB00D6AF57 /* XONValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XONValue.swift; sourceTree = "<group>"; };
-		D6463E402BDE99CB00D6AF57 /* XExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XExtensions.swift; sourceTree = "<group>"; };
-		D6463E422BDE99CB00D6AF57 /* XCoreCoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XCoreCoder.h; sourceTree = "<group>"; };
-		D6463E432BDE99CB00D6AF57 /* XCoreCoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = XCoreCoder.c; sourceTree = "<group>"; };
+		D6463E402BDE99CB00D6AF57 /* XONExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XONExtensions.swift; sourceTree = "<group>"; };
 		D6463E4A2BDE9D4F00D6AF57 /* XONCoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XONCoder.swift; sourceTree = "<group>"; };
 		D6463E4C2BE53C1F00D6AF57 /* Collection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
 		D6546F492BECD7AF00E2C459 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		D603099C2F2F2B87005BF9EA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D61D665B2E462EF700D97593 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				D61D66662E462F4900D97593 /* XON.framework in Frameworks */,
+				D60309AF2F2F94CA005BF9EA /* XONBase.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,6 +132,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D60309AE2F2F2C51005BF9EA /* XONBase.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -111,6 +147,33 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D60309A02F2F2B87005BF9EA /* XONBase */ = {
+			isa = PBXGroup;
+			children = (
+				D60309A82F2F2BC0005BF9EA /* include */,
+				D60309A92F2F2BC0005BF9EA /* source */,
+				D60309A12F2F2B87005BF9EA /* XONBase.h */,
+				D60309A22F2F2B87005BF9EA /* XONBase.docc */,
+			);
+			path = XONBase;
+			sourceTree = "<group>";
+		};
+		D60309A82F2F2BC0005BF9EA /* include */ = {
+			isa = PBXGroup;
+			children = (
+				D60309AA2F2F2BE4005BF9EA /* XONCore.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		D60309A92F2F2BC0005BF9EA /* source */ = {
+			isa = PBXGroup;
+			children = (
+				D60309AC2F2F2BED005BF9EA /* XONCore.c */,
+			);
+			path = source;
+			sourceTree = "<group>";
+		};
 		D61D665F2E462EF700D97593 /* Test */ = {
 			isa = PBXGroup;
 			children = (
@@ -133,6 +196,7 @@
 				D6463E232BDE999400D6AF57 /* XON */,
 				D6463E2F2BDE999400D6AF57 /* XONTests */,
 				D61D665F2E462EF700D97593 /* Test */,
+				D60309A02F2F2B87005BF9EA /* XONBase */,
 				D6463E222BDE999400D6AF57 /* Products */,
 				D61D66652E462F4900D97593 /* Frameworks */,
 			);
@@ -144,6 +208,7 @@
 				D6463E212BDE999400D6AF57 /* XON.framework */,
 				D6463E2B2BDE999400D6AF57 /* XONTests.xctest */,
 				D61D665E2E462EF700D97593 /* Test */,
+				D603099F2F2F2B87005BF9EA /* XONBase.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -170,7 +235,6 @@
 			isa = PBXGroup;
 			children = (
 				D6463E3C2BDE99CB00D6AF57 /* XON */,
-				D6463E412BDE99CB00D6AF57 /* XCoreCoder */,
 			);
 			path = Sources;
 			sourceTree = SOURCE_ROOT;
@@ -181,30 +245,29 @@
 				D6463E3D2BDE99CB00D6AF57 /* XONSerialization.swift */,
 				D6463E3E2BDE99CB00D6AF57 /* XON.swift */,
 				D6463E3F2BDE99CB00D6AF57 /* XONValue.swift */,
-				D6463E402BDE99CB00D6AF57 /* XExtensions.swift */,
+				D6463E402BDE99CB00D6AF57 /* XONExtensions.swift */,
 				D6463E4A2BDE9D4F00D6AF57 /* XONCoder.swift */,
 				D6463E4C2BE53C1F00D6AF57 /* Collection.swift */,
 			);
 			path = XON;
 			sourceTree = "<group>";
 		};
-		D6463E412BDE99CB00D6AF57 /* XCoreCoder */ = {
-			isa = PBXGroup;
-			children = (
-				D6463E422BDE99CB00D6AF57 /* XCoreCoder.h */,
-				D6463E432BDE99CB00D6AF57 /* XCoreCoder.c */,
-			);
-			path = XCoreCoder;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		D603099A2F2F2B87005BF9EA /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D60309A42F2F2B87005BF9EA /* XONBase.h in Headers */,
+				D60309AB2F2F2BE4005BF9EA /* XONCore.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D6463E1C2BDE999400D6AF57 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D6463E482BDE99CB00D6AF57 /* XCoreCoder.h in Headers */,
 				D6463E322BDE999400D6AF57 /* XON.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -212,6 +275,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		D603099E2F2F2B87005BF9EA /* XONBase */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D60309A52F2F2B87005BF9EA /* Build configuration list for PBXNativeTarget "XONBase" */;
+			buildPhases = (
+				D603099A2F2F2B87005BF9EA /* Headers */,
+				D603099B2F2F2B87005BF9EA /* Sources */,
+				D603099C2F2F2B87005BF9EA /* Frameworks */,
+				D603099D2F2F2B87005BF9EA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = XONBase;
+			productName = XONBase;
+			productReference = D603099F2F2F2B87005BF9EA /* XONBase.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		D61D665D2E462EF700D97593 /* Test */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D61D66642E462EF700D97593 /* Build configuration list for PBXNativeTarget "Test" */;
@@ -225,6 +306,7 @@
 			);
 			dependencies = (
 				D61D66692E462F4900D97593 /* PBXTargetDependency */,
+				D60309B22F2F94CA005BF9EA /* PBXTargetDependency */,
 			);
 			name = Test;
 			productName = Test;
@@ -243,6 +325,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				D60309B42F2F96E2005BF9EA /* PBXTargetDependency */,
 			);
 			name = XON;
 			productName = XON;
@@ -275,8 +358,11 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1420;
-				LastUpgradeCheck = 1400;
+				LastUpgradeCheck = 1420;
 				TargetAttributes = {
+					D603099E2F2F2B87005BF9EA = {
+						CreatedOnToolsVersion = 14.2;
+					};
 					D61D665D2E462EF700D97593 = {
 						CreatedOnToolsVersion = 14.2;
 					};
@@ -304,11 +390,19 @@
 				D6463E202BDE999400D6AF57 /* XON */,
 				D6463E2A2BDE999400D6AF57 /* XONTests */,
 				D61D665D2E462EF700D97593 /* Test */,
+				D603099E2F2F2B87005BF9EA /* XONBase */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		D603099D2F2F2B87005BF9EA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D6463E1F2BDE999400D6AF57 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -327,6 +421,15 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		D603099B2F2F2B87005BF9EA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D60309AD2F2F2BED005BF9EA /* XONCore.c in Sources */,
+				D60309A32F2F2B87005BF9EA /* XONBase.docc in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D61D665A2E462EF700D97593 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -339,13 +442,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D6463E472BDE99CB00D6AF57 /* XExtensions.swift in Sources */,
+				D6463E472BDE99CB00D6AF57 /* XONExtensions.swift in Sources */,
 				D6463E442BDE99CB00D6AF57 /* XONSerialization.swift in Sources */,
 				D6463E452BDE99CB00D6AF57 /* XON.swift in Sources */,
 				D6463E262BDE999400D6AF57 /* XON.docc in Sources */,
 				D6463E462BDE99CB00D6AF57 /* XONValue.swift in Sources */,
 				D6463E4B2BDE9D4F00D6AF57 /* XONCoder.swift in Sources */,
-				D6463E492BDE99CB00D6AF57 /* XCoreCoder.c in Sources */,
 				D6463E4D2BE53C1F00D6AF57 /* Collection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -361,6 +463,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		D60309B22F2F94CA005BF9EA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D603099E2F2F2B87005BF9EA /* XONBase */;
+			targetProxy = D60309B12F2F94CA005BF9EA /* PBXContainerItemProxy */;
+		};
+		D60309B42F2F96E2005BF9EA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D603099E2F2F2B87005BF9EA /* XONBase */;
+			targetProxy = D60309B32F2F96E2005BF9EA /* PBXContainerItemProxy */;
+		};
 		D61D66692E462F4900D97593 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = D6463E202BDE999400D6AF57 /* XON */;
@@ -374,10 +486,76 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		D60309A62F2F2B87005BF9EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = T5DNYT7CXU;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.angfung.XONBase;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Debug;
+		};
+		D60309A72F2F2B87005BF9EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = T5DNYT7CXU;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.angfung.XONBase;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Release;
+		};
 		D61D66622E462EF700D97593 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = T5DNYT7CXU;
 				ENABLE_HARDENED_RUNTIME = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.7;
@@ -389,7 +567,9 @@
 		D61D66632E462EF700D97593 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = T5DNYT7CXU;
 				ENABLE_HARDENED_RUNTIME = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.7;
@@ -432,6 +612,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -495,6 +676,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -520,11 +702,12 @@
 		D6463E362BDE999400D6AF57 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = T5DNYT7CXU;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -541,6 +724,7 @@
 				MARKETING_VERSION = 0.9.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.angfung.XON2;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -551,10 +735,12 @@
 		D6463E372BDE999400D6AF57 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = T5DNYT7CXU;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -589,6 +775,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = J97FN9Y7WR;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
@@ -606,6 +793,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = J97FN9Y7WR;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
@@ -619,6 +807,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		D60309A52F2F2B87005BF9EA /* Build configuration list for PBXNativeTarget "XONBase" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D60309A62F2F2B87005BF9EA /* Debug */,
+				D60309A72F2F2B87005BF9EA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		D61D66642E462EF700D97593 /* Build configuration list for PBXNativeTarget "Test" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

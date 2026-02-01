@@ -1,5 +1,6 @@
 
 import Foundation
+import XONBase
 
 extension NSNumber {
     public var isBoolType: Bool {
@@ -7,13 +8,13 @@ extension NSNumber {
         return CFGetTypeID(n) == CFBooleanGetTypeID()
     }
     
-    public static func number(xvalue: XCNumberValue_s) -> NSNumber? {
+    public static func number(xvalue: XONNumberValue_s) -> NSNumber? {
         switch xvalue.type {
-        case Int(XCNumberTypeSInt.rawValue):
+        case Int(XONNumberTypeSInt.rawValue):
             return xvalue.value.s as NSNumber
-        case Int(XCNumberTypeUInt.rawValue):
+        case Int(XONNumberTypeUInt.rawValue):
             return xvalue.value.u as NSNumber
-        case Int(XCNumberTypeFloat64.rawValue):
+        case Int(XONNumberTypeFloat64.rawValue):
             return xvalue.value.f as NSNumber
         default:
             return nil
@@ -21,7 +22,7 @@ extension NSNumber {
     }
 }
 
-extension Bool : XCodable {
+extension Bool : XONCodable {
     public func encode(to encoder: inout XEncoder) throws {
         try encoder.encodeBool(self)
     }
@@ -31,7 +32,7 @@ extension Bool : XCodable {
     }
 }
 
-extension Data : XCodable {
+extension Data : XONCodable {
     public func encode(to encoder: inout XEncoder) throws {
         try encoder.encodeData(self)
     }
@@ -40,7 +41,7 @@ extension Data : XCodable {
     }
 }
 
-extension String : XCodable {
+extension String : XONCodable {
     public func encode(to encoder: inout XEncoder) throws {
         try encoder.encodeString(self)
     }
@@ -49,7 +50,7 @@ extension String : XCodable {
     }
 }
 
-extension Int8 : XCodable {
+extension Int8 : XONCodable {
     public func encode(to encoder: inout XEncoder) throws {
         try encoder.encodeNumber(self as NSNumber)
     }
@@ -60,7 +61,7 @@ extension Int8 : XCodable {
         self = v
     }
 }
-extension UInt8 : XCodable {
+extension UInt8 : XONCodable {
     public func encode(to encoder: inout XEncoder) throws {
         try encoder.encodeNumber(self as NSNumber)
     }
@@ -72,7 +73,7 @@ extension UInt8 : XCodable {
     }
 }
 
-extension Int16 : XCodable {
+extension Int16 : XONCodable {
     public func encode(to encoder: inout XEncoder) throws {
         try encoder.encodeNumber(self as NSNumber)
     }
@@ -83,7 +84,7 @@ extension Int16 : XCodable {
         self = v
     }
 }
-extension UInt16 : XCodable {
+extension UInt16 : XONCodable {
     public func encode(to encoder: inout XEncoder) throws {
         try encoder.encodeNumber(self as NSNumber)
     }
@@ -95,7 +96,7 @@ extension UInt16 : XCodable {
     }
 }
 
-extension Int32 : XCodable {
+extension Int32 : XONCodable {
     public func encode(to encoder: inout XEncoder) throws {
         try encoder.encodeNumber(self as NSNumber)
     }
@@ -106,7 +107,7 @@ extension Int32 : XCodable {
         self = v
     }
 }
-extension UInt32 : XCodable {
+extension UInt32 : XONCodable {
     public func encode(to encoder: inout XEncoder) throws {
         try encoder.encodeNumber(self as NSNumber)
     }
@@ -118,7 +119,7 @@ extension UInt32 : XCodable {
     }
 }
 
-extension Int64 : XCodable {
+extension Int64 : XONCodable {
     public func encode(to encoder: inout XEncoder) throws {
         try encoder.encodeNumber(self as NSNumber)
     }
@@ -129,7 +130,7 @@ extension Int64 : XCodable {
         self = v
     }
 }
-extension UInt64 : XCodable {
+extension UInt64 : XONCodable {
     public func encode(to encoder: inout XEncoder) throws {
         try encoder.encodeNumber(self as NSNumber)
     }
@@ -141,7 +142,7 @@ extension UInt64 : XCodable {
     }
 }
 
-extension Int : XCodable {
+extension Int : XONCodable {
     public func encode(to encoder: inout XEncoder) throws {
         try encoder.encodeNumber(self as NSNumber)
     }
@@ -152,7 +153,7 @@ extension Int : XCodable {
         self = v
     }
 }
-extension UInt : XCodable {
+extension UInt : XONCodable {
     public func encode(to encoder: inout XEncoder) throws {
         try encoder.encodeNumber(self as NSNumber)
     }
@@ -164,7 +165,7 @@ extension UInt : XCodable {
     }
 }
 
-extension Float : XCodable {
+extension Float : XONCodable {
     public func encode(to encoder: inout XEncoder) throws {
         try encoder.encodeNumber(self as NSNumber)
     }
@@ -175,7 +176,7 @@ extension Float : XCodable {
         self = v
     }
 }
-extension Double : XCodable {
+extension Double : XONCodable {
     public func encode(to encoder: inout XEncoder) throws {
         try encoder.encodeNumber(self as NSNumber)
     }
@@ -187,7 +188,7 @@ extension Double : XCodable {
     }
 }
 
-extension XONTime : XCodable {
+extension XONTime : XONCodable {
     public func encode(to encoder: inout XEncoder) throws {
         try encoder.encodeTime(self)
     }

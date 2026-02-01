@@ -9,7 +9,9 @@ import Foundation
 
 print("Hello, World!")
 
+@testable import XONBase
 @testable import XON
+
 
 
 let tester = XONTests()
@@ -31,15 +33,15 @@ final class XONTests : NSObject {
 
     
     func testBase() throws {
-        test()
+        XONBase.test()
         
         
     }
 
     func testExample() throws {
         // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
+        // Use XONTAssert and related functions to verify your tests produce the correct results.
+        // Any test you write for XONTest can be annotated as throws and async.
         // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
         // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
         
@@ -159,7 +161,7 @@ final class XONTests : NSObject {
         }
         
         let values = TestObject.timeArray.map { timeval in
-            return XCTestObject(.time(timeval))
+            return XONTestObject(.time(timeval))
         }
         
         testCoder(tag: "Time", objects: values, times: 10)
@@ -264,16 +266,16 @@ final class XONTests : NSObject {
 
     public func testNumbers() {
         let tag = "Number"
-        let values: [XCTestObject] = TestObject.stringNumberElements.map { (_, _, n) in
-            return XCTestObject(.number(n))
+        let values: [XONTestObject] = TestObject.stringNumberElements.map { (_, _, n) in
+            return XONTestObject(.number(n))
         }
         testCoder(tag: tag, objects: values, times: 100)
     }
 
     public func testStrings() {
         let tag = "String"
-        let values: [XCTestObject] = TestObject.stringNumberElements.map { (_, s, _) in
-            return XCTestObject(.string(s))
+        let values: [XONTestObject] = TestObject.stringNumberElements.map { (_, s, _) in
+            return XONTestObject(.string(s))
         }
         testCoder(tag: tag, objects: values, times: 100)
     }
@@ -282,8 +284,8 @@ final class XONTests : NSObject {
         let tag = "[String,Number]"
         usleep(1000000)
 
-        let values: [XCTestObject] = TestObject.stringNumberElements.map { (_, s, n) in
-            return XCTestObject(.array([.string(s), .number(n)]))
+        let values: [XONTestObject] = TestObject.stringNumberElements.map { (_, s, n) in
+            return XONTestObject(.array([.string(s), .number(n)]))
         }
         
         testCoder(tag: tag, objects: values, times: 100)
@@ -293,10 +295,10 @@ final class XONTests : NSObject {
 
         let tag = "{string:Number}"
 
-        let values: [XCTestObject] = TestObject.stringNumberElements.map { (s, _, n) in
+        let values: [XONTestObject] = TestObject.stringNumberElements.map { (s, _, n) in
             var map: [UInt32 : XONValue] = [:]
             map[s] = .number(n)
-            return XCTestObject(.message([UInt32 : XONValue](collection: map)))
+            return XONTestObject(.message(map))
         }
 
         testCoder(tag: tag, objects: values, times: 100)
@@ -305,9 +307,9 @@ final class XONTests : NSObject {
     public func testRandomedJson() throws {
         let tag = "JSON.random"
 
-        let values: [XCTestObject] = (1 ... 100).map { index in
+        let values: [XONTestObject] = (1 ... 100).map { index in
             let result = XONValue.randomMessage(deep: 0, jsonSupport: true)
-            return XCTestObject(.message(result))
+            return XONTestObject(.message(result))
         }
         usleep(1000000)
 
@@ -316,9 +318,9 @@ final class XONTests : NSObject {
     public func testMessages() throws {
         let tag = "JSON.random"
 
-        let values: [XCTestObject] = (1 ... 100).map { index in
+        let values: [XONTestObject] = (1 ... 100).map { index in
             let result = XONValue.randomMessage(deep: 0, jsonSupport: true)
-            return XCTestObject(.message(result))
+            return XONTestObject(.message(result))
         }
         usleep(1000000)
 
@@ -378,7 +380,7 @@ public struct TestObject {
     
 }
 
-public class XCTestObject {
+public class XONTestObject {
     public var xlength: Int = 0
     public var jsonlength: Int = 0
 
@@ -442,7 +444,7 @@ extension XONValue {
             return v.encodeToJsonString() as NSString
         case .message(let v):
             let map: NSMutableDictionary = NSMutableDictionary()
-            v.collection.forEach { (k, v) in
+            v.forEach { (k, v) in
                 map.setObject(v.jsonValue(), forKey: XONValue.messageKeyMap[k]! as NSString)
             }
             return map
@@ -490,8 +492,7 @@ extension XONValue {
         for _ in 0 ..< count {
             map[XONValue.keys[Int.random(in: 0 ..< 10000)].0] = random(deep: deep + 1, jsonSupport: jsonSupport)
         }
-        let message = XONMessage(collection: map)
-        return message
+        return map
     }
     public static func random(jsonSupport: Bool) -> XONValue {
         return random(deep: 0, jsonSupport: jsonSupport)
@@ -650,7 +651,7 @@ func randomSingleValueMessage(count: Int) -> [UInt32 : XONValue] {
     for _ in 0 ..< count {
         map[UInt32.random(in: 1 ... UInt32.max)] = XONValue.randomSingleValue(jsonSupport: false)
     }
-    return XONMessage(collection: map)
+    return map
 }
 
 func testCollection() {
@@ -687,7 +688,7 @@ func testVarint() {
 //    TestObject.uint64Array
 //
 //
-//    let buffer = XCBuffer(minimumCapacity: 1024 * 10 * 10)
+//    let buffer = XONBuffer(minimumCapacity: 1024 * 10 * 10)
 //
 //    usleep(1000000)
 //
@@ -695,7 +696,7 @@ func testVarint() {
 //
 //    }
 //
-//    let int64time = testVarint(buffer: buffer, encode: __XONEncodeUInt64Varint, decode: __XCDecodeUInt64Varint)
+//    let int64time = testVarint(buffer: buffer, encode: __XONEncodeUInt64Varint, decode: __XONDecodeUInt64Varint)
 //
 //    usleep(1000000)
 //
@@ -703,9 +704,9 @@ func testVarint() {
 //    TestObject.uint63Array.forEach { _ in
 //
 //    }
-//    let int63time = testVarint(buffer: buffer, encode: __XONEncodeUInt63Varint, decode: __XCDecodeUInt63Varint)
+//    let int63time = testVarint(buffer: buffer, encode: __XONEncodeUInt63Varint, decode: __XONDecodeUInt63Varint)
 //
-////    let int63time = testVarint(buffer: buffer, encode: __XONEncodeUInt64Varint2, decode: __XCDecodeUInt64Varint)
+////    let int63time = testVarint(buffer: buffer, encode: __XONEncodeUInt64Varint2, decode: __XONDecodeUInt64Varint)
 //
 //    print("testVarint: int64time:\(int64time) int63time:\(int63time) fast:\(int64time - int63time)")
     
@@ -798,13 +799,12 @@ public struct Profile : CustomStringConvertible {
         result += "\(tag) codefast: \(scale(delta.code / x.code)), encode fast: \(scale(delta.encode / x.encode)), decode fast: \(scale(delta.decode / x.decode)), data less: \(scale(Double(delta.data) / Double(x.data))))\n"
         return result
     }
-    
 }
 
-public func testCoder(tag: String, objects: [XCTestObject], times: Int) {
+public func testCoder(tag: String, objects: [XONTestObject], times: Int) {
     testCoder(tag: tag, objects: objects, times: times, log: false)
 }
-func testCoder(tag: String, objects: [XCTestObject], times: Int, log: Bool) {
+func testCoder(tag: String, objects: [XONTestObject], times: Int, log: Bool) {
     var time0: CFAbsoluteTime = 0
     var time0a: CFAbsoluteTime = 0
     var time0b: CFAbsoluteTime = 0

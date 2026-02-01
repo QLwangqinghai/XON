@@ -14,6 +14,3 @@ FOUNDATION_EXPORT double XONVersionNumber;
 FOUNDATION_EXPORT const unsigned char XONVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <XON/PublicHeader.h>
-
-#include <XON/XCoreCoder.h>
-

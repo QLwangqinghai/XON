@@ -1,5 +1,6 @@
 
 import Foundation
+import XONBase
 
 extension JSONSerialization {
     public static func decode(_ data: Data) throws -> Any {
@@ -13,16 +14,16 @@ extension JSONSerialization {
 
 public struct XONSerialization {
     public static func decode(_ data: Data) throws -> XONValue {
-        let reader = XCReader(data: data as NSData)
+        let reader = XONReader(data: data as NSData)
         return try reader.readValue()
     }
 
     public static func encode(_ value: XONValue) throws -> Data {
-        return try XCWriter.writeValue(value)
+        return try XONWriter.writeValue(value)
     }
 }
 
-public class XCReader {
+public class XONReader {
     public var offset: Int
     public let endIndex: Int
     public let data: NSData
@@ -45,9 +46,9 @@ public class XCReader {
             throw XON.error(code: value)
         }
     }
-    private func readHeader(index: UnsafeMutablePointer<Int>) throws -> XCValueHeader_s {
-        var header = XCValueHeaderMake()
-        let error = XCDecodeHeader(self.bytes, self.endIndex, index, &header)
+    private func readHeader(index: UnsafeMutablePointer<Int>) throws -> XONValueHeader_s {
+        var header = XONValueHeaderMake()
+        let error = XONDecodeHeader(self.bytes, self.endIndex, index, &header)
         guard error == XONErrorNone else {
             throw XON.error(code: error)
         }
@@ -55,7 +56,7 @@ public class XCReader {
     }
     private func readTime(index: UnsafeMutablePointer<Int>, count: Int) throws -> XONTime {
         var value: XTimestamp = XTimestampZero()
-        let error = XCDecodeTime(self.bytes, self.endIndex, index, count, &value)
+        let error = XONDecodeTime(self.bytes, self.endIndex, index, count, &value)
         guard error == XONErrorNone else {
             throw XON.error(code: error)
         }
@@ -64,7 +65,7 @@ public class XCReader {
     
     private func readCount(index: UnsafeMutablePointer<Int>, layout: UInt32) throws -> Int {
         var value: Int = 0
-        let error = XCDecodeCount(self.bytes, self.endIndex, index, layout, &value)
+        let error = XONDecodeCount(self.bytes, self.endIndex, index, layout, &value)
         guard error == XONErrorNone else {
             throw XON.error(code: error)
         }
@@ -72,7 +73,7 @@ public class XCReader {
     }
     private func readMessageFieldOffset(index: UnsafeMutablePointer<Int>) throws -> UInt32 {
         var offset: UInt32 = 0
-        let error = XCDecodeFieldKeyOffset(self.bytes, self.endIndex, index, &offset)
+        let error = XONDecodeFieldKeyOffset(self.bytes, self.endIndex, index, &offset)
         guard error == XONErrorNone else {
             throw XON.typeError
         }
@@ -101,13 +102,13 @@ public class XCReader {
         return string as String
     }
     
-    public static func number(xvalue: XCNumberValue_s) -> NSNumber? {
+    public static func number(xvalue: XONNumberValue_s) -> NSNumber? {
         switch xvalue.type {
-        case Int(XCNumberTypeSInt.rawValue):
+        case Int(XONNumberTypeSInt.rawValue):
             return xvalue.value.s as NSNumber
-        case Int(XCNumberTypeUInt.rawValue):
+        case Int(XONNumberTypeUInt.rawValue):
             return xvalue.value.u as NSNumber
-        case Int(XCNumberTypeFloat64.rawValue):
+        case Int(XONNumberTypeFloat64.rawValue):
             return xvalue.value.f as NSNumber
         default:
             return nil
@@ -115,22 +116,22 @@ public class XCReader {
     }
     
     private func readNumber(index: UnsafeMutablePointer<Int>, contentLength: Int) throws -> NSNumber {
-        var value = XCNumberNormalContent_s()
-        let error = XCDecodeNormalNumber(self.bytes, self.endIndex, index, contentLength, &value)
+        var value = XONNumberNormalContent_s()
+        let error = XONDecodeNormalNumber(self.bytes, self.endIndex, index, contentLength, &value)
         guard error == XONErrorNone else {
             throw XON.error(code: error)
         }
         
         var d: Double = 0
-        if XONErrorNone == XCNumberToFloat64(&value, &d) {
+        if XONErrorNone == XONNumberToFloat64(&value, &d) {
             return NSNumber(value: d)
         }
         var si: Int64 = 0
-        if XONErrorNone == XCNumberToSInt64(&value, &si) {
+        if XONErrorNone == XONNumberToSInt64(&value, &si) {
             return NSNumber(value: si)
         }
         var ui: UInt64 = 0
-        if XONErrorNone == XCNumberToUInt64(&value, &ui) {
+        if XONErrorNone == XONNumberToUInt64(&value, &ui) {
             return NSNumber(value: ui)
         }
         throw XON.error(code: XONErrorNumberOutOfRange)
@@ -138,54 +139,54 @@ public class XCReader {
     
     private func readValue(index: UnsafeMutablePointer<Int>) throws -> XONValue {
         let header = try self.readHeader(index: index)
-        guard let type = XCType(rawValue: header.type.rawValue) else {
+        guard let type = XONWireType(rawValue: header.type.rawValue) else {
             throw XON.typeError
         }
         switch type {
         case .simpleValue:
             switch header.layout {
-            case XCSimpleValueError.rawValue:
+            case XONSimpleValueError.rawValue:
                 throw XON.typeError
-            case XCSimpleValueNil.rawValue:
+            case XONSimpleValueNil.rawValue:
                 return .null
-            case XCSimpleValueBoolFalse.rawValue:
+            case XONSimpleValueBoolFalse.rawValue:
                 return .bool(false)
-            case XCSimpleValueBoolTrue.rawValue:
+            case XONSimpleValueBoolTrue.rawValue:
                 return .bool(true)
-            case XCSimpleValueTimeInvalid.rawValue:
+            case XONSimpleValueTimeInvalid.rawValue:
                 return .time(XONTime.invalid)
-            case XCSimpleValueTime0.rawValue:
+            case XONSimpleValueTime0.rawValue:
                 return .time(XONTime.zero)
-            case XCSimpleValueTime1.rawValue:
+            case XONSimpleValueTime1.rawValue:
                 return .time(try self.readTime(index: index, count: 1))
-            case XCSimpleValueTime2.rawValue:
+            case XONSimpleValueTime2.rawValue:
                 return .time(try self.readTime(index: index, count: 2))
-            case XCSimpleValueTime3.rawValue:
+            case XONSimpleValueTime3.rawValue:
                 return .time(try self.readTime(index: index, count: 3))
-            case XCSimpleValueTime4.rawValue:
+            case XONSimpleValueTime4.rawValue:
                 return .time(try self.readTime(index: index, count: 4))
-            case XCSimpleValueTime5.rawValue:
+            case XONSimpleValueTime5.rawValue:
                 return .time(try self.readTime(index: index, count: 5))
-            case XCSimpleValueTime6.rawValue:
+            case XONSimpleValueTime6.rawValue:
                 return .time(try self.readTime(index: index, count: 6))
-            case XCSimpleValueTime7.rawValue:
+            case XONSimpleValueTime7.rawValue:
                 return .time(try self.readTime(index: index, count: 7))
-            case XCSimpleValueTime8.rawValue:
+            case XONSimpleValueTime8.rawValue:
                 return .time(try self.readTime(index: index, count: 8))
-            case XCSimpleValueUndefine14.rawValue:
+            case XONSimpleValueUndefine14.rawValue:
                 throw XON.notSupport
-            case XCSimpleValueNumberLarge.rawValue:
+            case XONSimpleValueNumberLarge.rawValue:
                 throw XON.notSupport
-            case XCSimpleValueNumberNAN.rawValue:
+            case XONSimpleValueNumberNAN.rawValue:
                 return .number(NSNumber(value: Double.nan))
-            case XCSimpleValueNumberPositiveInfinity.rawValue:
+            case XONSimpleValueNumberPositiveInfinity.rawValue:
                 return .number(NSNumber(value: Double.infinity))
-            case XCSimpleValueNumberNegativeInfinity.rawValue:
+            case XONSimpleValueNumberNegativeInfinity.rawValue:
                 return .number(NSNumber(value: Double.infinity * (-1.0)))
-            case XCSimpleValueNumberZero.rawValue:
+            case XONSimpleValueNumberZero.rawValue:
                 return .number(NSNumber(value: Double.zero))
             default:
-                let contentLength = Int(header.layout - XCSimpleValueNumberZero.rawValue)
+                let contentLength = Int(header.layout - XONSimpleValueNumberZero.rawValue)
                 return .number(try self.readNumber(index: index, contentLength: contentLength))
             }
         case .string:
@@ -229,7 +230,7 @@ public class XCReader {
     }
 }
 
-public class XCWriter {
+public class XONWriter {
     public var buffer: XONEncodeBuffer_s = XONEncodeBufferMakeDefault()
     
     public init(minimumCapacity: Int) {
@@ -335,11 +336,11 @@ public class XCWriter {
     }
     
     public static func writeValue(_ value: XONValue) throws -> Data {
-        let writer = XCWriter(minimumCapacity: 0)
+        let writer = XONWriter(minimumCapacity: 0)
         try writer._writeValue(value)
         if writer.buffer.location >= 0x1000 {
             writer.fit()
-            let p = Unmanaged<XCWriter>.passRetained(writer)
+            let p = Unmanaged<XONWriter>.passRetained(writer)
             return Data(bytesNoCopy: writer.buffer.bytes!, count: writer.buffer.location, deallocator: Data.Deallocator.custom({ ptr, size in
                 p.release()
             }))
