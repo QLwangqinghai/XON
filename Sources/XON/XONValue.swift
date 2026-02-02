@@ -2,7 +2,6 @@
 import Foundation
 import XONBase
 
-
 public enum XONWireType : UInt32 {
     case simpleValue = 0
     case string
@@ -10,6 +9,7 @@ public enum XONWireType : UInt32 {
     case message
     case array
 }
+
 public enum XONValue : Hashable {
     case null
     case bool(Bool)
@@ -195,46 +195,5 @@ public enum XONValue : Hashable {
     
     public func value(_ type: [UInt32 : XONValue].Type) throws -> [UInt32 : XONValue] {
         return try self.messageValue()
-    }
-}
-
-public enum XONType : Int {
-    case null = 0
-    case bool = -1
-    case number = 1
-    case time = 2
-    case string = 3
-    case data = 4
-    case message = 5
-    case array = 6
-}
-
-public struct XONTime : Hashable {
-    public let microsecond: Int64
-    
-    public init(microsecond: Int64) {
-        self.microsecond = microsecond
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(self.microsecond)
-    }
-    
-    public static func == (lhs: XONTime, rhs: XONTime) -> Bool {
-        return lhs.microsecond == rhs.microsecond
-    }
-    
-    public var isInvalid: Bool {
-        return XTimestampIsInvalid(self.microsecond)
-    }
-    
-    public static let microsecondPerSecond: UInt64 = 1_000_000
-    public static let invalid = XONTime(microsecond: XTimestampInvalidDefault())
-    public static let zero = XONTime(microsecond: 0)
-    public static let min = XONTime(microsecond: XTimestampMin())
-    public static let max = XONTime(microsecond: XTimestampMax())
-    
-    public static func time(microsecond: Int64) -> XONTime {
-        return XONTime(microsecond: microsecond)
     }
 }

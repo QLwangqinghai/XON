@@ -14,16 +14,16 @@ extension JSONSerialization {
 
 public struct XONSerialization {
     public static func decode(_ data: Data) throws -> XONValue {
-        let reader = XONReader(data: data as NSData)
+        let reader = XONDecodeBuffer(data: data as NSData)
         return try reader.readValue()
     }
 
     public static func encode(_ value: XONValue) throws -> Data {
-        return try XONWriter.writeValue(value)
+        return try XONEncodeBuffer.writeValue(value)
     }
 }
 
-public class XONReader {
+public class XONDecodeBuffer {
     public var offset: Int
     public let endIndex: Int
     public let data: NSData
@@ -95,7 +95,7 @@ public class XONReader {
         guard index.pointee <= self.data.count - length else {
             throw XON.notEnoughError
         }
-        guard let string = NSString(bytes: self.bytes.advanced(by: index.pointee), length: length, encoding: String.Encoding.utf8.rawValue) else {
+        guard let string = NSString(bytes: self.bytes.advanced(by: index.pointee), length: length, encoding: NSUTF8StringEncoding) else {
             throw XON.stringContentError
         }
         index.pointee += length
@@ -137,7 +137,10 @@ public class XONReader {
         throw XON.error(code: XONErrorNumberOutOfRange)
     }
     
-    private func readValue(index: UnsafeMutablePointer<Int>) throws -> XONValue {
+    private func readValue(index: UnsafeMutablePointer<Int>, deep: Int) throws -> XONValue {
+        guard deep < 65536 else {
+            throw XON.deepError
+        }
         let header = try self.readHeader(index: index)
         guard let type = XONWireType(rawValue: header.type.rawValue) else {
             throw XON.typeError
@@ -205,7 +208,7 @@ public class XONReader {
                 }
                 let key = prev + offset
                 prev = key
-                let field = try self.readValue(index: index)
+                let field = try self.readValue(index: index, deep: deep + 1)
                 collection[key] = field
             }
             guard collection.count == count else {
@@ -217,7 +220,7 @@ public class XONReader {
             var elements: [XONValue] = []
             elements.reserveCapacity(count)
             for _ in 0 ..< count {
-                let value = try self.readValue(index: index)
+                let value = try self.readValue(index: index, deep: deep + 1)
                 elements.append(value)
             }
             return .array(elements)
@@ -226,14 +229,14 @@ public class XONReader {
     
     public func readValue() throws -> XONValue {
         var index = 0
-        return try self.readValue(index: &index)
+        return try self.readValue(index: &index, deep: 0)
     }
 }
 
-public class XONWriter {
+public class XONEncodeBuffer {
     public var buffer: XONEncodeBuffer_s = XONEncodeBufferMakeDefault()
     
-    public init(minimumCapacity: Int) {
+    public init(minimumCapacity: Int = 0) {
         XONEncodeBufferReserveCapacity(&buffer, minimumCapacity)
     }
     
@@ -245,102 +248,174 @@ public class XONWriter {
         XONEncodeBufferDeallocate(&buffer)
     }
     
-    public func write(_ closure: () -> XONError_e) throws {
+    private func write(_ closure: () -> XONError_e) throws {
         let value = closure()
         if value != XONErrorNone {
             throw NSError(domain: XON.domain, code: Int(value.rawValue))
         }
     }
     
-    private func _writeValue(_ value: XONValue) throws {
-        switch value {
-        case .null:
-            try self.write({
-                return XONEncodeNull(&self.buffer)
-            })
-        case .bool(let v):
-            try self.write({
-                return XONEncodeBool(&self.buffer, v)
-            })
-        case .string(let _v):
-            var v = _v as String
-            let count = v.utf8.count
-            try self.write({
-                return XONEncodeStringHeader(&self.buffer, count)
-            })
-            if count > 0 {
-                try v.withUTF8 { ptr in
-                    try self.write({
-                        return XONEncodeBody(&self.buffer, ptr.baseAddress!, count)
-                    })
-                }
+    public func writeNull() throws {
+        try self.write({
+            return XONEncodeNull(&self.buffer)
+        })
+    }
+    public func writeBool(_ value: Bool) throws {
+        try self.write({
+            return XONEncodeBool(&self.buffer, value)
+        })
+    }
+    public func writeNumber(_ value: NSNumber) throws {
+        if let n = value as? Double {
+            try self.writeDouble(n)
+        } else if let n = value as? Int64 {
+            try self.writeSInt64(n)
+        } else if let n = value as? UInt64 {
+            try self.writeUInt64(n)
+        } else {
+            throw XON.error(code: XONErrorNumberContent)
+        }
+    }
+    public func writeDouble(_ value: Double) throws {
+        try self.write({
+            return XONEncodeNumberDouble(&self.buffer, value)
+        })
+    }
+    public func writeSInt64(_ value: Int64) throws {
+        try self.write({
+            return XONEncodeNumberSInt64(&self.buffer, value)
+        })
+    }
+    public func writeUInt64(_ value: UInt64) throws {
+        try self.write({
+            return XONEncodeNumberUInt64(&self.buffer, value)
+        })
+    }
+    public func writeTime(_ value: XONTime) throws {
+        try self.write({
+            return XONEncodeTime(&self.buffer, value.microsecond)
+        })
+    }
+    public func writeString(_ value: String) throws {
+        try self.write({
+            return value.withCString { ptr in
+                return XONEncodeString(&self.buffer, ptr, value.utf8.count)
             }
-        case .data(let data):
+        })
+    }
+    public func writeData(_ value: Data) throws {
+        try value.withUnsafeBytes { ptr in
             try self.write({
-                return XONEncodeDataHeader(&self.buffer, data.count)
+                return XONEncodeData(&self.buffer, ptr.baseAddress!, value.count)
             })
-            if !data.isEmpty {
-                try data.withUnsafeBytes { ptr in
-                    try self.write({
-                        return XONEncodeBody(&self.buffer, ptr.baseAddress!, data.count)
-                    })
-                }
-            }
-        case .array(let array):
-            try self.write({
-                return XONEncodeArrayHeader(&self.buffer, array.count)
-            })
-            try array.forEach { item in
-                try self._writeValue(item)
-            }
-        case .number(let n):
-            let v = n
-            if let value = v as? Double {
-                try self.write({
-                    return XONEncodeNumberDouble(&self.buffer, value)
-                })
-            } else if let value = v as? Int64 {
-                try self.write({
-                    return XONEncodeNumberSInt64(&self.buffer, value)
-                })
-            } else if let value = v as? UInt64 {
-                try self.write({
-                    return XONEncodeNumberUInt64(&self.buffer, value)
-                })
-            } else {
-                throw XON.error(code: XONErrorNumberContent)
-            }
-        case .time(let v):
-            try self.write({
-                return XONEncodeTime(&self.buffer, v.microsecond)
-            })
-        case .message(let message):
-            try self.write({
-                return XONEncodeMessageHeader(&self.buffer, message.count)
-            })
-            var elements = message.map { e in
-                return e
-            }
-            elements.sort { lhs, rhs in
-                return lhs.0 < rhs.0
-            }
-            var prev: UInt32 = 0
-            try elements.forEach { (key, value) in
-                try self.write({
-                    return XONEncodeFieldKeyOffset(&self.buffer, key - prev)
-                })
-                prev = key
-                try self._writeValue(value)
-            }
         }
     }
     
+    // string.utf8.count
+    public func writeStringHeader(_ count: Int) throws {
+        try self.write({
+            return XONEncodeStringHeader(&self.buffer, count)
+        })
+    }
+    public func writeDataHeader(_ count: Int) throws {
+        try self.write({
+            return XONEncodeDataHeader(&self.buffer, count)
+        })
+    }
+    // String's or Data's body
+    public func writeBody(_ body: UnsafeRawPointer, count: Int) throws {
+        try self.write({
+            return XONEncodeBody(&self.buffer, body, count)
+        })
+    }
+
+    /*
+        Message:
+        header; fieldKeyOffset, value, fieldKeyOffset, value, fieldKeyOffset, value ...... fieldKeyOffset, value
+     */
+
+    public func writeMessageHeader(_ count: Int) throws {
+        try self.write({
+            return XONEncodeMessageHeader(&self.buffer, count)
+        })
+    }
+    public func writeMessageFieldKeyOffset(_ offset: UInt32) throws {
+        try self.write({
+            return XONEncodeFieldKeyOffset(&self.buffer, offset)
+        })
+    }
+    
+    public func writeMessage(_ message: [UInt32 : XONValue]) throws {
+        try self.write({
+            return XONEncodeMessageHeader(&self.buffer, message.count)
+        })
+        var elements = message.map { e in
+            return e
+        }
+        elements.sort { lhs, rhs in
+            return lhs.0 < rhs.0
+        }
+        var prev: UInt32 = 0
+        try elements.forEach { (key, value) in
+            try self.writeMessageFieldKeyOffset(key - prev)
+            prev = key
+            try self.writeValue(value)
+        }
+    }
+    
+    /*
+        Array:
+        header; value, value, value ...... value
+     */
+    public func writeArrayHeader(_ count: Int) throws {
+        try self.write({
+            return XONEncodeArrayHeader(&self.buffer, count)
+        })
+    }
+    public func writeArray(_ array: [XONValue]) throws {
+        try self.write({
+            return XONEncodeArrayHeader(&self.buffer, array.count)
+        })
+        try array.forEach { item in
+            try self.writeValue(item)
+        }
+    }
+    public func writeMessage(_ container: (inout XMessageEncodingContainer) throws -> Void) throws {
+        
+    }
+    public func writeArray(_ container: (inout XArrayEncodingContainer) throws -> Void) throws {
+        
+    }
+//    public func write<T>(_ value: T) throws -> Data where T : XEncodable {
+//
+//    }
+    
+    public func writeValue(_ value: XONValue) throws {
+        switch value {
+        case .null:
+            try self.writeNull()
+        case .bool(let v):
+            try self.writeBool(v)
+        case .string(let v):
+            try self.writeString(v)
+        case .data(let data):
+            try self.writeData(data)
+        case .array(let array):
+            try self.writeArray(array)
+        case .number(let n):
+            try self.writeNumber(n)
+        case .time(let v):
+            try self.writeTime(v)
+        case .message(let message):
+            try self.writeMessage(message)
+        }
+    }
     public static func writeValue(_ value: XONValue) throws -> Data {
-        let writer = XONWriter(minimumCapacity: 0)
-        try writer._writeValue(value)
+        let writer = XONEncodeBuffer()
+        try writer.writeValue(value)
         if writer.buffer.location >= 0x1000 {
             writer.fit()
-            let p = Unmanaged<XONWriter>.passRetained(writer)
+            let p = Unmanaged<XONEncodeBuffer>.passRetained(writer)
             return Data(bytesNoCopy: writer.buffer.bytes!, count: writer.buffer.location, deallocator: Data.Deallocator.custom({ ptr, size in
                 p.release()
             }))

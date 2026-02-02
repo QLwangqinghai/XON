@@ -30,9 +30,9 @@ final class XONTests: XCTestCase {
         // Any test you write for XONTest can be annotated as throws and async.
         // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
         // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+        try testTime()
         
         testNumbers()
-        try testTime()
         testStrings()
         testStringNumberArray()
         testStringNumberMap()
@@ -90,6 +90,24 @@ final class XONTests: XCTestCase {
         
     }
     
+    func checkTime(microsecond: Int64) throws {
+        try autoreleasepool {
+            let time = XONTime.time(microsecond: microsecond)
+            let value: XONValue = .time(time)
+            let number = time.numberValue()
+            print(string)
+            let data = try XONSerialization.encode(value)
+            let b = try XONSerialization.decode(data)
+            assert(b == value)
+            
+            guard let time2 = XONTime(number: number) else {
+                assert(false)
+                return
+            }
+            assert(time == time2)
+        }
+    }
+    
     func testTime() throws {
         try! {
             print("\(#line)")
@@ -119,57 +137,13 @@ final class XONTests: XCTestCase {
             assert(b == value)
         } ()
         
-        try autoreleasepool {
-            let value: XONValue = .time(XONTime.time(microsecond: 2257394757394845625))
-            let data = try XONSerialization.encode(value)
-            let b = try XONSerialization.decode(data)
-            assert(b == value)
-        }
-        
-        try autoreleasepool {
-            let value: XONValue = .time(XONTime.time(microsecond: 2257394757394845625))
-            let data = try XONSerialization.encode(value)
-            let b = try XONSerialization.decode(data)
-            assert(b == value)
-        }
-        
-        try autoreleasepool {
-            let time = XONTime.time(microsecond: 8432091145)
-            let value: XONValue = .time(time)
-            let string = value.jsonValue()
-            print(string)
-            let data = try XONSerialization.encode(value)
-            let b = try XONSerialization.decode(data)
-            assert(b == value)
-            
-            let time2 = XONTime(jsonString: string as! String)
-            assert(time == time2)
-        }
-        try autoreleasepool {
-            let time = XONTime.time(microsecond: 9223372036854775800)
-            let value: XONValue = .time(time)
-            let string = value.jsonValue()
-            print(string)
-            let data = try XONSerialization.encode(value)
-            let b = try XONSerialization.decode(data)
-            assert(b == value)
-            
-            let time2 = XONTime(jsonString: string as! String)
-            assert(time == time2)
-        }
-        try autoreleasepool {
-            let time = XONTime.time(microsecond: -9223372036854775800)
-            let value: XONValue = .time(time)
-            let string = value.jsonValue()
-            print(string)
-            let data = try XONSerialization.encode(value)
-            let b = try XONSerialization.decode(data)
-            assert(b == value)
-            
-            let time2 = XONTime(jsonString: string as! String)
-            assert(time == time2)
-        }
-        
+        try checkTime(microsecond: 2257394757394845625)
+        try checkTime(microsecond: 2257394757394845625)
+
+        try checkTime(microsecond: 8432091145)
+        try checkTime(microsecond: 9223372036854775800)
+        try checkTime(microsecond: -9223372036854775800)
+
         let values = TestObject.timeArray.map { timeval in
             return XONTestObject(.time(timeval))
         }
@@ -281,13 +255,48 @@ final class XONTests: XCTestCase {
         }
         testCoder(tag: tag, objects: values, times: 100)
     }
-
+    public func testTimes() {
+        let tag = "Time"
+        let values: [XONTestObject] = TestObject.timeArray.map { n in
+            return XONTestObject(.time(n))
+        }
+        testCoder(tag: tag, objects: values, times: 100)
+    }
     public func testStrings() {
         let tag = "String"
         let values: [XONTestObject] = TestObject.stringNumberElements.map { (_, s, _) in
-            return XONTestObject(.string(s))
+            return XONTestObject(.string(XONValue.randomString(length: Int.random(in: 0 ... 4096))))
         }
         testCoder(tag: tag, objects: values, times: 100)
+    }
+    public func testStrings1() {
+        let tag = "String"
+        let values: [XONTestObject] = TestObject.stringNumberElements.map { (_, s, _) in
+            return XONTestObject(.string(XONValue.randomString(length: Int.random(in: 0 ... 4096))))
+        }
+        testCoder(tag: tag, objects: values, times: 1)
+    }
+    public func testStrings2() {
+        let tag = "String"
+        let values: [XONTestObject] = TestObject.stringNumberElements.map { (_, s, _) in
+            return XONTestObject(.string(XONValue.randomString(length: Int.random(in: 0 ... 80))))
+        }
+        testCoder(tag: tag, objects: values, times: 100)
+    }
+    
+    public func testSimpleStrings1() {
+        let str = """
+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#iLW0Xk<177c4!Nj{aPVM-tp?zH>.[dk4)-'#n4.2%k98+#/-:WK3_Y}PEFHQDL<v4W34Y~Iks}YubrCbz>"KKjbc_Ln/77V9!tQ5a=SkJ$0ABeBG"Z$[00w#L/0s/znXl-C;6^4?IP?a)/gkJ>B}'6/r,u8s$a-pCdG[8T1z"'or7@~UZaLP6U<=f.S:Aul2,KqFZ4zNgU!ye-v)gID,<@jtyBYlkm;}K[joG`G8bVUL_ClaFEiVhDl7,R8z~k!0JnV:zX@}>QX3F)&m#5?z]}Q6>sA|u,yVCj)Xm,l~_:whXZ<y(.-Ec$Y*9f0mQYZ:"&#]?JT9BAJMG*Csw}d53:Q'g{f*XE_c+Vd-G$<<i>6vS_eW6b(]@F`.z:OIk;tan]Aq9n(3M`DJoWvK;B'IYmuIbnqut-h/OBUQTw9m4R_Ufs/~RAgM`qaXK2wJu2Gk"o9ci/]39dn]LL1`$N/9/Tbj/It=O@1yZ<cQOQFroHF<OFU]xJb*7[e*sl5!sm/{N.=V#52$Q-KIMEVl8$~KEeL;<KdM^tfBE~"`Jv0zi3S--#F~i(o'S_,_r6B`k-Pp0qt&AktzNNNКомпьютерыP
+"""
+        print("\(str.utf8.count)  \(str.data(using: .utf8)?.count)")
+        testCoder(tag: "sss", objects: [XONTestObject(.string(str))], times: 1)
+    }
+    public func testSimpleStrings13() {
+        let str = """
+                计算机abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdef计算机
+"""
+        print("\(str.count)")
+        testCoder(tag: "sss", objects: [XONTestObject(.string(str))], times: 1)
     }
 
     func testStringNumberArray() {
@@ -315,7 +324,7 @@ final class XONTests: XCTestCase {
     }
 
     public func testRandomedJson() throws {
-        let tag = "JSON.random"
+        let tag = "JSON.randomJson"
 
         let values: [XONTestObject] = (1 ... 100).map { index in
             let result = XONValue.randomMessage(deep: 0, jsonSupport: true)
@@ -325,8 +334,19 @@ final class XONTests: XCTestCase {
 
         testCoder(tag: tag, objects: values, times: 100, log: false)
     }
+    
+    public func testSingleMessages() throws {
+        let tag = "JSON.randomSingleMessage"
+        let values: [XONTestObject] = (1 ... 100).map { index in
+            let result = XONValue.randomSingleMessage(jsonSupport: true)
+            return XONTestObject(result)
+        }
+        usleep(1000000)
+
+        testCoder(tag: tag, objects: values, times: 100, log: false)
+    }
     public func testMessages() throws {
-        let tag = "JSON.random"
+        let tag = "JSON.randomMessage"
 
         let values: [XONTestObject] = (1 ... 100).map { index in
             let result = XONValue.randomMessage(deep: 0, jsonSupport: true)
@@ -341,9 +361,13 @@ final class XONTests: XCTestCase {
     
     func testSpeed() throws {
         testNumbers()
+        testTimes()
         testStrings()
         testStringNumberArray()
         testStringNumberMap()
+        
+        try testSingleMessages()
+
         try testMessages()
     }
     
@@ -368,7 +392,7 @@ public struct TestObject {
         return (idx, XONValue.messageKeyMap[idx]!, n)
     }
     
-    public static let timeArray: [XONTime] = (1 ... 100000).map { index in
+    public static let timeArray: [XONTime] = (1 ... 1000).map { index in
         if index == 0 {
             return XONTime.invalid
         } else if index == 1 {
@@ -472,7 +496,7 @@ extension XONValue {
         case .number(let v):
             return v
         case .time(let v):
-            return v.encodeToJsonString() as NSString
+            return v.numberValue()
         case .message(let v):
             let map: NSMutableDictionary = NSMutableDictionary()
             v.forEach { (k, v) in
@@ -483,7 +507,7 @@ extension XONValue {
     }
     
     public static func randomKey() -> String {
-        let len = Int.random(in: 1 ... 18)
+        let len = Int.random(in: 2 ... 12)
         let p = UnsafeMutableRawPointer.allocate(byteCount: len, alignment: 8)
         arc4random_buf(p, len)
         let data = Data(bytes: p, count: len)
@@ -492,19 +516,22 @@ extension XONValue {
         return string
     }
     
-    public static func random(deep: Int, jsonSupport: Bool) -> XONValue {
+    public static func random(deep: Int, allowCollection: Bool, jsonSupport: Bool) -> XONValue {
         if deep > 30 {
             return randomSingleValue(jsonSupport: jsonSupport)
         }
+        if !allowCollection {
+            return randomSingleValue(jsonSupport: jsonSupport)
+        }
         // (3/2)e
-        let rint = Int.random(in: 0 ... (50 + 50 * deep))
+        let rint = Int.random(in: 0 ... 100)
         switch rint {
         case 0:
             let count = randomLength(50)
             var array: [XONValue] = []
             array.reserveCapacity(count)
             for _ in 0 ..< count {
-                array.append(random(deep: deep + 1, jsonSupport: jsonSupport))
+                array.append(random(deep: deep + 1, allowCollection: allowCollection, jsonSupport: jsonSupport))
             }
             return .array(array)
         case 1:
@@ -512,6 +539,11 @@ extension XONValue {
         default:
             return randomSingleValue(jsonSupport: jsonSupport)
         }
+    }
+
+    
+    public static func random(deep: Int, jsonSupport: Bool) -> XONValue {
+        return self.random(deep: deep, allowCollection: true, jsonSupport: jsonSupport)
     }
     
     public static func randomMessageKey() -> UInt32 {
@@ -603,9 +635,8 @@ extension XONValue {
             return XONTime(microsecond: Int64.random(in: Int64.min ... Int64.max))
         }
     }
-    
-    public static func randomString(maxLength: Int) -> String {
-        let len = randomLength(maxLength)
+    public static func randomString(length: Int) -> String {
+        let len = length
         let blen = len * 4 / 5
         var data: Data = randomData(length: len * 3 / 5).base64EncodedData(options: [])
         for _ in blen ..< len {
@@ -620,13 +651,18 @@ extension XONValue {
                 data.append("Компьютеры".data(using: .utf8)!)
             } else {
                 var char = UInt8.random(in: 1 ... 0x7f)
-                while isgraph(Int32(char)) == 0 {
+                while isgraph(Int32(char)) == 0 || char == 92 {
                     char = UInt8.random(in: 1 ... 0x7f)
                 }
                 data.append(contentsOf: [char])
             }
         }
         return String(data: data, encoding: .utf8) ?? ""
+    }
+
+    public static func randomString(maxLength: Int) -> String {
+        let len = randomLength(maxLength)
+        return self.randomString(length: len)
     }
     public static func randomData(length: Int) -> Data {
         let p = UnsafeMutableRawPointer.allocate(byteCount: length, alignment: 8)
@@ -662,12 +698,20 @@ extension XONValue {
         case 6:
             fallthrough
         case 7:
-            return .string(self.randomString(maxLength: 1000))
+            return .string(self.randomString(maxLength: 512))
         default:
             return .number(randomNumber(jsonSupport: jsonSupport))
         }
     }
-    
+    public static func randomSingleMessage(jsonSupport: Bool) -> XONValue {
+        let count = randomLength(50)
+        var map: [UInt32 : XONValue] = [:]
+        for _ in 0 ..< count {
+            map[XONValue.keys[Int.random(in: 0 ..< 10000)].0] = random(deep: 0, allowCollection: false, jsonSupport: jsonSupport)
+        }
+        return XONValue.message(map)
+    }
+
 }
 
 
@@ -827,14 +871,14 @@ public struct Profile : CustomStringConvertible {
         let delta = self.json - self.x
         
         func scale(_ s: Double) -> String {
-            return String(format: "%.03lf", s)
+            return String(format: "%.01lf%%", s * 100)
         }
         
         var result = ""
         result += "\(tag) x: total: \(x.codeString), encode: \(x.encodeString), decode: \(x.decodeString), data: \(x.dataString)\n"
         result += "\(tag) json: total: \(json.codeString), encode: \(json.encodeString), decode: \(json.decodeString), data: \(json.dataString)\n"
         result += "\(tag) delta: total: \(delta.codeString), encode: \(delta.encodeString), decode: \(delta.decodeString), data: \(delta.dataString)\n"
-        result += "\(tag) codefast: \(scale(delta.code / x.code)), encode fast: \(scale(delta.encode / x.encode)), decode fast: \(scale(delta.decode / x.decode)), data less: \(scale(Double(delta.data) / Double(x.data))))\n"
+        result += "\(tag) code speed: \(scale(x.code / json.code)), encode speed: \(scale(x.encode / json.encode)), decode speed: \(scale(x.decode / json.decode)), data: \(scale(Double(x.data) / Double(json.data)))\n"
         return result
     }
     
@@ -854,13 +898,17 @@ func testCoder(tag: String, objects: [XONTestObject], times: Int, log: Bool) {
     range.forEach { i in
         for object in objects {
             autoreleasepool {
+                var dataCount: Int = 0
+                var datat: Data? = nil
                 let value = object.xobject
                 let start: CFAbsoluteTime = CFAbsoluteTimeGetCurrent()
                 let data = try! XONSerialization.encode(value)
+                datat = data
+                dataCount = data.count
                 let mtime: CFAbsoluteTime = CFAbsoluteTimeGetCurrent()
                 let decoded = try! XONSerialization.decode(data)
                 let end: CFAbsoluteTime = CFAbsoluteTimeGetCurrent()
-
+                
                 object.xlength = data.count
                 time0 += end - start
                 time0a += mtime - start
@@ -869,6 +917,7 @@ func testCoder(tag: String, objects: [XONTestObject], times: Int, log: Bool) {
                 
                 assert(value == decoded)
             }
+
         }
     }
 

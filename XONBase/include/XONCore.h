@@ -66,10 +66,12 @@ typedef enum {
     XONErrorCount = -2,
     XONErrorNotEnough = -3,
     XONErrorNotSupport = -4,
+    XONErrorArgumentError = -0x20,
+    XONErrorDeepError = -0x21,
+
     
     XONErrorNotImplemented = -0xa,
     
-    XONErrorVarInt = -0x5,
         
     /// 非法编码
     XONErrorType = -0x6,
@@ -84,7 +86,8 @@ typedef enum {
     XONErrorStringContent = -0x15,
     XONErrorArrayContent = -0x16,
     XONErrorMessageContent = -0x17,
-    
+    XONErrorVarInt = -0x18,
+
     XONErrorFieldNotFound = -0x1a
 } XONError_e;
 
@@ -255,5 +258,7 @@ extern XONError_e XONEncodeArrayHeader(XONEncodeBuffer_s * _Nonnull buffer, ssiz
 extern XONError_e XONEncodeDataHeader(XONEncodeBuffer_s * _Nonnull buffer, ssize_t count);
 extern XONError_e XONEncodeStringHeader(XONEncodeBuffer_s * _Nonnull buffer, ssize_t count);
 extern XONError_e XONEncodeBody(XONEncodeBuffer_s * _Nonnull buffer, const void * _Nonnull data, ssize_t count);
+extern XONError_e XONEncodeData(XONEncodeBuffer_s * _Nonnull buffer, const void * _Nullable data, ssize_t count);
+extern XONError_e XONEncodeString(XONEncodeBuffer_s * _Nonnull buffer, const void * _Nullable cString, ssize_t count);
 
 #endif /* XONCore_h */

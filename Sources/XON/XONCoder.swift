@@ -342,6 +342,7 @@ public struct XEncoderImpl: XEncoder {
     public mutating func encodeNumber(_ value: NSNumber) throws {
         self.value = .number(value)
     }
+
     public mutating func encodeTime(_ value: XONTime) throws {
         self.value = .time(value)
     }
