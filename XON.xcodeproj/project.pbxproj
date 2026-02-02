@@ -33,6 +33,7 @@
 		D6463E4B2BDE9D4F00D6AF57 /* XONCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E4A2BDE9D4F00D6AF57 /* XONCoder.swift */; };
 		D6463E4D2BE53C1F00D6AF57 /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E4C2BE53C1F00D6AF57 /* Collection.swift */; };
 		D6546F4A2BECD7AF00E2C459 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = D6546F492BECD7AF00E2C459 /* README.md */; };
+		D69040052F311EB400695DF3 /* XONTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D69040042F311EB400695DF3 /* XONTestCase.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -116,6 +117,7 @@
 		D6463E4A2BDE9D4F00D6AF57 /* XONCoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XONCoder.swift; sourceTree = "<group>"; };
 		D6463E4C2BE53C1F00D6AF57 /* Collection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
 		D6546F492BECD7AF00E2C459 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		D69040042F311EB400695DF3 /* XONTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XONTestCase.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -261,6 +263,7 @@
 			isa = PBXGroup;
 			children = (
 				D6463E302BDE999400D6AF57 /* XONTests.swift */,
+				D69040042F311EB400695DF3 /* XONTestCase.swift */,
 			);
 			path = XONTests;
 			sourceTree = "<group>";
@@ -537,6 +540,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D6463E312BDE999400D6AF57 /* XONTests.swift in Sources */,
+				D69040052F311EB400695DF3 /* XONTestCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
