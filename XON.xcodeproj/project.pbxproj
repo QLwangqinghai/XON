@@ -29,7 +29,6 @@
 		D6463E442BDE99CB00D6AF57 /* XONSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E3D2BDE99CB00D6AF57 /* XONSerialization.swift */; };
 		D6463E452BDE99CB00D6AF57 /* XON.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E3E2BDE99CB00D6AF57 /* XON.swift */; };
 		D6463E462BDE99CB00D6AF57 /* XONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E3F2BDE99CB00D6AF57 /* XONValue.swift */; };
-		D6463E472BDE99CB00D6AF57 /* XONExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E402BDE99CB00D6AF57 /* XONExtensions.swift */; };
 		D6463E4B2BDE9D4F00D6AF57 /* XONCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E4A2BDE9D4F00D6AF57 /* XONCoder.swift */; };
 		D6463E4D2BE53C1F00D6AF57 /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E4C2BE53C1F00D6AF57 /* Collection.swift */; };
 		D6546F4A2BECD7AF00E2C459 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = D6546F492BECD7AF00E2C459 /* README.md */; };
@@ -113,7 +112,6 @@
 		D6463E3D2BDE99CB00D6AF57 /* XONSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XONSerialization.swift; sourceTree = "<group>"; };
 		D6463E3E2BDE99CB00D6AF57 /* XON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XON.swift; sourceTree = "<group>"; };
 		D6463E3F2BDE99CB00D6AF57 /* XONValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XONValue.swift; sourceTree = "<group>"; };
-		D6463E402BDE99CB00D6AF57 /* XONExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XONExtensions.swift; sourceTree = "<group>"; };
 		D6463E4A2BDE9D4F00D6AF57 /* XONCoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XONCoder.swift; sourceTree = "<group>"; };
 		D6463E4C2BE53C1F00D6AF57 /* Collection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
 		D6546F492BECD7AF00E2C459 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -282,7 +280,6 @@
 				D6463E3D2BDE99CB00D6AF57 /* XONSerialization.swift */,
 				D6463E3E2BDE99CB00D6AF57 /* XON.swift */,
 				D6463E3F2BDE99CB00D6AF57 /* XONValue.swift */,
-				D6463E402BDE99CB00D6AF57 /* XONExtensions.swift */,
 				D6463E4A2BDE9D4F00D6AF57 /* XONCoder.swift */,
 				D60309C62F2F9D8D005BF9EA /* XONTime.swift */,
 			);
@@ -524,7 +521,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D6463E472BDE99CB00D6AF57 /* XONExtensions.swift in Sources */,
 				D6463E442BDE99CB00D6AF57 /* XONSerialization.swift in Sources */,
 				D6463E452BDE99CB00D6AF57 /* XON.swift in Sources */,
 				D6463E262BDE999400D6AF57 /* XON.docc in Sources */,
@@ -694,11 +690,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = T5DNYT7CXU;
 				ENABLE_HARDENED_RUNTIME = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.angfung.test;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -708,11 +706,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = T5DNYT7CXU;
 				ENABLE_HARDENED_RUNTIME = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.angfung.test;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};

@@ -2,6 +2,27 @@
 import Foundation
 import XONBase
 
+
+extension NSNumber {
+    public var isBoolType: Bool {
+        let n = self as CFNumber
+        return CFGetTypeID(n) == CFBooleanGetTypeID()
+    }
+    
+    public static func number(xvalue: XONNumberValue_s) -> NSNumber? {
+        switch xvalue.type {
+        case Int(XONNumberTypeSInt.rawValue):
+            return xvalue.value.s as NSNumber
+        case Int(XONNumberTypeUInt.rawValue):
+            return xvalue.value.u as NSNumber
+        case Int(XONNumberTypeFloat64.rawValue):
+            return xvalue.value.f as NSNumber
+        default:
+            return nil
+        }
+    }
+}
+
 extension JSONSerialization {
     public static func decode(_ data: Data) throws -> Any {
         return try JSONSerialization.jsonObject(with: data, options: [.allowFragments, .json5Allowed])
