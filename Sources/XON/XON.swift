@@ -1,6 +1,6 @@
 
 import Foundation
-import XONBase
+import CX
 
 public struct XON {
     public static let domain = String(cString: XONErrorDomain)

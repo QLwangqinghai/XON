@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@testable import XONBase
+@testable import CX
 @testable import XON
 
 

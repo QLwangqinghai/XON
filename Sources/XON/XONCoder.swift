@@ -1,6 +1,6 @@
 
 import Foundation
-import XONBase
+import CX
 
 public final class XONEncoder {
     public func encode<T>(_ value: T) throws -> Data where T : XEncodable {

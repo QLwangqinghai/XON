@@ -1,6 +1,6 @@
 
 import Foundation
-import XONBase
+import CX
 
 public enum XONWireType : UInt32 {
     case simpleValue = 0

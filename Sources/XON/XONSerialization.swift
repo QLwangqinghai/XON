@@ -1,6 +1,6 @@
 
 import Foundation
-import XONBase
+import CX
 
 
 extension NSNumber {
@@ -25,7 +25,11 @@ extension NSNumber {
 
 extension JSONSerialization {
     public static func decode(_ data: Data) throws -> Any {
-        return try JSONSerialization.jsonObject(with: data, options: [.allowFragments, .json5Allowed])
+        if #available(macOS 12.0, *) {
+            return try JSONSerialization.jsonObject(with: data, options: [.allowFragments, .json5Allowed])
+        } else {
+            return try JSONSerialization.jsonObject(with: data, options: [.allowFragments])
+        }
     }
 
     public static func encode(_ value: Any) throws -> Data {

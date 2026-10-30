@@ -1,6 +1,6 @@
 
 import Foundation
-import XONBase
+import CX
 
 public struct XONTime : Hashable, Codable {
     public let microsecond: Int64
