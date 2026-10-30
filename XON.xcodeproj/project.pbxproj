@@ -21,7 +21,8 @@
 		D6463E462BDE99CB00D6AF57 /* XONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E3F2BDE99CB00D6AF57 /* XONValue.swift */; };
 		D6463E4B2BDE9D4F00D6AF57 /* XONCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6463E4A2BDE9D4F00D6AF57 /* XONCoder.swift */; };
 		D6546F4A2BECD7AF00E2C459 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = D6546F492BECD7AF00E2C459 /* README.md */; };
-		D69040052F311EB400695DF3 /* XONTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D69040042F311EB400695DF3 /* XONTestCase.swift */; };
+		D68FEC92309428880098A7A5 /* XONTestObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = D68FEC90309428880098A7A5 /* XONTestObject.swift */; };
+		D68FEC95309428C10098A7A5 /* XONTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D68FEC94309428C10098A7A5 /* XONTestCase.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,7 +81,8 @@
 		D6463E4A2BDE9D4F00D6AF57 /* XONCoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XONCoder.swift; sourceTree = "<group>"; };
 		D6546F492BECD7AF00E2C459 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		D68FEC7E309376650098A7A5 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
-		D69040042F311EB400695DF3 /* XONTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XONTestCase.swift; sourceTree = "<group>"; };
+		D68FEC90309428880098A7A5 /* XONTestObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XONTestObject.swift; sourceTree = "<group>"; };
+		D68FEC94309428C10098A7A5 /* XONTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XONTestCase.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,8 +163,9 @@
 		D6463E2F2BDE999400D6AF57 /* XONTests */ = {
 			isa = PBXGroup;
 			children = (
+				D68FEC94309428C10098A7A5 /* XONTestCase.swift */,
+				D68FEC90309428880098A7A5 /* XONTestObject.swift */,
 				D6463E302BDE999400D6AF57 /* XONTests.swift */,
-				D69040042F311EB400695DF3 /* XONTestCase.swift */,
 			);
 			path = XONTests;
 			sourceTree = "<group>";
@@ -341,8 +344,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D68FEC95309428C10098A7A5 /* XONTestCase.swift in Sources */,
 				D6463E312BDE999400D6AF57 /* XONTests.swift in Sources */,
-				D69040052F311EB400695DF3 /* XONTestCase.swift in Sources */,
+				D68FEC92309428880098A7A5 /* XONTestObject.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
