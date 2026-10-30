@@ -23,6 +23,7 @@
 		D6546F4A2BECD7AF00E2C459 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = D6546F492BECD7AF00E2C459 /* README.md */; };
 		D68FEC92309428880098A7A5 /* XONTestObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = D68FEC90309428880098A7A5 /* XONTestObject.swift */; };
 		D68FEC95309428C10098A7A5 /* XONTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D68FEC94309428C10098A7A5 /* XONTestCase.swift */; };
+		D68FEC993094885A0098A7A5 /* XON.podspec in Resources */ = {isa = PBXBuildFile; fileRef = D68FEC983094885A0098A7A5 /* XON.podspec */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +84,7 @@
 		D68FEC7E309376650098A7A5 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		D68FEC90309428880098A7A5 /* XONTestObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XONTestObject.swift; sourceTree = "<group>"; };
 		D68FEC94309428C10098A7A5 /* XONTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XONTestCase.swift; sourceTree = "<group>"; };
+		D68FEC983094885A0098A7A5 /* XON.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = XON.podspec; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +132,7 @@
 		D6463E172BDE999400D6AF57 = {
 			isa = PBXGroup;
 			children = (
+				D68FEC983094885A0098A7A5 /* XON.podspec */,
 				D68FEC7E309376650098A7A5 /* Package.swift */,
 				D6546F492BECD7AF00E2C459 /* README.md */,
 				D6463E232BDE999400D6AF57 /* XON */,
@@ -305,6 +308,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D68FEC993094885A0098A7A5 /* XON.podspec in Resources */,
 				D6546F4A2BECD7AF00E2C459 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
