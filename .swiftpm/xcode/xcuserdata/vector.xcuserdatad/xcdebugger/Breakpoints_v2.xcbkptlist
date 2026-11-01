@@ -1,0 +1,1100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "78986FCA-F9A2-43EC-8D95-278BD4E57198"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D9347A14-6FB2-4FF5-A4AA-1233950F8B4E"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../CX/Sources/CX/Object/XONCoder.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "106"
+            endingLineNumber = "106"
+            landmarkName = "__XONDecodeBufferRead1(buffer)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E673689F-2EAB-463D-A356-E9935B56DE76"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../CX/Sources/CX/Object/XMessage.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "552"
+            endingLineNumber = "552"
+            landmarkName = "_XMessageEqual(self, lhs, rhs)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "E673689F-2EAB-463D-A356-E9935B56DE76 - dc5d8453c419a7ad"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "_XImmutableMessageGetHashCode.cold.1"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XMessage.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "555"
+                  endingLineNumber = "555"
+                  offsetFromSymbolStart = "4">
+               </Location>
+               <Location
+                  uuid = "E673689F-2EAB-463D-A356-E9935B56DE76 - 6527f5ee83d7c7fc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "_XMessageEqual"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XMessage.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "552"
+                  endingLineNumber = "552"
+                  offsetFromSymbolStart = "300">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "DCEFE862-62A5-48C8-A0A3-FB224600F50B"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../CX/Sources/CX/Object/XMessage.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "546"
+            endingLineNumber = "546"
+            landmarkName = "_XMessageEqual(self, lhs, rhs)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "DCEFE862-62A5-48C8-A0A3-FB224600F50B - 6527f5ee83d7c678"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "_XMessageEqual"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XMessage.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "548"
+                  endingLineNumber = "548"
+                  offsetFromSymbolStart = "122">
+               </Location>
+               <Location
+                  uuid = "DCEFE862-62A5-48C8-A0A3-FB224600F50B - 6527f5ee83d7c63a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "_XMessageEqual"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XMessage.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "546"
+                  endingLineNumber = "546"
+                  offsetFromSymbolStart = "186">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "630224F8-4DDC-4C79-BAA2-F865BB338D0E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../CX/Sources/CX/Object/XMessage.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "542"
+            endingLineNumber = "542"
+            landmarkName = "_XMessageEqual(self, lhs, rhs)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "630224F8-4DDC-4C79-BAA2-F865BB338D0E - 6527f5ee83d7c6f4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "_XMessageEqual"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XMessage.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "544"
+                  endingLineNumber = "544"
+                  offsetFromSymbolStart = "102">
+               </Location>
+               <Location
+                  uuid = "630224F8-4DDC-4C79-BAA2-F865BB338D0E - 6527f5ee83d7c6b6"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "_XMessageEqual"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XMessage.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "542"
+                  endingLineNumber = "542"
+                  offsetFromSymbolStart = "123">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E2B11384-F5EB-4E19-94E8-397E0E93DE9E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../CX/Sources/CX/Object/XONCoder.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "99"
+            endingLineNumber = "99"
+            landmarkName = "__XONDecodeBufferRead1(buffer)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "E2B11384-F5EB-4E19-94E8-397E0E93DE9E - 49f124869b8b88c3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "100"
+                  endingLineNumber = "100"
+                  offsetFromSymbolStart = "87">
+               </Location>
+               <Location
+                  uuid = "E2B11384-F5EB-4E19-94E8-397E0E93DE9E - b54216603ad0830a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead1"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "99"
+                  endingLineNumber = "99"
+                  offsetFromSymbolStart = "30">
+               </Location>
+               <Location
+                  uuid = "E2B11384-F5EB-4E19-94E8-397E0E93DE9E - b54216603ad08354"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead1"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "101"
+                  endingLineNumber = "101"
+                  offsetFromSymbolStart = "31">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2E2E41D0-4824-4DEE-94E9-BA541AF29F85"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../CX/Sources/CX/Object/XONCoder.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "103"
+            endingLineNumber = "103"
+            landmarkName = "__XONDecodeBufferRead1(buffer)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "2E2E41D0-4824-4DEE-94E9-BA541AF29F85 - 49f124869b8b8f68"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "111"
+                  endingLineNumber = "111"
+                  offsetFromSymbolStart = "653">
+               </Location>
+               <Location
+                  uuid = "2E2E41D0-4824-4DEE-94E9-BA541AF29F85 - b54216603ad08396"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead1"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "103"
+                  endingLineNumber = "103"
+                  offsetFromSymbolStart = "77">
+               </Location>
+               <Location
+                  uuid = "2E2E41D0-4824-4DEE-94E9-BA541AF29F85 - b54216603ad083d0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead1"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "105"
+                  endingLineNumber = "105"
+                  offsetFromSymbolStart = "53">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "DA8EA9C5-3EB6-4691-985B-AC99794FBD5C"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../CX/Sources/CX/Object/XONCoder.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "109"
+            endingLineNumber = "109"
+            landmarkName = "__XONDecodeBufferRead1(buffer)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "DA8EA9C5-3EB6-4691-985B-AC99794FBD5C - 49f124869b8b8f68"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "111"
+                  endingLineNumber = "111"
+                  offsetFromSymbolStart = "653">
+               </Location>
+               <Location
+                  uuid = "DA8EA9C5-3EB6-4691-985B-AC99794FBD5C - b54216603ad0845c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead1"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "109"
+                  endingLineNumber = "109"
+                  offsetFromSymbolStart = "165">
+               </Location>
+               <Location
+                  uuid = "DA8EA9C5-3EB6-4691-985B-AC99794FBD5C - b54216603ad084b9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead1"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "112"
+                  endingLineNumber = "112"
+                  offsetFromSymbolStart = "87">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B0938603-9A8F-46A0-9773-BA33EEA6096E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../CX/Sources/CX/Object/XONCoder.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "117"
+            endingLineNumber = "117"
+            landmarkName = "__XONDecodeBufferRead1(buffer)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "B0938603-9A8F-46A0-9773-BA33EEA6096E - 49f124869b8b8e92"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "117"
+                  endingLineNumber = "117"
+                  offsetFromSymbolStart = "670">
+               </Location>
+               <Location
+                  uuid = "B0938603-9A8F-46A0-9773-BA33EEA6096E - b54216603ad08564"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead1"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "117"
+                  endingLineNumber = "117"
+                  offsetFromSymbolStart = "276">
+               </Location>
+               <Location
+                  uuid = "B0938603-9A8F-46A0-9773-BA33EEA6096E - b54216603ad08622"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead1"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "123"
+                  endingLineNumber = "123"
+                  offsetFromSymbolStart = "653">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "881199FA-58CD-423B-96F6-B780CA877234"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../CX/Sources/CX/Object/XArray.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "288"
+            endingLineNumber = "288"
+            landmarkName = "_XArrayEqual(self, lhs, rhs)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "881199FA-58CD-423B-96F6-B780CA877234 - c0a17b7d82e4ea9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "_XArrayEqual"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XArray.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "291"
+                  endingLineNumber = "291"
+                  offsetFromSymbolStart = "82">
+               </Location>
+               <Location
+                  uuid = "881199FA-58CD-423B-96F6-B780CA877234 - c0a17b7d82e4f34"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "_XArrayEqual"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XArray.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "288"
+                  endingLineNumber = "288"
+                  offsetFromSymbolStart = "120">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B7746D00-35E9-45B9-93F6-E9CFFC8E1EFE"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../CX/Sources/CX/Object/XArray.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "293"
+            endingLineNumber = "293"
+            landmarkName = "_XArrayEqual(self, lhs, rhs)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "B7746D00-35E9-45B9-93F6-E9CFFC8E1EFE - c0a17b7d82e4e2d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "_XArrayEqual"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XArray.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "295"
+                  endingLineNumber = "295"
+                  offsetFromSymbolStart = "108">
+               </Location>
+               <Location
+                  uuid = "B7746D00-35E9-45B9-93F6-E9CFFC8E1EFE - c0a17b7d82e4eef"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "_XArrayEqual"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XArray.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "293"
+                  endingLineNumber = "293"
+                  offsetFromSymbolStart = "183">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "51F50404-B990-4C2E-97BF-F2386E7FB87D"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../CX/Sources/CX/Object/XArray.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "299"
+            endingLineNumber = "299"
+            landmarkName = "_XArrayEqual(self, lhs, rhs)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "51F50404-B990-4C2E-97BF-F2386E7FB87D - c0a17b7d82e4d25"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "_XArrayEqual"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XArray.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "303"
+                  endingLineNumber = "303"
+                  offsetFromSymbolStart = "240">
+               </Location>
+               <Location
+                  uuid = "51F50404-B990-4C2E-97BF-F2386E7FB87D - c0a17b7d82e4da1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "_XArrayEqual"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XArray.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "299"
+                  endingLineNumber = "299"
+                  offsetFromSymbolStart = "279">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "016856EA-050F-4983-8216-626FF207BDA9"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Test/XONObject.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "992"
+            endingLineNumber = "992"
+            landmarkName = "testCoder(tag:objects:times:log:)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "8AC70DF7-656C-453E-8579-5D45B0507051"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../CX/Sources/CX/Object/XONCoder.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "286"
+            endingLineNumber = "286"
+            landmarkName = "XONDecodeBufferRead(buffer)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "8AC70DF7-656C-453E-8579-5D45B0507051 - 8825a0e493ccd919"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "XONDecodeBufferRead"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "286"
+                  endingLineNumber = "286"
+                  offsetFromSymbolStart = "101">
+               </Location>
+               <Location
+                  uuid = "8AC70DF7-656C-453E-8579-5D45B0507051 - 8825a0e493ccd95f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "XONDecodeBufferRead"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "288"
+                  endingLineNumber = "288"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  uuid = "8AC70DF7-656C-453E-8579-5D45B0507051 - 14986a0927f7a11d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "XONDecodeWithData"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "288"
+                  endingLineNumber = "288"
+                  offsetFromSymbolStart = "87">
+               </Location>
+               <Location
+                  uuid = "8AC70DF7-656C-453E-8579-5D45B0507051 - 5305836042fbf53f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "XONDecode"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "288"
+                  endingLineNumber = "288"
+                  offsetFromSymbolStart = "44">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "005F00A5-2B36-4924-B004-04546CAEF5F4"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../CX/Sources/CX/Object/XONCoder.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "290"
+            endingLineNumber = "290"
+            landmarkName = "XONDecodeBufferRead(buffer)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "005F00A5-2B36-4924-B004-04546CAEF5F4 - 8825a0e493ccd99d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "XONDecodeBufferRead"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "290"
+                  endingLineNumber = "290"
+                  offsetFromSymbolStart = "148">
+               </Location>
+               <Location
+                  uuid = "005F00A5-2B36-4924-B004-04546CAEF5F4 - 8825a0e493ccd9c3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "XONDecodeBufferRead"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "292"
+                  endingLineNumber = "292"
+                  offsetFromSymbolStart = "26">
+               </Location>
+               <Location
+                  uuid = "005F00A5-2B36-4924-B004-04546CAEF5F4 - 14986a0927f7a181"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "XONDecodeWithData"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "292"
+                  endingLineNumber = "292"
+                  offsetFromSymbolStart = "96">
+               </Location>
+               <Location
+                  uuid = "005F00A5-2B36-4924-B004-04546CAEF5F4 - 5305836042fbf5a3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "XONDecode"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "292"
+                  endingLineNumber = "292"
+                  offsetFromSymbolStart = "53">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9566C503-B312-46A4-97A1-F5633530885E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../CX/Sources/CX/Object/XONCoder.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "237"
+            endingLineNumber = "237"
+            landmarkName = "__XONDecodeBufferRead1(buffer)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "9566C503-B312-46A4-97A1-F5633530885E - b54216603ad094dc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead1"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "237"
+                  endingLineNumber = "237"
+                  offsetFromSymbolStart = "1079">
+               </Location>
+               <Location
+                  uuid = "9566C503-B312-46A4-97A1-F5633530885E - b54216603ad094dc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead1"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "237"
+                  endingLineNumber = "237"
+                  offsetFromSymbolStart = "1078">
+               </Location>
+               <Location
+                  uuid = "9566C503-B312-46A4-97A1-F5633530885E - b54216603ad0951e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead1"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "239"
+                  endingLineNumber = "239"
+                  offsetFromSymbolStart = "391">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "ED069EBB-62B8-4C8A-9590-8D9D8EE43CC8"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../CX/Sources/CX/Object/XONCoder.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "266"
+            endingLineNumber = "266"
+            landmarkName = "__XONDecodeBufferRead1(buffer)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "ED069EBB-62B8-4C8A-9590-8D9D8EE43CC8 - b54216603ad09893"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead1"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "266"
+                  endingLineNumber = "266"
+                  offsetFromSymbolStart = "1403">
+               </Location>
+               <Location
+                  uuid = "ED069EBB-62B8-4C8A-9590-8D9D8EE43CC8 - b54216603ad09893"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead1"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "266"
+                  endingLineNumber = "266"
+                  offsetFromSymbolStart = "1402">
+               </Location>
+               <Location
+                  uuid = "ED069EBB-62B8-4C8A-9590-8D9D8EE43CC8 - b54216603ad098dd"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead1"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "268"
+                  endingLineNumber = "268"
+                  offsetFromSymbolStart = "567">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5F587CD2-A41D-4F6F-A11B-BBC86EAFA5C6"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../CX/Sources/CX/Object/XONCoder.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "257"
+            endingLineNumber = "257"
+            landmarkName = "__XONDecodeBufferRead1(buffer)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "5F587CD2-A41D-4F6F-A11B-BBC86EAFA5C6 - b54216603ad09768"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead1"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "257"
+                  endingLineNumber = "257"
+                  offsetFromSymbolStart = "1282">
+               </Location>
+               <Location
+                  uuid = "5F587CD2-A41D-4F6F-A11B-BBC86EAFA5C6 - b54216603ad09768"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead1"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "257"
+                  endingLineNumber = "257"
+                  offsetFromSymbolStart = "1281">
+               </Location>
+               <Location
+                  uuid = "5F587CD2-A41D-4F6F-A11B-BBC86EAFA5C6 - b54216603ad097aa"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead1"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "259"
+                  endingLineNumber = "259"
+                  offsetFromSymbolStart = "519">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0B1D1300-E2E3-4DB0-9482-51289B9B58C7"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../CX/Sources/CX/Object/XONCoder.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "253"
+            endingLineNumber = "253"
+            landmarkName = "__XONDecodeBufferRead1(buffer)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "0B1D1300-E2E3-4DB0-9482-51289B9B58C7 - b54216603ad096ec"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead1"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "253"
+                  endingLineNumber = "253"
+                  offsetFromSymbolStart = "1228">
+               </Location>
+               <Location
+                  uuid = "0B1D1300-E2E3-4DB0-9482-51289B9B58C7 - b54216603ad096ec"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead1"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "253"
+                  endingLineNumber = "253"
+                  offsetFromSymbolStart = "1227">
+               </Location>
+               <Location
+                  uuid = "0B1D1300-E2E3-4DB0-9482-51289B9B58C7 - b54216603ad0972e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead1"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "255"
+                  endingLineNumber = "255"
+                  offsetFromSymbolStart = "477">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "58B859A6-256D-486C-B9A9-F06883F54E60"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../CX/Sources/CX/Object/XONCoder.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "92"
+            endingLineNumber = "92"
+            landmarkName = "__XONDecodeBufferRead(buffer)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "58B859A6-256D-486C-B9A9-F06883F54E60 - 49f124869b8b89db"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "92"
+                  endingLineNumber = "92"
+                  offsetFromSymbolStart = "71">
+               </Location>
+               <Location
+                  uuid = "58B859A6-256D-486C-B9A9-F06883F54E60 - 49f124869b8b89db"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__XONDecodeBufferRead"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "92"
+                  endingLineNumber = "92"
+                  offsetFromSymbolStart = "43">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "FF9ECA40-54AE-445D-884A-FC6C30BEE6A6"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../CX/Sources/CX/Object/XONCore.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1153"
+            endingLineNumber = "1153"
+            landmarkName = "XONDecodeTime(bytes, capacity, location, count, time)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "11D0FE4A-0F00-4E9A-84E4-EEBCE317F5F0"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../CX/Sources/CX/Object/XONCoder.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "10"
+            endingLineNumber = "10"
+            landmarkName = "XONDecodeBufferReadTimeval(buffer, count)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "11D0FE4A-0F00-4E9A-84E4-EEBCE317F5F0 - b5aa8d567d08ae7c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "XONDecodeBufferReadTimeval"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "10"
+                  endingLineNumber = "10"
+                  offsetFromSymbolStart = "87">
+               </Location>
+               <Location
+                  uuid = "11D0FE4A-0F00-4E9A-84E4-EEBCE317F5F0 - b5aa8d567d08ae32"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "XONDecodeBufferReadTimeval"
+                  moduleName = "CX"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/vector/gitsource/CX/Sources/CX/Object/XONCoder.c"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "12"
+                  endingLineNumber = "12"
+                  offsetFromSymbolStart = "54">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

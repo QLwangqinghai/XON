@@ -12,12 +12,15 @@ let package = Package(
     ],
     products: [
         .library(name: "XON", type: .dynamic, targets: ["XON"]),
+        .executable(name: "Test", targets: ["Test"])
     ],
     dependencies: [
         .package(name: "CX", path: "../CX"),
     ],
     targets: [
         .target(name: "XON", dependencies: [.product(name: "CX", package: "CX"),], path: "Sources/XON", exclude: [], sources: nil, publicHeadersPath: nil, cSettings: nil, cxxSettings: nil, swiftSettings: nil, linkerSettings: nil),
+        .target(name: "Test", dependencies: ["XON"], path: "Test", exclude: [], sources: nil, publicHeadersPath: nil, cSettings: nil, cxxSettings: nil, swiftSettings: nil, linkerSettings: nil),
+
     ],
     cLanguageStandard: .c11,
     cxxLanguageStandard: .cxx11
