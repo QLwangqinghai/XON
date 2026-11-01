@@ -17,6 +17,8 @@ testCoder(tag: "", objects: [xobj1], times: 100)
 
 
 let tester = XONTestCase()
-for _ in 0 ... 4 {
-    try! tester.test()
+for _ in 0 ... 400 {
+    autoreleasepool {
+        try! tester.test()
+    }
 }

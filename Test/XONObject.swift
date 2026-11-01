@@ -270,7 +270,7 @@ final class XONTestCase: NSObject {
 
     func testStringNumberArray() {
         let tag = "[String,Number]"
-        usleep(1000000)
+        usleep(100000)
 
         let values: [XONTestObject] = TestObject.stringNumberElements.map { (_, s, n) in
             return XONTestObject(.array([.string(s), .number(n)]))
@@ -279,7 +279,7 @@ final class XONTestCase: NSObject {
         testCoder(tag: tag, objects: values, times: 100)
     }
     public func testStringNumberMap() {
-        usleep(1000000)
+        usleep(100000)
 
         let tag = "{string:Number}"
 
@@ -299,7 +299,7 @@ final class XONTestCase: NSObject {
             let result = XONValue.randomMessage(deep: 0, jsonSupport: true)
             return XONTestObject(.message(result))
         }
-        usleep(1000000)
+        usleep(200000)
 
         testCoder(tag: tag, objects: values, times: 100, log: false)
     }
@@ -310,7 +310,7 @@ final class XONTestCase: NSObject {
             let result = XONValue.randomSingleMessage(jsonSupport: true)
             return XONTestObject(result)
         }
-        usleep(1000000)
+        usleep(200000)
 
         testCoder(tag: tag, objects: values, times: 100, log: false)
     }
@@ -321,7 +321,7 @@ final class XONTestCase: NSObject {
             let result = XONValue.randomMessage(deep: 0, jsonSupport: true)
             return XONTestObject(.message(result))
         }
-        usleep(1000000)
+        usleep(200000)
 
         testCoder(tag: tag, objects: values, times: 100, log: false)
     }
@@ -398,6 +398,23 @@ public struct TestObject {
         } else {
             return UInt64.random(in: 0 ..< UInt64.max)
         }
+    }
+    
+}
+
+public class XWrapper : Equatable {
+
+    public let object: UnsafeMutableRawPointer?
+    
+    public init(_ object: UnsafeMutableRawPointer?) {
+        self.object = object
+    }
+    deinit {
+        XObjectRelease(self.object)
+    }
+    
+    public static func == (lhs: XWrapper, rhs: XWrapper) -> Bool {
+        return XObjectEqual(lhs.object, rhs.object)
     }
     
 }
@@ -796,7 +813,7 @@ func testVarint() {
 //
 //    let buffer = XONBuffer(minimumCapacity: 1024 * 10 * 10)
 //
-//    usleep(1000000)
+//    usleep(100000)
 //
 //    TestObject.uint63Array.forEach { _ in
 //
@@ -804,7 +821,7 @@ func testVarint() {
 //
 //    let int64time = testVarint(buffer: buffer, encode: __XONEncodeUInt64Varint, decode: __XONDecodeUInt64Varint)
 //
-//    usleep(1000000)
+//    usleep(100000)
 //
 //
 //    TestObject.uint63Array.forEach { _ in
@@ -952,7 +969,6 @@ func code<T, D>(tag: String, objects: [XONTestObject], times: Int, encode: (XONT
 
 
 func testCoder(tag: String, objects: [XONTestObject], times: Int, log: Bool) {
-    
     let x = code(tag: tag, objects: objects, times: times) { object in
         let data = try! XONSerialization.encode(object.xobject)
         return (data, data.count)
@@ -977,19 +993,20 @@ func testCoder(tag: String, objects: [XONTestObject], times: Int, log: Bool) {
     
     usleep(200000)
 
-    let c = code(tag: tag, objects: objects, times: times) { object in
+    let c = code(tag: tag, objects: objects, times: times) { object -> (XWrapper, Int) in
         var error: XONError_e = XONErrorNone
         let data = XONEncode(object.xvalue, &error)!
         let count = XDataGetLength(data)
-        return (data, count)
-    } decode: { data in
+        
+        return (XWrapper(data), count)
+    } decode: { data -> XWrapper in
         var error: XONError_e = XONErrorNone
-        let object = XONDecodeWithData(data, &error)
+        let object = XWrapper(XONDecodeWithData(data.object!, &error))
         return object
     } compare: { object, value in
-        let result = XObjectEqual(object.xvalue, value)
+        let result = XObjectEqual(object.xvalue, value.object)
         if !result {
-            XObjectEqual(object.xvalue, value)
+            XObjectEqual(object.xvalue, value.object)
         }
         return result
     }

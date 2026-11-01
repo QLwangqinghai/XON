@@ -570,8 +570,8 @@
             filePath = "Test/XONObject.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "992"
-            endingLineNumber = "992"
+            startingLineNumber = "1009"
+            endingLineNumber = "1009"
             landmarkName = "testCoder(tag:objects:times:log:)"
             landmarkType = "9">
          </BreakpointContent>
