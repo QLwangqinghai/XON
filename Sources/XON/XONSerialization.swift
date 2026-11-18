@@ -259,18 +259,18 @@ public class XONDecodeBuffer {
 }
 
 public class XONEncodeBuffer {
-    public var buffer: XONEncodeBuffer_s = XONEncodeBufferMakeDefault()
+    public var buffer: XEncodeBuffer_s = XEncodeBufferMakeDefault()
     
     public init(minimumCapacity: Int = 0) {
-        XONEncodeBufferReserveCapacity(&buffer, minimumCapacity)
+        XEncodeBufferReserveCapacity(&buffer, minimumCapacity)
     }
     
     public func fit() {
-        XONEncodeBufferFitSize(&buffer)
+        XEncodeBufferFitSize(&buffer)
     }
     
     deinit {
-        XONEncodeBufferDeallocate(&buffer)
+        XEncodeBufferDeallocate(&buffer)
     }
     
     private func write(_ closure: () -> XONError_e) throws {

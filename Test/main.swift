@@ -20,5 +20,6 @@ let tester = XONTestCase()
 for _ in 0 ... 400 {
     autoreleasepool {
         try! tester.test()
+        usleep(1000000)
     }
 }
